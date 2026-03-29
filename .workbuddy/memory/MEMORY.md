@@ -15,6 +15,10 @@
   - 直接用 file:// 打开会导致 localStorage 不稳定，数据无法持久保存
   - 访问地址：http://localhost:8080/daywise.html
 
+- **网站地址**: notemyday.netlify.app
+- **GitHub 仓库**: https://github.com/zfczsl/NoteMe
+- **版本管理**: Git + Netlify 自动部署
+
 ## 关键词提取算法
 
 - 使用滑动窗口提取2-4字的中文词语（不是短语或句子）
