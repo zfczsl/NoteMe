@@ -1475,6 +1475,20 @@
           </div>
         </div>
         
+        <!-- 今日调用统计 -->
+        <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div style="font-size: 0.85rem; font-weight: 500;">📊 今日AI调用</div>
+            <div id="apiCallCount" style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">0 / 10 次</div>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
+            <div id="apiCallProgress" style="height: 100%; background: var(--primary); border-radius: 3px; width: 0%; transition: width 0.3s;"></div>
+          </div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">
+            每天 00:00 重置，每次记录/总结/脑图算1次
+          </div>
+        </div>
+        
         <!-- 反馈与支持 -->
         <div style="margin-top: 1.5rem;">
           <div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); border-radius: var(--radius); padding: 1rem; color: white;">
@@ -1834,7 +1848,40 @@
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
     let apiModel = 'deepseek-chat';
+    let dailyLimit = 10; // 每日调用次数限制
     let historyFilterStarred = false; // 历史页面筛选：只看星标
+    
+    // 获取今日调用次数
+    function getTodayApiCalls() {
+      const today = new Date().toDateString();
+      const savedDate = localStorage.getItem('daywise_api_date');
+      const savedCount = parseInt(localStorage.getItem('daywise_api_calls') || '0');
+      
+      if (savedDate !== today) {
+        // 新的一天，重置计数
+        localStorage.setItem('daywise_api_date', today);
+        localStorage.setItem('daywise_api_calls', '0');
+        return 0;
+      }
+      return savedCount;
+    }
+    
+    // 增加调用次数
+    function incrementApiCalls() {
+      const today = new Date().toDateString();
+      localStorage.setItem('daywise_api_date', today);
+      const count = parseInt(localStorage.getItem('daywise_api_calls') || '0');
+      localStorage.setItem('daywise_api_calls', (count + 1).toString());
+    }
+    
+    // 检查是否达到限制
+    function checkApiLimit() {
+      const count = getTodayApiCalls();
+      if (count >= dailyLimit) {
+        return { limited: true, count: count, limit: dailyLimit };
+      }
+      return { limited: false, count: count, limit: dailyLimit };
+    }
     
     // 周选择器状态 - 默认选择上一周
     let selectedWeekOffset = 0; // 0表示本周，-1上一周，-2上上周，以此类推
@@ -4173,6 +4220,13 @@
         if (apiEndpointInputBottom) apiEndpointInputBottom.value = apiEndpoint;
         if (apiModelInputBottom) apiModelInputBottom.value = apiModel;
 
+        // 更新今日调用次数显示
+        const limitInfo = checkApiLimit();
+        const countEl = document.getElementById('apiCallCount');
+        const progressEl = document.getElementById('apiCallProgress');
+        if (countEl) countEl.textContent = `${limitInfo.count} / ${limitInfo.limit} 次`;
+        if (progressEl) progressEl.style.width = `${(limitInfo.count / limitInfo.limit) * 100}%`;
+
         // 加载角色设置
         const roleSelectPage = document.getElementById('userRoleInputPage');
         const customRoleInputPage = document.getElementById('customRoleInputPage');
@@ -6069,7 +6123,16 @@ ${userBackground}
     }
 
     function callAIApi(prompt, onSuccess, onError) {
-      console.log('API调用信息:', { endpoint: apiEndpoint, model: apiModel, key: apiKey ? apiKey.substring(0, 10) + '...' : 'empty' });
+      // 检查每日调用限制
+      const limitInfo = checkApiLimit();
+      if (limitInfo.limited) {
+        if (onError) {
+          onError(`今日AI调用次数已达上限（${limitInfo.limit}次），请明天再来～\n\n💡 每次记录+总结+脑图算1次调用`);
+        }
+        return;
+      }
+      
+      console.log('API调用信息:', { endpoint: apiEndpoint, model: apiModel, key: apiKey ? apiKey.substring(0, 10) + '...' : 'empty', todayCalls: limitInfo.count + 1, limit: limitInfo.limit });
       
       fetch(apiEndpoint, {
         method: 'POST',
@@ -6098,6 +6161,7 @@ ${userBackground}
         }
         const content = data.choices?.[0]?.message?.content || 'AI 没有返回有效内容';
         console.log('提取的AI内容:', content);
+        incrementApiCalls(); // 调用成功，增加计数
         onSuccess(content);
       })
       .catch(error => {
