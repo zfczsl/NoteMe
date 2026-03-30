@@ -1986,7 +1986,29 @@
       try {
         // 动态加载 SDK（如果还没加载）
         if (!cloudbaseReady) {
-          await loadScript('https://cdn.jsdelivr.net/npm/@cloudbase/js-sdk@1.13.0');
+          // 尝试多个 CDN
+          const cdnUrls = [
+            'https://unpkg.com/@cloudbase/js-sdk@1.13.0/cloudbase.js',
+            'https://cdn.bootcdn.net/ajax/libs/cloudbase-js-sdk/1.13.0/cloudbase.js',
+            'https://imgcache.tencentcloudapi.com/__Security__/ConsoleBase/lastes/cloudbase.js'
+          ];
+          
+          let loaded = false;
+          for (const url of cdnUrls) {
+            try {
+              await loadScript(url);
+              loaded = true;
+              console.log('CloudBase SDK 加载成功:', url);
+              break;
+            } catch (e) {
+              console.log('CDN 不可用:', url);
+            }
+          }
+          
+          if (!loaded) {
+            throw new Error('所有 CDN 都无法加载');
+          }
+          
           cloudbaseReady = true;
         }
         
