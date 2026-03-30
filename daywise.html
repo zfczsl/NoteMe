@@ -1223,6 +1223,69 @@
   <meta name="apple-mobile-web-app-title" content="NoteMe">
 </head>
 <body>
+  
+  <!-- 全局登录弹窗 -->
+  <div id="globalLoginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; backdrop-filter: blur(4px);">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; background: white; border-radius: 24px; padding: 2rem; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+      <!-- Logo -->
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 16px; margin-bottom: 1rem;">
+          <span style="font-size: 28px; color: white; font-weight: bold;">记</span>
+        </div>
+        <h2 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 0.5rem;">欢迎使用 记我</h2>
+        <p style="font-size: 0.9rem; color: #6b7280;">登录后享受以下功能</p>
+      </div>
+      
+      <!-- 好处列表 -->
+      <div style="background: #f9fafb; border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #10b981, #34d399); border-radius: 8px; margin-right: 0.75rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <span style="font-size: 0.9rem; color: #374151;">手机电脑同步</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 8px; margin-right: 0.75rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <span style="font-size: 0.9rem; color: #374151;">数据云端备份</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 8px; margin-right: 0.75rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <span style="font-size: 0.9rem; color: #374151;">多设备共享</span>
+        </div>
+      </div>
+      
+      <!-- 登录表单 -->
+      <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 16px; padding: 1.25rem; color: white;">
+        <div style="font-size: 0.9rem; margin-bottom: 0.75rem; font-weight: 500;">📱 手机号快捷登录</div>
+        <input type="tel" id="globalLoginPhone" placeholder="请输入手机号" maxlength="11"
+          style="width: 100%; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; margin-bottom: 0.75rem; background: rgba(255,255,255,0.95); color: #333;">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <input type="text" id="globalLoginCode" placeholder="验证码" maxlength="6"
+            style="flex: 1; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; background: rgba(255,255,255,0.95); color: #333;">
+          <button id="globalSendCodeBtn" onclick="handleGlobalSendCode()" 
+            style="padding: 0 1.25rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; font-size: 0.85rem; cursor: pointer; white-space: nowrap;">
+            获取验证码
+          </button>
+        </div>
+        <button onclick="handleGlobalLogin()" 
+          style="width: 100%; padding: 0.95rem; background: white; color: #6366f1; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+          登录 / 注册
+        </button>
+        <div id="globalLoginMsg" style="font-size: 0.8rem; margin-top: 0.75rem; text-align: center; min-height: 1.2rem; opacity: 0.9;"></div>
+      </div>
+      
+      <!-- 暂不登录按钮 -->
+      <button onclick="skipGlobalLogin()" id="skipLoginBtn"
+        style="width: 100%; margin-top: 1rem; padding: 0.85rem; background: transparent; color: #9ca3af; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 0.9rem; cursor: pointer;">
+        暂不登录 · 仅本地保存
+      </button>
+    </div>
+  </div>
+  
   <!-- Header -->
   <header class="header">
     <div class="header-content">
@@ -1949,10 +2012,21 @@
           currentUser = authState.userInfo;
           console.log('已登录用户:', currentUser);
           updateLoginUI(true);
+          updateGlobalLoginUI(true);
           return true;
         } else {
-          // 未登录
+          // 未登录 - 检查是否已跳过登录
+          const savedStatus = localStorage.getItem('daywise_logged_in');
+          if (savedStatus === 'skipped') {
+            loginSkipped = true;
+            updateLoginUI(false);
+            return false;
+          }
+          
+          // 未登录且未跳过，显示全局弹窗
           updateLoginUI(false);
+          const modal = document.getElementById('globalLoginModal');
+          modal.style.display = 'block';
           return false;
         }
       } catch (e) {
@@ -2100,6 +2174,128 @@
     
     // ========== 登录相关函数 ==========
     let codeCooldown = 0; // 验证码冷却倒计时
+    let loginSkipped = false; // 用户是否跳过登录
+    
+    // 更新全局登录弹窗
+    function updateGlobalLoginUI(isLoggedIn) {
+      const modal = document.getElementById('globalLoginModal');
+      if (isLoggedIn) {
+        modal.style.display = 'none';
+        loginSkipped = false;
+        localStorage.setItem('daywise_logged_in', 'true');
+      }
+    }
+    
+    // 全局发送验证码
+    async function handleGlobalSendCode() {
+      const phone = document.getElementById('globalLoginPhone').value.trim();
+      const msgEl = document.getElementById('globalLoginMsg');
+      const btn = document.getElementById('globalSendCodeBtn');
+      
+      if (!phone || phone.length !== 11) {
+        msgEl.textContent = '请输入正确的11位手机号';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      if (codeCooldown > 0) {
+        msgEl.textContent = `请 ${codeCooldown} 秒后再试`;
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.textContent = '发送中...';
+      
+      const result = await sendPhoneCode(phone);
+      
+      if (result.success) {
+        msgEl.textContent = '✅ 验证码已发送';
+        msgEl.style.color = '#86efac';
+        codeCooldown = 60;
+        
+        const timer = setInterval(() => {
+          codeCooldown--;
+          btn.textContent = codeCooldown > 0 ? `${codeCooldown}s后重发` : '获取验证码';
+          if (codeCooldown <= 0) {
+            clearInterval(timer);
+            btn.disabled = false;
+          }
+        }, 1000);
+      } else {
+        msgEl.textContent = result.message || '发送失败';
+        msgEl.style.color = '#fca5a5';
+        btn.disabled = false;
+        btn.textContent = '获取验证码';
+      }
+    }
+    
+    // 全局登录
+    async function handleGlobalLogin() {
+      const phone = document.getElementById('globalLoginPhone').value.trim();
+      const code = document.getElementById('globalLoginCode').value.trim();
+      const msgEl = document.getElementById('globalLoginMsg');
+      
+      if (!phone || phone.length !== 11) {
+        msgEl.textContent = '请输入正确的11位手机号';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      if (!code || code.length < 4) {
+        msgEl.textContent = '请输入验证码';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      msgEl.textContent = '登录中...';
+      msgEl.style.color = '#86efac';
+      
+      const result = await phoneLogin(phone, code);
+      
+      if (result.success) {
+        msgEl.textContent = '✅ 登录成功';
+        
+        // 延迟关闭弹窗
+        setTimeout(() => {
+          updateGlobalLoginUI(true);
+          // 从云端加载数据
+          loadCloudDataOnLogin();
+        }, 500);
+      } else {
+        msgEl.textContent = result.message || '登录失败';
+        msgEl.style.color = '#fca5a5';
+      }
+    }
+    
+    // 跳过登录
+    function skipGlobalLogin() {
+      loginSkipped = true;
+      localStorage.setItem('daywise_logged_in', 'skipped');
+      document.getElementById('globalLoginModal').style.display = 'none';
+    }
+    
+    // 登录后从云端加载数据
+    async function loadCloudDataOnLogin() {
+      const cloudData = await getCloudData();
+      if (cloudData) {
+        if (confirm('检测到云端有数据，是否同步到本地？\n（本地数据将被云端数据覆盖）')) {
+          entries = cloudData.entries || [];
+          dailyReviews = cloudData.dailyReviews || {};
+          weeklyReviews = cloudData.weeklyReviews || {};
+          aiSummaries = cloudData.aiSummaries || {};
+          
+          localStorage.setItem('daywise_entries', JSON.stringify(entries));
+          localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews));
+          localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews));
+          localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
+          
+          // 重新加载UI
+          loadEntries();
+          updateDateDisplay();
+        }
+      }
+    }
     
     function updateLoginUI(isLoggedIn) {
       const loginPanel = document.getElementById('loginPanel');
@@ -2184,6 +2380,7 @@
       if (result.success) {
         msgEl.textContent = '✅ 登录成功';
         msgEl.style.color = '#86efac';
+        updateGlobalLoginUI(true);
         
         // 延迟同步数据
         setTimeout(async () => {
