@@ -2067,6 +2067,8 @@
           if (currentUser?.uid) {
             updateLoginUI(true);
             updateGlobalLoginUI(true);
+            // 从云端加载数据
+            loadCloudDataOnLogin();
           } else {
             console.log('登录状态存在但无有效用户信息，不自动登录');
             updateLoginUI(false);
