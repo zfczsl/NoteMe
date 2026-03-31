@@ -2188,16 +2188,14 @@
       if (!app) await initCloudBase();
       if (!currentUser) return null;
       
-      // 使用 _openid 作为用户标识（CloudBase 权限基于 _openid）
-      const userKey = currentUser.openid || currentUser._openid || currentUser.uid;
-      console.log('[同步] 获取云端数据，用户标识:', userKey, 'full user:', currentUser);
+      console.log('[同步] 获取云端数据，currentUser:', JSON.stringify(currentUser));
       
       try {
         const db = app.database();
-        // 用 _openid 查询（权限规则基于此字段）
-        const res = await db.collection('user_data').where({
-          _openid: userKey
-        }).get();
+        // 不指定 where 条件，直接获取用户自己的数据（CloudBase 会自动根据权限过滤）
+        const res = await db.collection('user_data').limit(1).get();
+        
+        console.log('[同步] 查询结果:', res);
         
         if (res.data && res.data.length > 0) {
           console.log('[同步] 找到云端数据');
@@ -2218,26 +2216,23 @@
       if (!app || !currentUser || isSyncing) return false;
       isSyncing = true;
       
-      // 使用 _openid 作为用户标识
-      const userKey = currentUser.openid || currentUser._openid || currentUser.uid;
-      console.log('[同步] 保存数据到云端，用户标识:', userKey);
+      console.log('[同步] 保存数据到云端');
       
       try {
         const db = app.database();
-        // 用 _openid 查询已有数据
-        const existing = await db.collection('user_data').where({
-          _openid: userKey
-        }).get();
+        
+        // 先尝试获取用户现有数据
+        const existing = await db.collection('user_data').limit(1).get();
         
         if (existing.data && existing.data.length > 0) {
-          // 更新
-          console.log('[同步] 更新现有数据');
-          await db.collection('user_data').doc(existing.data[0]._id).update({
+          // 更新现有数据
+          console.log('[同步] 更新现有数据, _id:', existing.data[0]._id);
+          await db.collection('user_data').doc(existing.data[0]._id).set({
             data: data,
             updatedAt: db.serverDate()
           });
         } else {
-          // 新增
+          // 新增数据
           console.log('[同步] 创建新数据');
           await db.collection('user_data').add({
             data: data,
