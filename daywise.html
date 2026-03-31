@@ -1218,9 +1218,38 @@
   </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#f59e0b">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="NoteMe">
+  <!-- CloudBase 完整 SDK（含手机号登录）：本地文件优先，官方 CDN 备用 -->
+  <script>
+    (function() {
+      var urls = [
+        'cloudbase.full.js',                                                             // 本地文件（最稳定）
+        'https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js'        // 官方 CDN 备用
+      ];
+      var idx = 0;
+      function loadNext() {
+        if (idx >= urls.length) {
+          console.error('[CloudBase] SDK 加载失败，登录/云同步功能将不可用');
+          window._cloudbaseSdkFailed = true;
+          return;
+        }
+        var s = document.createElement('script');
+        s.src = urls[idx++];
+        s.onerror = function() {
+          console.warn('[CloudBase] 加载失败，尝试备用源...');
+          loadNext();
+        };
+        s.onload = function() {
+          console.log('[CloudBase] SDK 加载成功：' + s.src);
+        };
+        document.head.appendChild(s);
+      }
+      loadNext();
+    })();
+  </script>
 </head>
 <body>
   
@@ -1258,7 +1287,7 @@
         </div>
       </div>
       
-      <!-- 登录表单 -->
+      <!-- 手机号登录表单 -->
       <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 16px; padding: 1.25rem; color: white;">
         <div style="font-size: 0.9rem; margin-bottom: 0.75rem; font-weight: 500;">📱 手机号快捷登录</div>
         <input type="tel" id="globalLoginPhone" placeholder="请输入手机号" maxlength="11"
@@ -1278,9 +1307,15 @@
         <div id="globalLoginMsg" style="font-size: 0.8rem; margin-top: 0.75rem; text-align: center; min-height: 1.2rem; opacity: 0.9;"></div>
       </div>
       
+      <!-- 快速体验按钮 -->
+      <button onclick="quickStart()" id="quickStartBtn"
+        style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #10b981, #34d399); color: white; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+        🚀 快速体验 · 匿名登录
+      </button>
+      
       <!-- 暂不登录按钮 -->
       <button onclick="skipGlobalLogin()" id="skipLoginBtn"
-        style="width: 100%; margin-top: 1rem; padding: 0.85rem; background: transparent; color: #9ca3af; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 0.9rem; cursor: pointer;">
+        style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; background: transparent; color: #9ca3af; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 0.9rem; cursor: pointer;">
         暂不登录 · 仅本地保存
       </button>
     </div>
@@ -1964,6 +1999,7 @@
 <script>
     // ========== 腾讯云 CloudBase 配置 ==========
     const CLOUD_ENV_ID = 'noteme-4g46b2fz98b36db3'; // 替换为你的环境ID
+    const TcbApiBase = `https://${CLOUD_ENV_ID}.ap-shanghai.tcb-api.tencentcloudapi.com`;
     let app = null;
     let authObj = null;
     let authState = null; // 登录状态
@@ -1984,73 +2020,63 @@
     // 初始化 CloudBase
     async function initCloudBase() {
       try {
-        // 动态加载 SDK（如果还没加载）
-        if (!cloudbaseReady) {
-          // 尝试多个 CDN
-          const cdnUrls = [
-            'https://unpkg.com/@cloudbase/js-sdk@2.17.3/dist/index.umd.js',
-            'https://cdn.jsdelivr.net/npm/@cloudbase/js-sdk@2.17.3/dist/index.umd.js',
-            'https://cdn.bootcdn.net/ajax/libs/cloudbase-js-sdk/2.17.3/dist/index.umd.js'
-          ];
-          
-          let loaded = false;
-          for (const url of cdnUrls) {
-            try {
-              await loadScript(url);
-              loaded = true;
-              console.log('CloudBase SDK 加载成功:', url);
-              break;
-            } catch (e) {
-              console.log('CDN 不可用:', url);
-            }
-          }
-          
-          if (!loaded) {
-            throw new Error('所有 CDN 都无法加载');
-          }
-          
-          cloudbaseReady = true;
-        }
-        
+        // SDK 尚未加载完成时，等待最多 5s
         if (typeof cloudbase === 'undefined') {
-          throw new Error('CloudBase SDK 未正确加载');
+          await new Promise((resolve) => {
+            let waited = 0;
+            const timer = setInterval(() => {
+              waited += 200;
+              if (typeof cloudbase !== 'undefined') { clearInterval(timer); resolve(); }
+              else if (waited >= 5000) { clearInterval(timer); resolve(); }
+            }, 200);
+          });
         }
-        
-        app = cloudbase.init({
-          env: CLOUD_ENV_ID
-        });
-        console.log('CloudBase 初始化成功');
-        
-        // 获取 auth 对象
-        authObj = app.auth({
-          persistence: 'local'
-        });
-        
-        // 检查登录状态
-        authState = await authObj.getLoginState();
-        
-        if (authState) {
-          // 已登录
-          currentUser = authState.userInfo;
-          console.log('已登录用户:', currentUser);
-          updateLoginUI(true);
-          updateGlobalLoginUI(true);
-          return true;
-        } else {
-          // 未登录 - 检查是否已跳过登录
-          const savedStatus = localStorage.getItem('daywise_logged_in');
-          if (savedStatus === 'skipped') {
-            loginSkipped = true;
-            updateLoginUI(false);
-            return false;
-          }
-          
-          // 未登录且未跳过，显示全局弹窗
+        // 等待后仍未加载，静默降级（不影响主界面）
+        if (typeof cloudbase === 'undefined') {
+          console.warn('CloudBase SDK 未能加载，云同步/登录功能暂不可用');
           updateLoginUI(false);
-          const modal = document.getElementById('globalLoginModal');
-          modal.style.display = 'block';
           return false;
         }
+        
+        if (window._cloudbaseInited && app) {
+          return true;
+        }
+        window._cloudbaseInited = true;
+
+        app = cloudbase.init({
+          env: CLOUD_ENV_ID,
+          region: 'ap-shanghai'
+        });
+        
+        // 初始化 auth 实例
+        authObj = app.auth();
+        
+        console.log('CloudBase 初始化成功');
+        
+        // 检查登录状态（仅检查，不自动登录）
+        authState = await app.auth().getLoginState();
+        console.log('getLoginState 返回:', authState);
+        
+        if (authState) {
+          // 已登录 - 兼容 userInfo 可能为 undefined 的情况
+          currentUser = authState.userInfo || authState.user || authState;
+          console.log('已登录用户:', currentUser);
+          console.log('已登录用户 uid:', currentUser?.uid);
+          
+          // 只有确实有 uid 时才算真正登录
+          if (currentUser?.uid) {
+            updateLoginUI(true);
+            updateGlobalLoginUI(true);
+          } else {
+            console.log('登录状态存在但无有效用户信息，不自动登录');
+            updateLoginUI(false);
+          }
+        } else {
+          // 未登录，不自动匿名登录，让用户选择登录方式
+          console.log('未检测到登录状态');
+          updateLoginUI(false);
+        }
+        return true;
       } catch (e) {
         console.error('CloudBase 初始化失败:', e);
         updateLoginUI(false);
@@ -2058,42 +2084,96 @@
       }
     }
     
-    // 发送手机验证码
+    // 保存验证信息，发送与登录之间共享
+    let verificationInfo = null;
+    let currentPhone = null;
+    
+    // 发送手机验证码 (v2 SDK: getVerification)
     async function sendPhoneCode(phone) {
       if (!app) await initCloudBase();
       try {
-        await authObj.sendPhoneCode(phone);
+        const phoneWithCode = phone.startsWith('+') ? phone : '+86 ' + phone;
+        console.log('发送验证码到:', phoneWithCode);
+        
+        // v2 SDK 方法：getVerification
+        verificationInfo = await app.auth().getVerification({
+          phone_number: phoneWithCode
+        });
+        currentPhone = phoneWithCode;
+        
+        console.log('验证码发送成功，verificationInfo:', verificationInfo);
         return { success: true, message: '验证码已发送' };
       } catch (e) {
+        console.error('发送验证码失败:', e);
         return { success: false, message: e.message || '发送失败' };
       }
     }
     
-    // 手机号登录
+    // 手机号登录 (v2 SDK: signInWithSms)
     async function phoneLogin(phone, code) {
-      if (!app) await initCloudBase();
+      if (!verificationInfo) {
+        return { success: false, message: '请先获取验证码' };
+      }
+      
       try {
-        await authObj.phoneLogin(phone, code);
-        authState = await authObj.getLoginState();
-        currentUser = authState.userInfo;
-        console.log('登录成功:', currentUser);
-        updateLoginUI(true);
+        console.log('登录手机号:', phone, '验证码:', code);
+        
+        const phoneWithCode = phone.startsWith('+') ? phone : '+86 ' + phone;
+        
+        // v2 SDK 方法：signInWithSms
+        const loginState = await app.auth().signInWithSms({
+          verificationInfo,
+          verificationCode: code,
+          phoneNum: phoneWithCode
+        });
+        
+        console.log('登录成功:', loginState);
+        
+        // 刷新 authState
+        authState = await app.auth().getLoginState();
+        currentUser = authState?.userInfo || authState?.user || null;
+        
+        console.log('登录后 currentUser:', currentUser);
+        console.log('登录后 currentUser.uid:', currentUser?.uid);
+        
+        // 更新 UI
+        if (currentUser?.uid) {
+          updateLoginUI(true);
+          updateGlobalLoginUI(true);  // 确保关闭弹窗
+        }
+        
+        verificationInfo = null;
+        currentPhone = null;
         return { success: true };
       } catch (e) {
+        console.error('登录失败:', e);
         return { success: false, message: e.message || '登录失败' };
       }
     }
     
     // 退出登录
     async function logout() {
-      if (!app) await initCloudBase();
       try {
+        if (!app) await initCloudBase();
+        if (!authObj) authObj = app.auth();
+        
         await authObj.signOut();
         currentUser = null;
         authState = null;
+        
+        // 清理登录状态
+        localStorage.removeItem('daywise_logged_in');
+        localStorage.removeItem('daywise_anonymous');
+        
         updateLoginUI(false);
+        updateGlobalLoginUI(false);
+        
+        // 显示登录弹窗
+        document.getElementById('globalLoginModal').style.display = 'flex';
+        
         return { success: true };
       } catch (e) {
+        console.error('退出失败:', e);
         return { success: false, message: e.message || '退出失败' };
       }
     }
@@ -2264,8 +2344,8 @@
         return;
       }
       
-      if (!code || code.length < 4) {
-        msgEl.textContent = '请输入验证码';
+      if (!code || code.length !== 6) {
+        msgEl.textContent = '请输入6位验证码';
         msgEl.style.color = '#fca5a5';
         return;
       }
@@ -2297,6 +2377,39 @@
       document.getElementById('globalLoginModal').style.display = 'none';
     }
     
+    // 快速体验 - 匿名登录
+    async function quickStart() {
+      try {
+        const btn = document.getElementById('quickStartBtn');
+        btn.textContent = '正在登录...';
+        btn.disabled = true;
+        
+        if (!app) await initCloudBase();
+        
+        // 匿名登录
+        await authObj.signInAnonymously();
+        const authState = await authObj.getLoginState();
+        
+        if (authState) {
+          currentUser = authState.userInfo;
+          console.log('匿名登录成功:', currentUser);
+          localStorage.setItem('daywise_anonymous', 'true');
+          updateLoginUI(true);
+          updateGlobalLoginUI(true);
+          document.getElementById('globalLoginModal').style.display = 'none';
+          
+          // 尝试加载云端数据
+          await loadCloudDataOnLogin();
+        }
+      } catch (e) {
+        console.error('匿名登录失败:', e);
+        alert('登录失败: ' + (e.message || '请检查网络连接'));
+        const btn = document.getElementById('quickStartBtn');
+        btn.textContent = '🚀 快速体验 · 匿名登录';
+        btn.disabled = false;
+      }
+    }
+    
     // 登录后从云端加载数据
     async function loadCloudDataOnLogin() {
       const cloudData = await getCloudData();
@@ -2320,17 +2433,31 @@
     }
     
     function updateLoginUI(isLoggedIn) {
+      console.log('updateLoginUI called, isLoggedIn:', isLoggedIn, 'currentUser:', currentUser);
+      
       const loginPanel = document.getElementById('loginPanel');
       const loggedInPanel = document.getElementById('loggedInPanel');
       const userPhoneDisplay = document.getElementById('userPhoneDisplay');
+      const userAvatar = document.getElementById('userAvatar');
+      const userName = document.getElementById('userName');
       
       if (isLoggedIn && currentUser) {
         loginPanel.style.display = 'none';
         loggedInPanel.style.display = 'block';
-        userPhoneDisplay.textContent = '📱 ' + (currentUser.phoneNumber || '已登录');
+        
+        // 显示用户信息
+        const phone = currentUser.phoneNumber || currentUser.phone_number || currentUser.name || '';
+        const name = currentUser.name || currentUser.nickname || currentUser.uid?.slice(0,8) || '';
+        
+        userPhoneDisplay.textContent = '📱 ' + phone;
+        if (userAvatar) userAvatar.textContent = phone ? phone.charAt(0).toUpperCase() : 'U';
+        if (userName) userName.textContent = name || phone;
+        
+        console.log('UI updated: 显示已登录, phone:', phone, 'name:', name);
       } else {
         loginPanel.style.display = 'block';
         loggedInPanel.style.display = 'none';
+        console.log('UI updated: 显示未登录');
       }
     }
     
@@ -2388,8 +2515,8 @@
         return;
       }
       
-      if (!code || code.length !== 4) {
-        msgEl.textContent = '请输入4位验证码';
+      if (!code || code.length !== 6) {
+        msgEl.textContent = '请输入6位验证码';
         msgEl.style.color = '#fca5a5';
         return;
       }
