@@ -2133,13 +2133,18 @@
         authState = await app.auth().getLoginState();
         currentUser = authState?.userInfo || authState?.user || null;
         
+        // 保存手机号到 currentUser，用于同步标识
+        if (phone && !currentUser.phoneNumber) {
+          currentUser.phoneNumber = phone;
+        }
+        
         console.log('登录后 currentUser:', currentUser);
-        console.log('登录后 currentUser.uid:', currentUser?.uid);
+        console.log('登录后用户标识:', currentUser?.phoneNumber || currentUser?.uid);
         
         // 更新 UI
-        if (currentUser?.uid) {
+        if (currentUser?.phoneNumber || currentUser?.uid) {
           updateLoginUI(true);
-          updateGlobalLoginUI(true);  // 确保关闭弹窗
+          updateGlobalLoginUI(true);
         }
         
         verificationInfo = null;
@@ -2183,18 +2188,25 @@
       if (!app) await initCloudBase();
       if (!currentUser) return null;
       
+      // 使用手机号作为用户标识，确保同一手机号在不同设备上能同步数据
+      const userKey = currentUser.phoneNumber || currentUser.phone_number || currentUser.uid;
+      console.log('[同步] 获取云端数据，用户标识:', userKey);
+      
       try {
         const db = app.database();
         const res = await db.collection('user_data').where({
-          userId: currentUser.uid
+          userPhone: userKey
         }).get();
         
         if (res.data && res.data.length > 0) {
+          console.log('[同步] 找到云端数据');
           return res.data[0].data;
         }
+        console.log('[同步] 云端没有数据');
         return null;
       } catch (e) {
-        console.error('获取云端数据失败:', e);
+        console.error('[同步] 获取云端数据失败:', e);
+        alert('⚠️ 获取云端数据失败: ' + e.message);
         return null;
       }
     }
@@ -2204,32 +2216,39 @@
       if (!app || !currentUser || isSyncing) return false;
       isSyncing = true;
       
+      // 使用手机号作为用户标识
+      const userKey = currentUser.phoneNumber || currentUser.phone_number || currentUser.uid;
+      console.log('[同步] 保存数据到云端，用户标识:', userKey);
+      
       try {
         const db = app.database();
         const existing = await db.collection('user_data').where({
-          userId: currentUser.uid
+          userPhone: userKey
         }).get();
         
         if (existing.data && existing.data.length > 0) {
           // 更新
+          console.log('[同步] 更新现有数据');
           await db.collection('user_data').doc(existing.data[0]._id).update({
             data: data,
             updatedAt: db.serverDate()
           });
         } else {
           // 新增
+          console.log('[同步] 创建新数据');
           await db.collection('user_data').add({
-            userId: currentUser.uid,
+            userPhone: userKey,
             data: data,
             createdAt: db.serverDate(),
             updatedAt: db.serverDate()
           });
         }
-        console.log('数据已同步到云端');
+        console.log('[同步] 数据已保存到云端');
         isSyncing = false;
         return true;
       } catch (e) {
-        console.error('同步到云端失败:', e);
+        console.error('[同步] 保存到云端失败:', e);
+        alert('⚠️ 同步失败: ' + e.message);
         isSyncing = false;
         return false;
       }
