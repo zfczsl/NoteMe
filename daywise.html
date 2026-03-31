@@ -2188,14 +2188,15 @@
       if (!app) await initCloudBase();
       if (!currentUser) return null;
       
-      // 使用手机号作为用户标识，确保同一手机号在不同设备上能同步数据
-      const userKey = currentUser.phoneNumber || currentUser.phone_number || currentUser.uid;
-      console.log('[同步] 获取云端数据，用户标识:', userKey);
+      // 使用 _openid 作为用户标识（CloudBase 权限基于 _openid）
+      const userKey = currentUser.openid || currentUser._openid || currentUser.uid;
+      console.log('[同步] 获取云端数据，用户标识:', userKey, 'full user:', currentUser);
       
       try {
         const db = app.database();
+        // 用 _openid 查询（权限规则基于此字段）
         const res = await db.collection('user_data').where({
-          userPhone: userKey
+          _openid: userKey
         }).get();
         
         if (res.data && res.data.length > 0) {
@@ -2206,7 +2207,8 @@
         return null;
       } catch (e) {
         console.error('[同步] 获取云端数据失败:', e);
-        alert('⚠️ 获取云端数据失败: ' + e.message);
+        console.error('错误详情:', JSON.stringify(e));
+        alert('⚠️ 获取云端数据失败: ' + e.message + '\n\n详情: ' + JSON.stringify(e));
         return null;
       }
     }
@@ -2216,14 +2218,15 @@
       if (!app || !currentUser || isSyncing) return false;
       isSyncing = true;
       
-      // 使用手机号作为用户标识
-      const userKey = currentUser.phoneNumber || currentUser.phone_number || currentUser.uid;
+      // 使用 _openid 作为用户标识
+      const userKey = currentUser.openid || currentUser._openid || currentUser.uid;
       console.log('[同步] 保存数据到云端，用户标识:', userKey);
       
       try {
         const db = app.database();
+        // 用 _openid 查询已有数据
         const existing = await db.collection('user_data').where({
-          userPhone: userKey
+          _openid: userKey
         }).get();
         
         if (existing.data && existing.data.length > 0) {
@@ -2237,7 +2240,6 @@
           // 新增
           console.log('[同步] 创建新数据');
           await db.collection('user_data').add({
-            userPhone: userKey,
             data: data,
             createdAt: db.serverDate(),
             updatedAt: db.serverDate()
@@ -2248,6 +2250,7 @@
         return true;
       } catch (e) {
         console.error('[同步] 保存到云端失败:', e);
+        console.error('错误详情:', JSON.stringify(e));
         alert('⚠️ 同步失败: ' + e.message);
         isSyncing = false;
         return false;
