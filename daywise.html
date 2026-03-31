@@ -2133,8 +2133,12 @@
         authState = await app.auth().getLoginState();
         currentUser = authState?.userInfo || authState?.user || null;
         
+        // 打印完整用户信息用于调试
+        console.log('[调试] 完整 currentUser:', currentUser);
+        console.log('[调试] currentUser keys:', currentUser ? Object.keys(currentUser) : 'null');
+        
         // 保存手机号到 currentUser，用于同步标识
-        if (phone && !currentUser.phoneNumber) {
+        if (phone && currentUser) {
           currentUser.phoneNumber = phone;
         }
         
@@ -2430,22 +2434,63 @@
     // 登录后从云端加载数据
     async function loadCloudDataOnLogin() {
       const cloudData = await getCloudData();
+      
+      // 如果本地有数据，先尝试保存到云端（确保本地数据不丢失）
+      const localData = {
+        entries: entries || [],
+        dailyReviews: dailyReviews || {},
+        weeklyReviews: weeklyReviews || {},
+        aiSummaries: aiSummaries || {},
+        aiInsights: aiInsights || {},
+        weeklyInsights: weeklyInsights || []
+      };
+      
+      // 如果本地有数据但云端没有，直接保存到云端
+      if (!cloudData && localData.entries.length > 0) {
+        console.log('[同步] 本地有数据，云端没有，保存到云端');
+        await saveCloudData(localData);
+        alert('✅ 首次登录，本地数据已同步到云端！');
+        return;
+      }
+      
+      // 如果云端有数据
       if (cloudData) {
-        if (confirm('检测到云端有数据，是否同步到本地？\n（本地数据将被云端数据覆盖）')) {
-          entries = cloudData.entries || [];
-          dailyReviews = cloudData.dailyReviews || {};
-          weeklyReviews = cloudData.weeklyReviews || {};
-          aiSummaries = cloudData.aiSummaries || {};
+        const hasLocalData = localData.entries.length > 0;
+        
+        if (hasLocalData) {
+          // 询问用户是要合并还是用云端覆盖
+          const choice = confirm('检测到本地和云端都有数据。\n\n确定 = 用云端数据覆盖本地\n取消 = 保留本地数据');
           
-          localStorage.setItem('daywise_entries', JSON.stringify(entries));
-          localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews));
-          localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews));
-          localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
-          
-          // 重新加载UI
-          loadEntries();
-          updateDateDisplay();
+          if (choice) {
+            // 用云端覆盖本地
+            entries = cloudData.entries || [];
+            dailyReviews = cloudData.dailyReviews || {};
+            weeklyReviews = cloudData.weeklyReviews || {};
+            aiSummaries = cloudData.aiSummaries || {};
+          } else {
+            // 保留本地，但把本地数据保存到云端（备份）
+            await saveCloudData(localData);
+            alert('✅ 本地数据已备份到云端！');
+          }
+        } else {
+          // 本地没有数据，直接用云端数据
+          if (confirm('检测到云端有数据，是否同步到本地？')) {
+            entries = cloudData.entries || [];
+            dailyReviews = cloudData.dailyReviews || {};
+            weeklyReviews = cloudData.weeklyReviews || {};
+            aiSummaries = cloudData.aiSummaries || {};
+          }
         }
+        
+        // 保存到 localStorage
+        localStorage.setItem('daywise_entries', JSON.stringify(entries));
+        localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews));
+        localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews));
+        localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
+        
+        // 重新加载UI
+        loadEntries();
+        updateDateDisplay();
       }
     }
     
