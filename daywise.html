@@ -2433,11 +2433,11 @@
       }
     }
     
-    // 登录后从云端加载数据
+    // 登录后从云端加载数据（自动同步，无需确认）
     async function loadCloudDataOnLogin() {
       const cloudData = await getCloudData();
       
-      // 如果本地有数据，先尝试保存到云端（确保本地数据不丢失）
+      // 如果本地有数据，先尝试保存到云端
       const localData = {
         entries: entries || [],
         dailyReviews: dailyReviews || {},
@@ -2451,43 +2451,24 @@
       if (!cloudData && localData.entries.length > 0) {
         console.log('[同步] 本地有数据，云端没有，保存到云端');
         await saveCloudData(localData);
-        alert('✅ 首次登录，本地数据已同步到云端！');
+        loadEntries();
+        updateDateDisplay();
         return;
       }
       
-      // 如果云端有数据
+      // 如果云端有数据，直接用云端覆盖本地（自动同步）
       if (cloudData) {
-        const hasLocalData = localData.entries.length > 0;
+        console.log('[同步] 自动同步云端数据到本地');
+        entries = cloudData.entries || [];
+        dailyReviews = cloudData.dailyReviews || {};
+        weeklyReviews = cloudData.weeklyReviews || {};
+        aiSummaries = cloudData.aiSummaries || {};
+        aiInsights = cloudData.aiInsights || {};
+        weeklyInsights = cloudData.weeklyInsights || [];
         
-        if (hasLocalData) {
-          // 询问用户是要合并还是用云端覆盖
-          const choice = confirm('检测到本地和云端都有数据。\n\n确定 = 用云端数据覆盖本地\n取消 = 保留本地数据');
-          
-          if (choice) {
-            // 用云端覆盖本地
-            entries = cloudData.entries || [];
-            dailyReviews = cloudData.dailyReviews || {};
-            weeklyReviews = cloudData.weeklyReviews || {};
-            aiSummaries = cloudData.aiSummaries || {};
-            aiInsights = cloudData.aiInsights || {};
-            weeklyInsights = cloudData.weeklyInsights || [];
-          } else {
-            // 保留本地，但把本地数据保存到云端（备份）
-            await saveCloudData(localData);
-            alert('✅ 本地数据已备份到云端！');
-          }
-        } else {
-        // 本地没有数据，直接用云端数据
-        if (confirm('检测到云端有数据，是否同步到本地？')) {
-          console.log('[同步] 云端数据:', cloudData);
-          entries = cloudData.entries || [];
-          dailyReviews = cloudData.dailyReviews || {};
-          weeklyReviews = cloudData.weeklyReviews || {};
-          aiSummaries = cloudData.aiSummaries || {};
-          aiInsights = cloudData.aiInsights || {};
-          weeklyInsights = cloudData.weeklyInsights || [];
-          console.log('[同步] 解析后 entries 数量:', entries.length);
-        }
+        // 如果本地有数据，保存到云端（确保最新）
+        if (localData.entries.length > 0) {
+          await saveCloudData(localData);
         }
         
         // 保存到 localStorage
