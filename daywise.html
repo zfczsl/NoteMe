@@ -2017,9 +2017,21 @@
       });
     }
     
+    // 检查是否在 GitHub Pages 环境
+    function isGitHubPages() {
+      return window.location.hostname.includes('github.io');
+    }
+    
     // 初始化 CloudBase
     async function initCloudBase() {
       try {
+        // GitHub Pages 环境不使用 CloudBase
+        if (isGitHubPages()) {
+          console.log('GitHub Pages 环境，跳过 CloudBase 初始化');
+          updateLoginUI(false);
+          return false;
+        }
+        
         // SDK 尚未加载完成时，等待最多 5s
         if (typeof cloudbase === 'undefined') {
           await new Promise((resolve) => {
@@ -2191,6 +2203,11 @@
     
     // 获取云端数据
     async function getCloudData() {
+      // GitHub Pages 环境不使用云端数据
+      if (isGitHubPages()) {
+        return null;
+      }
+      
       if (!app) await initCloudBase();
       if (!currentUser) return null;
       
@@ -2212,13 +2229,18 @@
       } catch (e) {
         console.error('[同步] 获取云端数据失败:', e);
         console.error('错误详情:', JSON.stringify(e));
-        alert('⚠️ 获取云端数据失败: ' + e.message + '\n\n详情: ' + JSON.stringify(e));
+        // 静默失败，不弹窗打扰用户
         return null;
       }
     }
     
     // 保存数据到云端
     async function saveCloudData(data) {
+      // GitHub Pages 环境不保存云端数据
+      if (isGitHubPages()) {
+        return false;
+      }
+      
       if (!app || !currentUser || isSyncing) return false;
       isSyncing = true;
       
