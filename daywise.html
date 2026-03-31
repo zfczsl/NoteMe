@@ -2194,14 +2194,14 @@
       if (!app) await initCloudBase();
       if (!currentUser) return null;
       
-      console.log('[同步] 获取云端数据，currentUser:', JSON.stringify(currentUser));
+      console.log('[同步] 获取云端数据，用户:', currentUser.uid, currentUser.name, currentUser.phoneNumber);
       
       try {
         const db = app.database();
         // 不指定 where 条件，直接获取用户自己的数据（CloudBase 会自动根据权限过滤）
         const res = await db.collection('user_data').limit(1).get();
         
-        console.log('[同步] 查询结果:', res);
+        console.log('[同步] 查询结果, 数量:', res.data?.length || 0);
         
         if (res.data && res.data.length > 0) {
           console.log('[同步] 找到云端数据');
