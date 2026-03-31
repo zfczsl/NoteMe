@@ -2444,7 +2444,11 @@
         weeklyReviews: weeklyReviews || {},
         aiSummaries: aiSummaries || {},
         aiInsights: aiInsights || {},
-        weeklyInsights: weeklyInsights || []
+        weeklyInsights: weeklyInsights || [],
+        apiCalls: {
+          date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
+          count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
+        }
       };
       
       // 如果本地有数据但云端没有，直接保存到云端
@@ -2465,6 +2469,23 @@
         aiSummaries = cloudData.aiSummaries || {};
         aiInsights = cloudData.aiInsights || {};
         weeklyInsights = cloudData.weeklyInsights || [];
+        
+        // 恢复 API 调用次数
+        const today = new Date().toDateString();
+        if (cloudData.apiCalls) {
+          const cloudApiDate = cloudData.apiCalls.date || today;
+          const cloudApiCount = cloudData.apiCalls.count || 0;
+          
+          // 如果云端日期是今天，用云端的次数；否则重置
+          if (cloudApiDate === today) {
+            localStorage.setItem('daywise_api_date', today);
+            localStorage.setItem('daywise_api_calls', cloudApiCount.toString());
+            console.log('[同步] API调用次数:', cloudApiCount);
+          } else {
+            localStorage.setItem('daywise_api_date', today);
+            localStorage.setItem('daywise_api_calls', '0');
+          }
+        }
         
         // 如果本地有数据，保存到云端（确保最新）
         if (localData.entries.length > 0) {
@@ -4862,7 +4883,11 @@
           weeklyReviews: weeklyReviews,
           aiSummaries: aiSummaries,
           aiInsights: aiInsights,
-          weeklyInsights: weeklyInsights
+          weeklyInsights: weeklyInsights,
+          apiCalls: {
+            date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
+            count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
+          }
         };
         clearTimeout(window.syncTimer);
         window.syncTimer = setTimeout(() => {
