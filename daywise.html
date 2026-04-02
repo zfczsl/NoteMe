@@ -2289,6 +2289,7 @@
     let aiSummaries = {};  // AI分析结果缓存
     let aiInsights = {};   // AI结构化洞察数据
     let weeklyInsights = {}; // 周洞察数据
+    let mindMaps = {};      // 脑图数据（按日期存储）
     let aiTab = 'daily';
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
@@ -2467,6 +2468,7 @@
         aiSummaries: aiSummaries || {},
         aiInsights: aiInsights || {},
         weeklyInsights: weeklyInsights || [],
+        mindMaps: mindMaps || {},
         apiCalls: {
           date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
           count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
@@ -2491,6 +2493,17 @@
         aiSummaries = cloudData.aiSummaries || {};
         aiInsights = cloudData.aiInsights || {};
         weeklyInsights = cloudData.weeklyInsights || [];
+        mindMaps = cloudData.mindMaps || {};
+        
+        // 如果云端没有脑图数据，尝试从 localStorage 恢复
+        if (Object.keys(mindMaps).length === 0) {
+          try {
+            const savedMindMaps = localStorage.getItem('daywise_mind_maps');
+            if (savedMindMaps) {
+              mindMaps = JSON.parse(savedMindMaps);
+            }
+          } catch (e) {}
+        }
         
         // 恢复 API 调用次数
         const today = new Date().toDateString();
@@ -2521,6 +2534,7 @@
         localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
         localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
+        localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         
         // 重新加载UI
         loadEntries();
@@ -4882,14 +4896,16 @@
       aiSummaries = JSON.parse(localStorage.getItem('daywise_ai_summaries') || '{}');
       aiInsights = JSON.parse(localStorage.getItem('daywise_ai_insights') || '{}');
       weeklyInsights = JSON.parse(localStorage.getItem('daywise_weekly_insights') || '{}');
+      mindMaps = JSON.parse(localStorage.getItem('daywise_mind_maps') || '{}');
     }
-
+    
     function saveData() {
       if (!storageAvailable) return;
       try {
         localStorage.setItem('daywise_entries', JSON.stringify(entries));
         localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews));
         localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews));
+        localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
         localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
@@ -4906,6 +4922,7 @@
           aiSummaries: aiSummaries,
           aiInsights: aiInsights,
           weeklyInsights: weeklyInsights,
+          mindMaps: mindMaps,
           apiCalls: {
             date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
             count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
@@ -4953,7 +4970,7 @@
       loadRecordMindMap(); // 加载对应日期的脑图
     }
     
-    // 加载对应日期的脑图，如果没有则自动生成
+    // 加载对应日期的脑图
     function loadRecordMindMap() {
       const content = document.getElementById('recordMindMapContent');
       const btn = document.getElementById('recordMindMapBtn');
@@ -4964,7 +4981,14 @@
       if (btn) btn.innerHTML = '生成脑图';
       
       const dateKey = getDateKey(currentDate);
-      const savedMindMap = localStorage.getItem('mindmap_' + dateKey);
+      
+      // 优先从全局 mindMaps 对象读取（云端同步的数据）
+      let savedMindMap = mindMaps[dateKey] ? JSON.stringify(mindMaps[dateKey]) : null;
+      
+      // 其次从旧格式的 localStorage 读取
+      if (!savedMindMap) {
+        savedMindMap = localStorage.getItem('mindmap_' + dateKey);
+      }
       
       if (savedMindMap) {
         try {
@@ -6641,7 +6665,7 @@ ${entryTexts || '无记录'}
       
       const prompt = buildMindMapPrompt(todayEntries, todayReview);
       
-      callAIApi(prompt, (response) => {
+      callAIApi(prompt, async (response) => {
         // 解析 JSON 数据
         const mindMapData = parseMindMapJSON(response);
         const dateKey = getDateKey(currentDate);
@@ -6651,6 +6675,23 @@ ${entryTexts || '无记录'}
           content.innerHTML = renderMindMap(mindMapData);
           // 保存到 localStorage
           localStorage.setItem('mindmap_' + dateKey, JSON.stringify(mindMapData));
+          // 保存到全局状态
+          mindMaps[dateKey] = mindMapData;
+          localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
+          // 同步到 CloudBase
+          if (currentUser) {
+            const dataToSave = {
+              entries: entries || [],
+              dailyReviews: dailyReviews || {},
+              weeklyReviews: weeklyReviews || {},
+              aiSummaries: aiSummaries || {},
+              aiInsights: aiInsights || {},
+              weeklyInsights: weeklyInsights || [],
+              mindMaps: mindMaps || {}
+            };
+            await saveCloudData(dataToSave);
+            console.log('[同步] 脑图已同步到云端');
+          }
         } else {
           // 如果解析失败，显示原始文本
           content.innerHTML = formatSummaryContent(response);
