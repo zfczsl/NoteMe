@@ -4972,11 +4972,14 @@
           content.innerHTML = renderMindMap(mindMapData);
           if (btn) btn.innerHTML = '重新生成';
         } catch (e) {
-          autoGenerateMindMap(content, btn);
+          // 解析失败，显示占位
+          content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+          if (btn) btn.innerHTML = '生成脑图';
         }
       } else {
-        // 没有保存的脑图，检查当天是否有记录，有则自动生成
-        autoGenerateMindMap(content, btn);
+        // 没有保存的脑图，等待用户手动点击按钮
+        content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+        if (btn) btn.innerHTML = '生成脑图';
       }
     }
     
@@ -6656,7 +6659,7 @@ ${entryTexts || '无记录'}
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       }, (error) => {
-        content.innerHTML = `<span style="color: #ef4444;">❌ 生成失败: ${error}</span>`;
+        content.innerHTML = '<span style="color: #ef4444;">❌ 生成失败，请重试</span>';
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       });
