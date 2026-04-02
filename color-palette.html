@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>配色方案预览 - 记我 Noteme</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background: #fafafa;
+      min-height: 100vh;
+      padding: 3rem 2rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .subtitle {
+      text-align: center;
+      color: #9ca3af;
+      margin-bottom: 3rem;
+      font-size: 0.9rem;
+    }
+    .palettes {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .palette {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .palette:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    }
+    .gradient-bar {
+      height: 120px;
+      position: relative;
+    }
+    .gradient-bar::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to top, rgba(0,0,0,0.05), transparent);
+    }
+    .palette-info {
+      padding: 1.5rem;
+    }
+    .palette-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+    .palette-en {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 1rem;
+    }
+    .colors {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .color-swatch {
+      flex: 1;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 0.5rem;
+      font-size: 0.65rem;
+      color: white;
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .palette-label {
+      font-size: 0.7rem;
+      color: #6b7280;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f3f4f6;
+    }
+    
+    /* Palette 1: 薄荷清新 */
+    .p1-gradient { background: linear-gradient(135deg, #6ee7b7 0%, #34d399 50%, #10b981 100%); }
+    .p1-c1 { background: #6ee7b7; }
+    .p1-c2 { background: #34d399; }
+    .p1-c3 { background: #10b981; }
+    .p1-c4 { background: #059669; }
+    
+    /* Palette 2: 薰衣草梦幻 */
+    .p2-gradient { background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 50%, #8b5cf6 100%); }
+    .p2-c1 { background: #c4b5fd; }
+    .p2-c2 { background: #a78bfa; }
+    .p2-c3 { background: #8b5cf6; }
+    .p2-c4 { background: #7c3aed; }
+    
+    /* Palette 3: 珊瑚活力 */
+    .p3-gradient { background: linear-gradient(135deg, #fda4af 0%, #fb7185 50%, #f43f5e 100%); }
+    .p3-c1 { background: #fda4af; }
+    .p3-c2 { background: #fb7185; }
+    .p3-c3 { background: #f43f5e; }
+    .p3-c4 { background: #e11d48; }
+    
+    /* Palette 4: 天空蔚蓝 */
+    .p4-gradient { background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%); }
+    .p4-c1 { background: #7dd3fc; }
+    .p4-c2 { background: #38bdf8; }
+    .p4-c3 { background: #0ea5e9; }
+    .p4-c4 { background: #0284c7; }
+    
+    /* Palette 5: 日落暖阳 */
+    .p5-gradient { background: linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #f59e0b 100%); }
+    .p5-c1 { background: #fde68a; }
+    .p5-c2 { background: #fbbf24; }
+    .p5-c3 { background: #f59e0b; }
+    .p5-c4 { background: #d97706; }
+    
+    /* Palette 6: 极光紫 */
+    .p6-gradient { background: linear-gradient(135deg, #f0abfc 0%, #e879f9 50%, #d946ef 100%); }
+    .p6-c1 { background: #f0abfc; }
+    .p6-c2 { background: #e879f9; }
+    .p6-c3 { background: #d946ef; }
+    .p6-c4 { background: #c026d3; }
+    
+    .color-swatch.p1-c1, .color-swatch.p1-c2, .color-swatch.p2-c1, .color-swatch.p4-c1, .color-swatch.p5-c1, .color-swatch.p6-c1 {
+      color: #1f2937;
+      text-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>选择你喜欢的配色方案</h1>
+  <p class="subtitle">点击卡片可查看效果 · "记我 Noteme" 日记应用</p>
+  
+  <div class="palettes">
+    <!-- 方案1: 薄荷清新 -->
+    <div class="palette" onclick="selectPalette(1)">
+      <div class="gradient-bar p1-gradient"></div>
+      <div class="palette-info">
+        <div class="palette-name">薄荷清新</div>
+        <div class="palette-en">Mint Fresh</div>
+        <div class="colors">
+          <div class="color-swatch p1-c1">浅</div>
+          <div class="color-swatch p1-c2">主</div>
+          <div class="color-swatch p1-c3">深</div>
+          <div class="color-swatch p1-c4">暗</div>
+        </div>
+        <div class="palette-label">清新自然 · 护眼舒适</div>
+      </div>
+    </div>
+    
+    <!-- 方案2: 薰衣草梦幻 -->
+    <div class="palette" onclick="selectPalette(2)">
+      <div class="gradient-bar p2-gradient"></div>
+      <div class="palette-info">
+        <div class="palette-name">薰衣草梦幻</div>
+        <div class="palette-en">Lavender Dream</div>
+        <div class="colors">
+          <div class="color-swatch p2-c1">浅</div>
+          <div class="color-swatch p2-c2">主</div>
+          <div class="color-swatch p2-c3">深</div>
+          <div class="color-swatch p2-c4">暗</div>
+        </div>
+        <div class="palette-label">浪漫优雅 · 温柔梦幻</div>
+      </div>
+    </div>
+    
+    <!-- 方案3: 珊瑚活力 -->
+    <div class="palette" onclick="selectPalette(3)">
+      <div class="gradient-bar p3-gradient"></div>
+      <div class="palette-info">
+        <div class="palette-name">珊瑚活力</div>
+        <div class="palette-en">Coral Energy</div>
+        <div class="colors">
+          <div class="color-swatch p3-c1">浅</div>
+          <div class="color-swatch p3-c2">主</div>
+          <div class="color-swatch p3-c3">深</div>
+          <div class="color-swatch p3-c4">暗</div>
+        </div>
+        <div class="palette-label">活力热情 · 温暖亲切</div>
+      </div>
+    </div>
+    
+    <!-- 方案4: 天空蔚蓝 -->
+    <div class="palette" onclick="selectPalette(4)">
+      <div class="gradient-bar p4-gradient"></div>
+      <div class="palette-info">
+        <div class="palette-name">天空蔚蓝</div>
+        <div class="palette-en">Sky Blue</div>
+        <div class="colors">
+          <div class="color-swatch p4-c1">浅</div>
+          <div class="color-swatch p4-c2">主</div>
+          <div class="color-swatch p4-c3">深</div>
+          <div class="color-swatch p4-c4">暗</div>
+        </div>
+        <div class="palette-label">宁静开阔 · 理性冷静</div>
+      </div>
+    </div>
+    
+    <!-- 方案5: 日落暖阳 -->
+    <div class="palette" onclick="selectPalette(5)">
+      <div class="gradient-bar p5-gradient"></div>
+      <div class="palette-info">
+        <div class="palette-name">日落暖阳</div>
+        <div class="palette-en">Sunset Warm</div>
+        <div class="colors">
+          <div class="color-swatch p5-c1">浅</div>
+          <div class="color-swatch p5-c2">主</div>
+          <div class="color-swatch p5-c3">深</div>
+          <div class="color-swatch p5-c4">暗</div>
+        </div>
+        <div class="palette-label">温暖治愈 · 充满希望</div>
+      </div>
+    </div>
+    
+    <!-- 方案6: 极光紫 -->
+    <div class="palette" onclick="selectPalette(6)">
+      <div class="gradient-bar p6-gradient"></div>
+      <div class="palette-info">
+        <div class="palette-name">极光紫</div>
+        <div class="palette-en">Aurora Purple</div>
+        <div class="colors">
+          <div class="color-swatch p6-c1">浅</div>
+          <div class="color-swatch p6-c2">主</div>
+          <div class="color-swatch p6-c3">深</div>
+          <div class="color-swatch p6-c4">暗</div>
+        </div>
+        <div class="palette-label">神秘优雅 · 独特个性</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function selectPalette(num) {
+      const names = {
+        1: '薄荷清新',
+        2: '薰衣草梦幻',
+        3: '珊瑚活力',
+        4: '天空蔚蓝',
+        5: '日落暖阳',
+        6: '极光紫'
+      };
+      alert('你选择了: ' + names[num] + '\n\n告诉我你喜欢的编号，我帮你应用到网站~');
+    }
+  </script>
+</body>
+</html>

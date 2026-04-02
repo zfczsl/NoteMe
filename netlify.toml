@@ -1,0 +1,9 @@
+[build]
+  publish = "."
+  command = "echo 'Static site'"
+
+# SPA 回退 - 让所有路由都返回 index.html
+[[redirects]]
+  from = "/*"
+  to = "/daywise.html"
+  status = 200
