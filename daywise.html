@@ -1087,6 +1087,202 @@
       margin: 1.5rem 0;
     }
 
+    /* 待办横幅样式 */
+    .todo-banner {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border-radius: var(--radius);
+      padding: 0.875rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid #fcd34d;
+      transition: all 0.2s;
+    }
+    .todo-banner:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+    .todo-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .todo-icon {
+      font-size: 1.25rem;
+    }
+    .todo-banner-text {
+      font-size: 0.9rem;
+      color: #92400e;
+    }
+    .todo-banner-text strong {
+      color: #b45309;
+      font-weight: 700;
+    }
+    .todo-banner-arrow {
+      font-size: 0.75rem;
+      color: #b45309;
+      transition: transform 0.2s;
+    }
+    
+    /* 待办列表样式 */
+    .todo-list {
+      background: white;
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .todo-date-group {
+      margin-bottom: 0.5rem;
+    }
+    .todo-date-group:last-child {
+      margin-bottom: 0;
+    }
+    .todo-date-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      padding-left: 0.25rem;
+    }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .todo-item:hover {
+      background: var(--bg-secondary);
+    }
+    .todo-item.checked {
+      opacity: 0.6;
+    }
+    .todo-checkbox {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    .todo-checkbox input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    .todo-checkbox .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      background: white;
+      transition: all 0.2s;
+    }
+    .todo-checkbox input:checked + .checkmark {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    .todo-checkbox input:checked + .checkmark::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+    }
+    .todo-text {
+      flex: 1;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    .todo-time {
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-right: 0.25rem;
+    }
+    .todo-delete {
+      width: 20px;
+      height: 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+    .todo-item:hover .todo-delete {
+      opacity: 1;
+    }
+    .todo-delete:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+    
+    /* 待办弹窗日期选项 */
+    .todo-date-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+    .todo-date-option {
+      cursor: pointer;
+    }
+    .todo-date-option input {
+      display: none;
+    }
+    .todo-date-option-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    .todo-date-option input:checked + .todo-date-option-content {
+      background: var(--bg-secondary);
+      border-color: var(--primary);
+    }
+    .todo-date-icon {
+      font-size: 1.25rem;
+    }
+    .todo-date-text {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    /* 记录卡片中的待办按钮 */
+    .entry-todo-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary-light);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .entry-todo-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
     /* AI Display Section - 灵动AI */
     .ai-display-section {
       background: linear-gradient(135deg, #ecfdf5, #fdf2f8);
@@ -1615,6 +1811,9 @@
         </button>
       </div>
 
+      <!-- 待办横幅 -->
+      <div id="todoBannerContainer" style="margin-bottom: 1rem;"></div>
+
       <!-- Entry Section -->
       <div class="entry-section">
         <textarea 
@@ -1940,6 +2139,71 @@
       </div>
     </div>
   </main>
+  
+  <!-- 待办设置弹窗 -->
+  <div class="modal-overlay" id="todoModal">
+    <div class="modal" style="max-width: 360px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          设为待办
+        </div>
+        <button class="modal-close" onclick="closeTodoModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="background: var(--bg-secondary); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">待办内容</div>
+          <div id="todoModalContent" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-primary);"></div>
+        </div>
+        
+        <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.75rem; color: var(--text-primary);">选择时间</div>
+        
+        <div class="todo-date-options">
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="today" checked>
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📅</span>
+              <span class="todo-date-text">今天</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="tomorrow">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📆</span>
+              <span class="todo-date-text">明天</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="week">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📌</span>
+              <span class="todo-date-text">本周五</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="custom">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📅</span>
+              <span class="todo-date-text">自定义</span>
+            </span>
+          </label>
+        </div>
+        
+        <div id="customDateContainer" style="margin-top: 0.75rem; display: none;">
+          <input type="date" id="todoCustomDate" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeTodoModal()">取消</button>
+        <button class="btn btn-primary" onclick="confirmAddTodo()">确认添加</button>
+      </div>
+    </div>
+  </div>
   
   <!-- 收款码弹窗 -->
   <div class="modal-overlay" id="donateModal">
@@ -2546,6 +2810,314 @@
       }
     }
     
+    // ========== 待办事项功能 ==========
+    
+    // 获取日期字符串
+    function getDateStr(date) {
+      return date.toISOString().split('T')[0];
+    }
+    
+    // 获取今天日期字符串
+    function getTodayStr() {
+      return getDateStr(new Date());
+    }
+    
+    // 获取明天日期字符串
+    function getTomorrowStr() {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return getDateStr(tomorrow);
+    }
+    
+    // 格式化日期显示
+    function formatTodoDate(dateStr) {
+      const today = getTodayStr();
+      const tomorrow = getTomorrowStr();
+      const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      
+      if (dateStr === today) return '今天';
+      if (dateStr === tomorrow) return '明天';
+      
+      const date = new Date(dateStr);
+      return `${date.getMonth() + 1}月${date.getDate()}日 ${weekDays[date.getDay()]}`;
+    }
+    
+    // 从 localStorage 加载待办
+    function loadTodos() {
+      try {
+        const saved = localStorage.getItem('daywise_todos');
+        if (saved) {
+          todos = JSON.parse(saved);
+        }
+      } catch (e) {
+        todos = [];
+      }
+    }
+    
+    // 保存待办到 localStorage
+    function saveTodos() {
+      localStorage.setItem('daywise_todos', JSON.stringify(todos));
+    }
+    
+    // 添加待办
+    function addTodo(text, dateStr, sourceEntryId = null, timeHint = '') {
+      const todo = {
+        id: Date.now().toString(),
+        text: text,
+        date: dateStr,
+        completed: false,
+        sourceEntry: sourceEntryId,
+        timeHint: timeHint,
+        createdAt: new Date().toISOString()
+      };
+      todos.push(todo);
+      saveTodos();
+      renderTodoBanner();
+      return todo;
+    }
+    
+    // 删除待办
+    function deleteTodo(id) {
+      todos = todos.filter(t => t.id !== id);
+      saveTodos();
+      renderTodoBanner();
+      renderTodoList();
+    }
+    
+    // 切换待办完成状态
+    function toggleTodo(id) {
+      const todo = todos.find(t => t.id === id);
+      if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        renderTodoBanner();
+        renderTodoList();
+      }
+    }
+    
+    // 获取今日待办数量
+    function getTodayTodoCount() {
+      return todos.filter(t => t.date === getTodayStr() && !t.completed).length;
+    }
+    
+    // 获取明日待办数量
+    function getTomorrowTodoCount() {
+      return todos.filter(t => t.date === getTomorrowStr() && !t.completed).length;
+    }
+    
+    // 渲染首页待办横幅
+    function renderTodoBanner() {
+      const container = document.getElementById('todoBannerContainer');
+      if (!container) return;
+      
+      const todayCount = getTodayTodoCount();
+      const tomorrowCount = getTomorrowTodoCount();
+      const hasTodos = todayCount > 0 || tomorrowCount > 0;
+      
+      if (!hasTodos) {
+        container.innerHTML = '';
+        return;
+      }
+      
+      container.innerHTML = `
+        <div class="todo-banner" onclick="toggleTodoList()" style="cursor: pointer;">
+          <div class="todo-banner-left">
+            <span class="todo-icon">📋</span>
+            <span class="todo-banner-text">
+              ${todayCount > 0 ? `今日待办 <strong>${todayCount}</strong>项` : ''}
+              ${todayCount > 0 && tomorrowCount > 0 ? ' · ' : ''}
+              ${tomorrowCount > 0 ? `明日待办 <strong>${tomorrowCount}</strong>项` : ''}
+            </span>
+          </div>
+          <span class="todo-banner-arrow" id="todoBannerArrow">▼</span>
+        </div>
+        <div class="todo-list" id="todoListContainer" style="display: none;"></div>
+      `;
+      
+      renderTodoList();
+    }
+    
+    // 切换待办列表显示
+    function toggleTodoList() {
+      const listContainer = document.getElementById('todoListContainer');
+      const arrow = document.getElementById('todoBannerArrow');
+      if (listContainer.style.display === 'none') {
+        listContainer.style.display = 'block';
+        arrow.textContent = '▲';
+      } else {
+        listContainer.style.display = 'none';
+        arrow.textContent = '▼';
+      }
+    }
+    
+    // 渲染待办列表
+    function renderTodoList() {
+      const container = document.getElementById('todoListContainer');
+      if (!container) return;
+      
+      const todayStr = getTodayStr();
+      const tomorrowStr = getTomorrowStr();
+      
+      // 获取今日和明日的待办
+      const todayTodos = todos.filter(t => t.date === todayStr).sort((a, b) => a.completed - b.completed);
+      const tomorrowTodos = todos.filter(t => t.date === tomorrowStr).sort((a, b) => a.completed - b.completed);
+      
+      let html = '';
+      
+      // 今日待办
+      if (todayTodos.length > 0) {
+        html += `
+          <div class="todo-date-group">
+            <div class="todo-date-label">📅 今日 ${formatTodoDate(todayStr)}</div>
+            ${todayTodos.map(t => renderTodoItem(t)).join('')}
+          </div>
+        `;
+      }
+      
+      // 明日待办
+      if (tomorrowTodos.length > 0) {
+        html += `
+          <div class="todo-date-group" style="margin-top: 0.75rem;">
+            <div class="todo-date-label">📆 明日 ${formatTodoDate(tomorrowStr)}</div>
+            ${tomorrowTodos.map(t => renderTodoItem(t)).join('')}
+          </div>
+        `;
+      }
+      
+      container.innerHTML = html || '<div style="text-align: center; color: var(--text-muted); padding: 0.5rem;">暂无待办</div>';
+    }
+    
+    // 渲染单个待办项
+    function renderTodoItem(todo) {
+      const checkedClass = todo.completed ? 'checked' : '';
+      const lineStyle = todo.completed ? 'text-decoration: line-through; opacity: 0.5;' : '';
+      
+      return `
+        <div class="todo-item ${checkedClass}">
+          <label class="todo-checkbox" onclick="event.stopPropagation(); toggleTodo('${todo.id}')">
+            <input type="checkbox" ${todo.completed ? 'checked' : ''}>
+            <span class="checkmark"></span>
+          </label>
+          <span class="todo-text" style="${lineStyle}">
+            ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${todo.text}
+          </span>
+          <button class="todo-delete" onclick="event.stopPropagation(); deleteTodo('${todo.id}')">✕</button>
+        </div>
+      `;
+    }
+    
+    // 打开设置待办弹窗
+    let pendingTodoEntryId = null;
+    let pendingTodoText = '';
+    
+    function openTodoModal(entryId, entryText) {
+      pendingTodoEntryId = entryId;
+      pendingTodoText = entryText;
+      
+      const modal = document.getElementById('todoModal');
+      const contentEl = document.getElementById('todoModalContent');
+      if (contentEl) {
+        contentEl.textContent = entryText.length > 100 ? entryText.substring(0, 100) + '...' : entryText;
+      }
+      
+      if (modal) {
+        modal.classList.add('active');
+      }
+      
+      // 重置日期选择
+      const radios = document.querySelectorAll('input[name="todoDate"]');
+      radios.forEach(r => r.checked = false);
+      const todayRadio = document.querySelector('input[name="todoDate"][value="today"]');
+      if (todayRadio) todayRadio.checked = true;
+      
+      const customDateContainer = document.getElementById('customDateContainer');
+      if (customDateContainer) customDateContainer.style.display = 'none';
+    }
+    
+    // 关闭待办弹窗
+    function closeTodoModal() {
+      const modal = document.getElementById('todoModal');
+      if (modal) {
+        modal.classList.remove('active');
+      }
+      pendingTodoEntryId = null;
+      pendingTodoText = '';
+    }
+    
+    // 确认添加待办
+    function confirmAddTodo() {
+      const selected = document.querySelector('input[name="todoDate"]:checked');
+      if (!selected) {
+        alert('请选择待办日期');
+        return;
+      }
+      
+      let dateStr;
+      const value = selected.value;
+      
+      if (value === 'today') {
+        dateStr = getTodayStr();
+      } else if (value === 'tomorrow') {
+        dateStr = getTomorrowStr();
+      } else if (value === 'week') {
+        // 本周
+        const today = new Date();
+        const friday = new Date(today);
+        const dayOfWeek = today.getDay();
+        const daysUntilFriday = dayOfWeek <= 5 ? 5 - dayOfWeek : 7 - dayOfWeek + 5;
+        friday.setDate(today.getDate() + daysUntilFriday);
+        dateStr = getDateStr(friday);
+      } else if (value === 'custom') {
+        const customDate = document.getElementById('todoCustomDate').value;
+        if (!customDate) {
+          alert('请选择日期');
+          return;
+        }
+        dateStr = customDate;
+      }
+      
+      // 提取时间提示
+      let timeHint = '';
+      const timeMatch = pendingTodoText.match(/(\d{1,2}[点时:]?\d{0,2})/);
+      if (timeMatch) {
+        timeHint = timeMatch[1].replace(/[：:]/g, ':').replace(/时/g, ':');
+        if (timeHint.endsWith(':')) timeHint = timeHint.slice(0, -1);
+        if (timeHint.startsWith(':')) timeHint = timeHint.slice(1);
+      }
+      
+      addTodo(pendingTodoText, dateStr, pendingTodoEntryId, timeHint);
+      closeTodoModal();
+      
+      // 显示成功提示
+      alert('✅ 已添加待办到 ' + formatTodoDate(dateStr));
+    }
+    
+    // AI 自动识别待办（从日记内容中提取）
+    function extractTodosFromEntry(text) {
+      const todoKeywords = ['待办', 'todo', '要做', '必须', '待完成', '还没', '应该要', '计划', '要去做', '记得'];
+      const dateKeywords = {
+        '今天': 'today',
+        '今日': 'today',
+        '明天': 'tomorrow',
+        '明日': 'tomorrow',
+        '周五': 'week',
+        '星期五': 'week',
+        '周六': 'week',
+        '星期六': 'week'
+      };
+      
+      // 简单的关键词检测，实际使用 AI 会更准确
+      let hasTodoIntent = false;
+      for (const kw of todoKeywords) {
+        if (text.includes(kw)) {
+          hasTodoIntent = true;
+          break;
+        }
+      }
+      
+      return hasTodoIntent;
+    }
+    
     // ========== State ==========
     let currentUser = null;
     let currentDate = new Date();
@@ -2556,6 +3128,7 @@
     let aiInsights = {};   // AI结构化洞察数据
     let weeklyInsights = {}; // 周洞察数据
     let mindMaps = {};      // 脑图数据（按日期存储）
+    let todos = [];        // 待办事项列表
     let aiTab = 'daily';
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
@@ -2735,6 +3308,7 @@
         aiInsights: aiInsights || {},
         weeklyInsights: weeklyInsights || [],
         mindMaps: mindMaps || {},
+        todos: todos || [],
         apiCalls: {
           date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
           count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
@@ -2760,6 +3334,7 @@
         aiInsights = cloudData.aiInsights || {};
         weeklyInsights = cloudData.weeklyInsights || {};
         mindMaps = cloudData.mindMaps || {};
+        todos = cloudData.todos || [];
         
         // 如果云端没有脑图数据，尝试从 localStorage 恢复
         if (Object.keys(mindMaps).length === 0) {
@@ -4094,10 +4669,22 @@
       
       loadData();
       loadSettings();
+      loadTodos(); // 加载待办
+      renderTodoBanner(); // 渲染待办横幅
       updateDateDisplay();
       loadEntries();
       loadAiDisplay();
       loadRecordMindMap(); // 加载当前日期的脑图
+      
+      // 待办弹窗日期选择事件
+      document.querySelectorAll('input[name="todoDate"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          const customContainer = document.getElementById('customDateContainer');
+          if (customContainer) {
+            customContainer.style.display = this.value === 'custom' ? 'block' : 'none';
+          }
+        });
+      });
       
       // 初始化周选择器（默认本周）
       renderWeekSelector();
@@ -5163,6 +5750,7 @@
       aiInsights = JSON.parse(localStorage.getItem('daywise_ai_insights') || '{}');
       weeklyInsights = JSON.parse(localStorage.getItem('daywise_weekly_insights') || '{}');
       mindMaps = JSON.parse(localStorage.getItem('daywise_mind_maps') || '{}');
+      // todos 已在 loadTodos() 中单独加载
     }
     
     function saveData() {
@@ -5175,6 +5763,7 @@
         localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
         localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
+        localStorage.setItem('daywise_todos', JSON.stringify(todos));
       } catch (e) {
         console.error('保存数据失败:', e);
       }
@@ -5189,6 +5778,7 @@
           aiInsights: aiInsights,
           weeklyInsights: weeklyInsights,
           mindMaps: mindMaps,
+          todos: todos,
           apiCalls: {
             date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
             count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
@@ -5623,6 +6213,10 @@
               <button class="btn btn-ghost" onclick="setAsHighlight('${entry.id}')" id="highlightBtn_${entry.id}" title="设为今日高光" style="color: #f59e0b;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
                 高光
+              </button>
+              <button class="btn btn-ghost" onclick="openTodoModal('${entry.id}', \`${entry.content.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="设为待办" style="color: #059669;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                待办
               </button>
               <button class="btn btn-ghost" onclick="polishEntry('${entry.id}')" id="polishBtn_${entry.id}" title="AI 润色">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
