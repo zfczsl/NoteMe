@@ -1222,6 +1222,272 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="NoteMe">
+  
+  <!-- PWA Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(e => console.log('SW not available'));
+    }
+  </script>
+  
+  <!-- 桌面图标引导弹窗 -->
+  <script>
+    // 检测设备类型
+    function getDeviceType() {
+      const ua = navigator.userAgent.toLowerCase();
+      if (/iphone|ipad|ipod/.test(ua)) return 'ios';
+      if (/android/.test(ua)) return 'android';
+      return 'desktop';
+    }
+    
+    // 检测是否已添加到主屏幕
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const deviceType = getDeviceType();
+    
+    // 如果还没添加过主屏幕，显示引导
+    if (!isStandalone && !localStorage.getItem('pwaGuideDismissed') && deviceType !== 'desktop') {
+      document.addEventListener('DOMContentLoaded', function() {
+        // 创建引导弹窗
+        const guide = document.createElement('div');
+        guide.id = 'pwaGuide';
+        guide.innerHTML = `
+          <div class="pwa-guide-overlay"></div>
+          <div class="pwa-guide-modal">
+            <div class="pwa-guide-header">
+              <span class="pwa-guide-icon">📱</span>
+              <h3>体验 App 模式</h3>
+              <p>添加到桌面，使用更便捷</p>
+            </div>
+            <div class="pwa-guide-content" id="pwaGuideContent">
+              <!-- 根据设备显示不同教程 -->
+            </div>
+            <button class="pwa-guide-btn" onclick="closePwaGuide()">我知道了</button>
+          </div>
+        `;
+        document.body.appendChild(guide);
+        
+        // 根据设备显示教程
+        const content = document.getElementById('pwaGuideContent');
+        if (deviceType === 'ios') {
+          content.innerHTML = `
+            <div class="pwa-guide-steps">
+              <div class="pwa-step">
+                <span class="step-num">1</span>
+                <span>点击Safari底部<span class="highlight">分享按钮</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">2</span>
+                <span>向下滚动，点击<span class="highlight">添加到主屏幕</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">3</span>
+                <span>点击右上角<span class="highlight">添加</span>完成</span>
+              </div>
+            </div>
+            <div class="pwa-guide-demo ios-demo">
+              <div class="demo-phone">
+                <div class="demo-screen">
+                  <div class="demo-action-bar">
+                    <div class="demo-share-btn">↗</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          content.innerHTML = `
+            <div class="pwa-guide-steps">
+              <div class="pwa-step">
+                <span class="step-num">1</span>
+                <span>点击浏览器菜单<span class="highlight">⋮</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">2</span>
+                <span>选择<span class="highlight">添加到主屏幕</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">3</span>
+                <span>点击<span class="highlight">添加</span>完成</span>
+              </div>
+            </div>
+            <div class="pwa-guide-demo android-demo">
+              <div class="demo-phone">
+                <div class="demo-screen">
+                  <div class="demo-menu-btn">⋮</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+      
+      // 关闭引导
+      function closePwaGuide() {
+        const guide = document.getElementById('pwaGuide');
+        if (guide) {
+          guide.style.opacity = '0';
+          guide.style.transform = 'scale(0.95)';
+          setTimeout(() => guide.remove(), 200);
+        }
+        localStorage.setItem('pwaGuideDismissed', 'true');
+      }
+    }
+  </script>
+  
+  <style>
+    /* 引导弹窗样式 */
+    #pwaGuide {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pwaFadeIn 0.3s ease;
+    }
+    @keyframes pwaFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .pwa-guide-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+    }
+    .pwa-guide-modal {
+      position: relative;
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      animation: pwaSlideUp 0.3s ease;
+    }
+    @keyframes pwaSlideUp {
+      from { transform: translateY(20px) scale(0.95); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .pwa-guide-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .pwa-guide-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .pwa-guide-header h3 {
+      font-size: 1.25rem;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+    .pwa-guide-header p {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+    .pwa-guide-content {
+      margin-bottom: 1.5rem;
+    }
+    .pwa-guide-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .pwa-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+    .step-num {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #34d399, #059669);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .highlight {
+      color: #059669;
+      font-weight: 600;
+    }
+    .pwa-guide-demo {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .demo-phone {
+      width: 80px;
+      height: 130px;
+      background: #1f2937;
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .demo-screen {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ecfdf5, #fdf2f8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .demo-share-btn {
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .demo-menu-btn {
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .pwa-guide-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(135deg, #34d399, #059669);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .pwa-guide-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(52, 211, 153, 0.4);
+    }
+  </style>
+  
   <!-- CloudBase 完整 SDK（含手机号登录）：本地文件优先，官方 CDN 备用 -->
   <script>
     (function() {
@@ -2289,6 +2555,7 @@
     let aiSummaries = {};  // AI分析结果缓存
     let aiInsights = {};   // AI结构化洞察数据
     let weeklyInsights = {}; // 周洞察数据
+    let mindMaps = {};      // 脑图数据（按日期存储）
     let aiTab = 'daily';
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
@@ -2467,6 +2734,7 @@
         aiSummaries: aiSummaries || {},
         aiInsights: aiInsights || {},
         weeklyInsights: weeklyInsights || [],
+        mindMaps: mindMaps || {},
         apiCalls: {
           date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
           count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
@@ -2490,7 +2758,18 @@
         weeklyReviews = cloudData.weeklyReviews || {};
         aiSummaries = cloudData.aiSummaries || {};
         aiInsights = cloudData.aiInsights || {};
-        weeklyInsights = cloudData.weeklyInsights || [];
+        weeklyInsights = cloudData.weeklyInsights || {};
+        mindMaps = cloudData.mindMaps || {};
+        
+        // 如果云端没有脑图数据，尝试从 localStorage 恢复
+        if (Object.keys(mindMaps).length === 0) {
+          try {
+            const savedMindMaps = localStorage.getItem('daywise_mind_maps');
+            if (savedMindMaps) {
+              mindMaps = JSON.parse(savedMindMaps);
+            }
+          } catch (e) {}
+        }
         
         // 恢复 API 调用次数
         const today = new Date().toDateString();
@@ -2521,6 +2800,7 @@
         localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
         localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
+        localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         
         // 重新加载UI
         loadEntries();
@@ -4882,14 +5162,16 @@
       aiSummaries = JSON.parse(localStorage.getItem('daywise_ai_summaries') || '{}');
       aiInsights = JSON.parse(localStorage.getItem('daywise_ai_insights') || '{}');
       weeklyInsights = JSON.parse(localStorage.getItem('daywise_weekly_insights') || '{}');
+      mindMaps = JSON.parse(localStorage.getItem('daywise_mind_maps') || '{}');
     }
-
+    
     function saveData() {
       if (!storageAvailable) return;
       try {
         localStorage.setItem('daywise_entries', JSON.stringify(entries));
         localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews));
         localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews));
+        localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
         localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
@@ -4906,6 +5188,7 @@
           aiSummaries: aiSummaries,
           aiInsights: aiInsights,
           weeklyInsights: weeklyInsights,
+          mindMaps: mindMaps,
           apiCalls: {
             date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
             count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
@@ -4953,7 +5236,7 @@
       loadRecordMindMap(); // 加载对应日期的脑图
     }
     
-    // 加载对应日期的脑图，如果没有则自动生成
+    // 加载对应日期的脑图
     function loadRecordMindMap() {
       const content = document.getElementById('recordMindMapContent');
       const btn = document.getElementById('recordMindMapBtn');
@@ -4964,7 +5247,14 @@
       if (btn) btn.innerHTML = '生成脑图';
       
       const dateKey = getDateKey(currentDate);
-      const savedMindMap = localStorage.getItem('mindmap_' + dateKey);
+      
+      // 优先从全局 mindMaps 对象读取（云端同步的数据）
+      let savedMindMap = mindMaps[dateKey] ? JSON.stringify(mindMaps[dateKey]) : null;
+      
+      // 其次从旧格式的 localStorage 读取
+      if (!savedMindMap) {
+        savedMindMap = localStorage.getItem('mindmap_' + dateKey);
+      }
       
       if (savedMindMap) {
         try {
@@ -4972,11 +5262,14 @@
           content.innerHTML = renderMindMap(mindMapData);
           if (btn) btn.innerHTML = '重新生成';
         } catch (e) {
-          autoGenerateMindMap(content, btn);
+          // 解析失败，显示占位
+          content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+          if (btn) btn.innerHTML = '生成脑图';
         }
       } else {
-        // 没有保存的脑图，检查当天是否有记录，有则自动生成
-        autoGenerateMindMap(content, btn);
+        // 没有保存的脑图，等待用户手动点击按钮
+        content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+        if (btn) btn.innerHTML = '生成脑图';
       }
     }
     
@@ -6638,7 +6931,7 @@ ${entryTexts || '无记录'}
       
       const prompt = buildMindMapPrompt(todayEntries, todayReview);
       
-      callAIApi(prompt, (response) => {
+      callAIApi(prompt, async (response) => {
         // 解析 JSON 数据
         const mindMapData = parseMindMapJSON(response);
         const dateKey = getDateKey(currentDate);
@@ -6648,6 +6941,23 @@ ${entryTexts || '无记录'}
           content.innerHTML = renderMindMap(mindMapData);
           // 保存到 localStorage
           localStorage.setItem('mindmap_' + dateKey, JSON.stringify(mindMapData));
+          // 保存到全局状态
+          mindMaps[dateKey] = mindMapData;
+          localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
+          // 同步到 CloudBase
+          if (currentUser) {
+            const dataToSave = {
+              entries: entries || [],
+              dailyReviews: dailyReviews || {},
+              weeklyReviews: weeklyReviews || {},
+              aiSummaries: aiSummaries || {},
+              aiInsights: aiInsights || {},
+              weeklyInsights: weeklyInsights || [],
+              mindMaps: mindMaps || {}
+            };
+            await saveCloudData(dataToSave);
+            console.log('[同步] 脑图已同步到云端');
+          }
         } else {
           // 如果解析失败，显示原始文本
           content.innerHTML = formatSummaryContent(response);
@@ -6656,7 +6966,7 @@ ${entryTexts || '无记录'}
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       }, (error) => {
-        content.innerHTML = `<span style="color: #ef4444;">❌ 生成失败: ${error}</span>`;
+        content.innerHTML = '<span style="color: #ef4444;">❌ 生成失败，请重试</span>';
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       });
