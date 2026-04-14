@@ -2165,7 +2165,7 @@
             <input type="radio" name="todoDate" value="today" checked>
             <span class="todo-date-option-content">
               <span class="todo-date-icon">📅</span>
-              <span class="todo-date-text">今天</span>
+              <span class="todo-date-text" id="todoTodayLabel">今天</span>
             </span>
           </label>
           
@@ -2173,7 +2173,7 @@
             <input type="radio" name="todoDate" value="tomorrow">
             <span class="todo-date-option-content">
               <span class="todo-date-icon">📆</span>
-              <span class="todo-date-text">明天</span>
+              <span class="todo-date-text" id="todoTomorrowLabel">明天</span>
             </span>
           </label>
           
@@ -2934,18 +2934,30 @@
       return '';
     }
     
+    // 根据待办目标日期获取显示标签（今日/明日/MM月DD日）
+    function getTodoDateLabel(dateStr) {
+      const todayStr = getTodayStr();
+      const tomorrowStr = getTomorrowStr();
+      if (dateStr === todayStr) return '今日';
+      if (dateStr === tomorrowStr) return '明日';
+      const d = new Date(dateStr);
+      return `${d.getMonth() + 1}月${d.getDate()}日`;
+    }
+
     // 渲染首页待办横幅（根据当前页面日期显示对应待办）
     function renderTodoBanner() {
       const container = document.getElementById('todoBannerContainer');
       if (!container) return;
       
       const count = getCurrentPageTodoCount();
-      const label = getCurrentPageTodoLabel();
+      const dateStr = getCurrentPageDateStr();
       
-      if (count === 0 || !label) {
+      if (count === 0) {
         container.innerHTML = '';
         return;
       }
+      
+      const label = getTodoDateLabel(dateStr);
       
       container.innerHTML = `
         <div class="todo-banner" onclick="toggleTodoList()" style="cursor: pointer;">
@@ -2993,10 +3005,10 @@
       
       let html = '';
       if (pageTodos.length > 0) {
-        const icon = label === '今日' ? '📅' : '📆';
+        const icon = label === '今日' ? '📅' : (label === '明日' ? '📆' : '📋');
         html = `
           <div class="todo-date-group">
-            <div class="todo-date-label">${icon} ${label} ${formatTodoDate(dateStr)}</div>
+            <div class="todo-date-label">${icon} ${label}待办</div>
             ${pageTodos.map(t => renderTodoItem(t)).join('')}
           </div>
         `;
@@ -3009,8 +3021,18 @@
     
     // 渲染单个待办项
     function renderTodoItem(todo) {
-      const checkedClass = todo.completed ? 'checked' : '';
+      const checkedClass = todo.completed ? 'todo-item-checked' : '';
       const lineStyle = todo.completed ? 'text-decoration: line-through; opacity: 0.5;' : '';
+      
+      // 判断是否需要显示"设置日期"标注（目标日期和创建日期不同）
+      let sourceNote = '';
+      if (todo.createdAt) {
+        const createdDateStr = todo.createdAt.split('T')[0];
+        if (createdDateStr !== todo.date) {
+          const d = new Date(createdDateStr);
+          sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（${d.getMonth() + 1}月${d.getDate()}日设置）</span>`;
+        }
+      }
       
       return `
         <div class="todo-item ${checkedClass}">
@@ -3019,7 +3041,7 @@
             <span class="checkmark"></span>
           </label>
           <span class="todo-text" style="${lineStyle}">
-            ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${todo.text}
+            ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${todo.text}${sourceNote}
           </span>
           <button class="todo-delete" onclick="event.stopPropagation(); deleteTodo('${todo.id}')">✕</button>
         </div>
@@ -3047,6 +3069,19 @@
       // 重置日期选择
       const radios = document.querySelectorAll('input[name="todoDate"]');
       radios.forEach(r => r.checked = false);
+      
+      // 动态更新"今天"和"明天"的标签（基于当前页面日期）
+      const pageDate = new Date(getCurrentPageDateStr());
+      const pageDateLabel = `${pageDate.getMonth() + 1}月${pageDate.getDate()}日`;
+      const tomorrowDate = new Date();
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const tomorrowLabel = `${tomorrowDate.getMonth() + 1}月${tomorrowDate.getDate()}日`;
+      
+      const todayLabel = document.getElementById('todoTodayLabel');
+      if (todayLabel) todayLabel.textContent = `今天（${pageDateLabel}）`;
+      const tomorrowLabelEl = document.getElementById('todoTomorrowLabel');
+      if (tomorrowLabelEl) tomorrowLabelEl.textContent = `明天（${tomorrowLabel}）`;
+      
       const todayRadio = document.querySelector('input[name="todoDate"][value="today"]');
       if (todayRadio) todayRadio.checked = true;
       
@@ -3076,9 +3111,9 @@
       const value = selected.value;
       
       if (value === 'today') {
-        dateStr = getTodayStr();
+        dateStr = getCurrentPageDateStr(); // 今天 = 当前页面日期
       } else if (value === 'tomorrow') {
-        dateStr = getTomorrowStr();
+        dateStr = getTomorrowStr(); // 明天 = 真实的明天日期
       } else if (value === 'week') {
         // 本周
         const today = new Date();
