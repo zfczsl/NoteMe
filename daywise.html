@@ -2983,7 +2983,7 @@
       let sourceNote = '';
       if (todo.createdDate && todo.createdDate !== todo.date) {
         const d = new Date(todo.createdDate);
-        sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（${d.getMonth() + 1}月${d.getDate()}日生成待办）</span>`;
+        sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（设置自${d.getMonth() + 1}月${d.getDate()}日）</span>`;
       }
       
       return `
