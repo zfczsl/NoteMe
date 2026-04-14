@@ -5835,6 +5835,7 @@
 
     function changeDate(delta) {
       currentDate.setDate(currentDate.getDate() + delta);
+      console.log('[日期调试] 切换后 currentDate =', currentDate.toDateString(), 'getCurrentPageDateStr()=', getCurrentPageDateStr());
       updateDateDisplay();
       loadEntries();
       loadAiDisplay();
