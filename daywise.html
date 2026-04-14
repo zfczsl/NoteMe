@@ -196,6 +196,32 @@
 
     .current-date {
       text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    /* Date Navigation 容器（用于光晕定位） */
+    .date-nav {
+      position: relative;
+    }
+
+    /* 今天日期容器加光晕 */
+    .date-nav.is-today::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .current-date {
+      position: relative;
+      z-index: 1;
     }
 
     .current-date .day {
@@ -204,6 +230,46 @@
       color: var(--primary);
       line-height: 1;
       letter-spacing: -0.02em;
+    }
+
+    /* 今天日期高亮 */
+    .current-date .day.is-today {
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .current-date .day.is-today::after {
+      content: '今天';
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      -webkit-text-fill-color: #d97706;
+      margin-top: 2px;
+      text-align: center;
+    }
+
+    .current-date .date-full.is-today {
+      color: #d97706;
+      font-weight: 500;
+    }
+
+    /* 未来日期灰色 */
+    .current-date .day.is-future {
+      color: #9ca3af;
+    }
+
+    .current-date .date-full.is-future {
+      color: #9ca3af;
+    }
+
+    /* 过去日期（默认样式，保持原色即可） */
+    .current-date .day.is-past {
+      color: var(--primary);
     }
 
     .current-date .date-full {
@@ -5829,8 +5895,34 @@
       const year = currentDate.getFullYear();
       const weekday = weekdays[currentDate.getDay()];
 
-      document.getElementById('currentDay').textContent = day;
-      document.getElementById('currentDateFull').textContent = `${year}年${month}月${day}日 ${weekday}`;
+      const dayEl = document.getElementById('currentDay');
+      const fullEl = document.getElementById('currentDateFull');
+      const navEl = dayEl ? dayEl.closest('.date-nav') : null;
+      
+      dayEl.textContent = day;
+      dayEl.className = 'day';
+      fullEl.className = 'date-full';
+      if (navEl) navEl.classList.remove('is-today');
+      
+      // 判断是否是今天、过去还是未来
+      const now = new Date();
+      const todayKey = getDateStr(now);
+      const pageKey = getCurrentPageDateStr();
+      
+      if (pageKey === todayKey) {
+        // 今天：加高亮和"今天"标签
+        dayEl.classList.add('is-today');
+        fullEl.classList.add('is-today');
+        fullEl.textContent = `${year}年${month}月${day}日 ${weekday} · 今天`;
+        if (navEl) navEl.classList.add('is-today');
+      } else if (new Date(pageKey) > new Date(todayKey)) {
+        // 未来日期：灰色
+        dayEl.classList.add('is-future');
+        fullEl.classList.add('is-future');
+      } else {
+        dayEl.classList.add('is-past');
+        fullEl.classList.add('is-past');
+      }
     }
 
     function changeDate(delta) {
