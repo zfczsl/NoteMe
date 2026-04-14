@@ -3020,22 +3020,9 @@
         modal.classList.add('active');
       }
       
-      // 重置日期选择
+      // 重置日期选择，默认选中"今天"
       const radios = document.querySelectorAll('input[name="todoDate"]');
       radios.forEach(r => r.checked = false);
-      
-      // 动态更新"今天"和"明天"的标签（基于当前页面日期）
-      const pageDate = new Date(getCurrentPageDateStr());
-      const pageDateLabel = `${pageDate.getMonth() + 1}月${pageDate.getDate()}日`;
-      const tomorrowDate = new Date();
-      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-      const tomorrowLabel = `${tomorrowDate.getMonth() + 1}月${tomorrowDate.getDate()}日`;
-      
-      const todayLabel = document.getElementById('todoTodayLabel');
-      if (todayLabel) todayLabel.textContent = `今天（${pageDateLabel}）`;
-      const tomorrowLabelEl = document.getElementById('todoTomorrowLabel');
-      if (tomorrowLabelEl) tomorrowLabelEl.textContent = `明天（${tomorrowLabel}）`;
-      
       const todayRadio = document.querySelector('input[name="todoDate"][value="today"]');
       if (todayRadio) todayRadio.checked = true;
       
