@@ -5899,50 +5899,61 @@
       const fullEl = document.getElementById('currentDateFull');
       const navEl = dayEl ? dayEl.closest('.date-nav') : null;
       
-      dayEl.textContent = day;
+      // 先重置所有样式
       dayEl.className = 'day';
       fullEl.className = 'date-full';
-      if (navEl) navEl.classList.remove('is-today');
+      dayEl.style.cssText = '';
+      fullEl.style.cssText = '';
+      if (navEl) navEl.className = 'date-nav';
       
       // 判断是否是今天、过去还是未来
       const now = new Date();
       const todayKey = getDateStr(now);
       const pageKey = getCurrentPageDateStr();
       
-      if (pageKey === todayKey) {
-        // 今天：加高亮和"今天"标签（class + 内联样式双重保险）
+      const isToday = (pageKey === todayKey);
+      const pageDate = new Date(pageKey);
+      const isFuture = (pageDate > new Date(todayKey));
+      
+      // 调试：在控制台输出
+      console.log('[日期] 真实今天=', todayKey, '页面日期=', pageKey, 
+        'currentDate=', currentDate.toDateString(),
+        '是今天?', isToday, '是未来?', isFuture);
+      
+      if (isToday) {
+        // 今天：金色渐变 + "今天"标签
         dayEl.classList.add('is-today');
         fullEl.classList.add('is-today');
         fullEl.textContent = `${year}年${month}月${day}日 ${weekday} · 今天`;
         if (navEl) navEl.classList.add('is-today');
-        // 内联样式确保生效
+        
+        // 内联样式：金色渐变数字
         dayEl.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
         dayEl.style.webkitBackgroundClip = 'text';
         dayEl.style.webkitTextFillColor = 'transparent';
         dayEl.style.backgroundClip = 'text';
+        dayEl.style.fontSize = '3rem';
+        dayEl.style.fontWeight = '700';
+        // 完整日期文字金色
         fullEl.style.color = '#d97706';
-        fullEl.style.fontWeight = '500';
-      } else if (new Date(pageKey) > new Date(todayKey)) {
+        fullEl.style.fontWeight = '600';
+        // 光晕背景
+        if (navEl) navEl.style.boxShadow = '0 0 20px rgba(245,158,11,0.25)';
+      } else if (isFuture) {
         // 未来日期：灰色
         dayEl.classList.add('is-future');
         fullEl.classList.add('is-future');
-        // 内联样式
+        fullEl.textContent = `${year}年${month}月${day}日 ${weekday}`;
         dayEl.style.color = '#9ca3af';
         fullEl.style.color = '#9ca3af';
       } else {
+        // 过去日期：默认蓝色
         dayEl.classList.add('is-past');
         fullEl.classList.add('is-past');
-        // 过去日期恢复默认色
-        dayEl.style.color = '';
-        dayEl.style.background = '';
-        dayEl.style.webkitBackgroundClip = '';
-        dayEl.style.webkitTextFillColor = '';
-        dayEl.style.backgroundClip = '';
-        fullEl.style.color = '';
-        fullEl.style.fontWeight = '';
+        fullEl.textContent = `${year}年${month}月${day}日 ${weekday}`;
+        dayEl.style.color = 'var(--primary)';
+        fullEl.style.color = '#64748b';
       }
-      
-      console.log('[日期显示] pageKey=', pageKey, 'todayKey=', todayKey, '是今天?', pageKey === todayKey);
     }
 
     function changeDate(delta) {
