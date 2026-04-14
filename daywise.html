@@ -3053,9 +3053,11 @@
       const value = selected.value;
       
       if (value === 'today') {
-        dateStr = getTodayStr(); // 今天 = 真实的今天日期
+        dateStr = getCurrentPageDateStr(); // 今天 = 页面当前显示的日期
       } else if (value === 'tomorrow') {
-        dateStr = getTomorrowStr(); // 明天 = 真实的明天日期
+        const tomorrowDate = new Date(currentDate);
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        dateStr = getDateStr(tomorrowDate); // 明天 = 页面日期的下一天
       } else if (value === 'week') {
         // 本周
         const today = new Date();
