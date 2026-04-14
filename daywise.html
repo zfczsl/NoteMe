@@ -2868,7 +2868,8 @@
         completed: false,
         sourceEntry: sourceEntryId,
         timeHint: timeHint,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        createdDate: getTodayStr() // 记录创建日期（用于显示来源）
       };
       todos.push(todo);
       saveTodos();
@@ -2978,14 +2979,11 @@
       const checkedClass = todo.completed ? 'todo-item-checked' : '';
       const lineStyle = todo.completed ? 'text-decoration: line-through; opacity: 0.5;' : '';
       
-      // 判断是否需要显示"设置日期"标注（目标日期和创建日期不同）
+      // 判断是否需要显示来源日期标注（目标日期和创建日期不同，如"明天"的待办）
       let sourceNote = '';
-      if (todo.createdAt) {
-        const createdDateStr = todo.createdAt.split('T')[0];
-        if (createdDateStr !== todo.date) {
-          const d = new Date(createdDateStr);
-          sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（${d.getMonth() + 1}月${d.getDate()}日设置）</span>`;
-        }
+      if (todo.createdDate && todo.createdDate !== todo.date) {
+        const d = new Date(todo.createdDate);
+        sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（${d.getMonth() + 1}月${d.getDate()}日生成待办）</span>`;
       }
       
       return `
@@ -3052,7 +3050,7 @@
       const value = selected.value;
       
       if (value === 'today') {
-        dateStr = getCurrentPageDateStr(); // 今天 = 当前页面日期
+        dateStr = getTodayStr(); // 今天 = 真实的今天日期
       } else if (value === 'tomorrow') {
         dateStr = getTomorrowStr(); // 明天 = 真实的明天日期
       } else if (value === 'week') {
