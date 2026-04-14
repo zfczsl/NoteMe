@@ -2927,6 +2927,8 @@
       const dateStr = getCurrentPageDateStr();
       const label = getTodoDateLabel(dateStr);
       
+      console.log('[横幅调试] 页面日期:', dateStr, '待办数量:', count);
+      
       if (count === 0) {
         container.innerHTML = '';
         return;
@@ -2939,6 +2941,7 @@
             <span class="todo-banner-text">
               ${label}待办 <strong>${count}</strong>项
             </span>
+            <span style="font-size:0.7rem;color:#9ca3af;margin-left:4px;">(${dateStr})</span>
           </div>
           <span class="todo-banner-arrow" id="todoBannerArrow">▼</span>
         </div>
@@ -2968,6 +2971,10 @@
       
       const dateStr = getCurrentPageDateStr();
       const pageTodos = todos.filter(t => t.date === dateStr).sort((a, b) => a.completed - b.completed);
+      
+      console.log('[列表调试] 过滤条件 date ===', dateStr);
+      console.log('[列表调试] 全部待办:', todos.map(t => ({text: t.text.substring(0,15), date: t.date})));
+      console.log('[列表调试] 匹配待办数:', pageTodos.length);
       
       if (pageTodos.length === 0) {
         container.innerHTML = '';
@@ -3052,8 +3059,17 @@
       let dateStr;
       const value = selected.value;
       
+      // 调试：输出关键日期信息
+      const nowReal = new Date();
+      console.log('=== 待办调试 ===');
+      console.log('系统真实时间:', nowReal.toString());
+      console.log('系统本地日期:', getDateStr(nowReal));
+      console.log('页面currentDate:', currentDate.toString());
+      console.log('页面日期( getCurrentPageDateStr ):', getCurrentPageDateStr());
+      
       if (value === 'today') {
         dateStr = getCurrentPageDateStr(); // 今天 = 页面当前显示的日期
+        console.log('选择[今天] → 存入日期:', dateStr);
       } else if (value === 'tomorrow') {
         const tomorrowDate = new Date(currentDate);
         tomorrowDate.setDate(tomorrowDate.getDate() + 1);
