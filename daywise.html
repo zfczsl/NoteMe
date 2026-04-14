@@ -2895,25 +2895,10 @@
       }
     }
     
-    // 获取当前页面日期对应的待办数量（基于 currentDate 判断）
+    // 获取当前页面日期对应的待办数量（只取当前页面日期本身，不分今日明日）
     function getCurrentPageTodoCount() {
-      const todayStr = getTodayStr();
-      const tomorrowStr = getTomorrowStr();
-      const now = new Date();
-      const todayReal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const currentPageDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-      const diffDays = Math.round((currentPageDay - todayReal) / (1000 * 60 * 60 * 24));
-      
-      let targetDate;
-      if (diffDays === 0) {
-        targetDate = todayStr;
-      } else if (diffDays === 1) {
-        targetDate = tomorrowStr;
-      } else {
-        return 0;
-      }
-      
-      return todos.filter(t => t.date === targetDate && !t.completed).length;
+      const dateStr = getCurrentPageDateStr();
+      return todos.filter(t => t.date === dateStr && !t.completed).length;
     }
     
     // 获取当前页面日期的字符串（如 "2026-04-14"）
@@ -2924,40 +2909,25 @@
       return `${y}-${m}-${d}`;
     }
     
-    // 获取当前页面是今日还是明日
-    function getCurrentPageTodoLabel() {
-      const todayStr = getTodayStr();
-      const tomorrowStr = getTomorrowStr();
-      const currentStr = getCurrentPageDateStr();
-      if (currentStr === todayStr) return '今日';
-      if (currentStr === tomorrowStr) return '明日';
-      return '';
-    }
-    
-    // 根据待办目标日期获取显示标签（今日/明日/MM月DD日）
+    // 获取当前页面日期的显示标签（直接显示几月几日）
     function getTodoDateLabel(dateStr) {
-      const todayStr = getTodayStr();
-      const tomorrowStr = getTomorrowStr();
-      if (dateStr === todayStr) return '今日';
-      if (dateStr === tomorrowStr) return '明日';
       const d = new Date(dateStr);
       return `${d.getMonth() + 1}月${d.getDate()}日`;
     }
 
-    // 渲染首页待办横幅（根据当前页面日期显示对应待办）
+    // 渲染待办横幅（只显示当前页面日期的待办，一行）
     function renderTodoBanner() {
       const container = document.getElementById('todoBannerContainer');
       if (!container) return;
       
       const count = getCurrentPageTodoCount();
       const dateStr = getCurrentPageDateStr();
+      const label = getTodoDateLabel(dateStr);
       
       if (count === 0) {
         container.innerHTML = '';
         return;
       }
-      
-      const label = getTodoDateLabel(dateStr);
       
       container.innerHTML = `
         <div class="todo-banner" onclick="toggleTodoList()" style="cursor: pointer;">
@@ -2988,35 +2958,20 @@
       }
     }
     
-    // 渲染待办列表（只显示当前页面日期对应的待办）
+    // 渲染待办列表（只显示当前页面日期的待办，无多余标签）
     function renderTodoList() {
       const container = document.getElementById('todoListContainer');
       if (!container) return;
       
-      const label = getCurrentPageTodoLabel();
       const dateStr = getCurrentPageDateStr();
+      const pageTodos = todos.filter(t => t.date === dateStr).sort((a, b) => a.completed - b.completed);
       
-      if (!label) {
+      if (pageTodos.length === 0) {
         container.innerHTML = '';
         return;
       }
       
-      const pageTodos = todos.filter(t => t.date === dateStr).sort((a, b) => a.completed - b.completed);
-      
-      let html = '';
-      if (pageTodos.length > 0) {
-        const icon = label === '今日' ? '📅' : (label === '明日' ? '📆' : '📋');
-        html = `
-          <div class="todo-date-group">
-            <div class="todo-date-label">${icon} ${label}待办</div>
-            ${pageTodos.map(t => renderTodoItem(t)).join('')}
-          </div>
-        `;
-      } else {
-        html = '<div style="text-align: center; color: var(--text-muted); padding: 0.5rem;">暂无待办</div>';
-      }
-      
-      container.innerHTML = html;
+      container.innerHTML = pageTodos.map(t => renderTodoItem(t)).join('');
     }
     
     // 渲染单个待办项
