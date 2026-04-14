@@ -5895,64 +5895,61 @@
       const year = currentDate.getFullYear();
       const weekday = weekdays[currentDate.getDay()];
 
-      const dayEl = document.getElementById('currentDay');
-      const fullEl = document.getElementById('currentDateFull');
-      const navEl = dayEl ? dayEl.closest('.date-nav') : null;
-      
-      // 先重置所有样式
-      dayEl.className = 'day';
-      fullEl.className = 'date-full';
-      dayEl.style.cssText = '';
-      fullEl.style.cssText = '';
-      if (navEl) navEl.className = 'date-nav';
-      
-      // 判断是否是今天、过去还是未来
       const now = new Date();
       const todayKey = getDateStr(now);
       const pageKey = getCurrentPageDateStr();
       
       const isToday = (pageKey === todayKey);
       const pageDate = new Date(pageKey);
-      const isFuture = (pageDate > new Date(todayKey));
+      const todayDateObj = new Date(todayKey);
+      const isFuture = (pageDate > todayDateObj);
       
-      // 调试：在控制台输出
       console.log('[日期] 真实今天=', todayKey, '页面日期=', pageKey, 
         'currentDate=', currentDate.toDateString(),
         '是今天?', isToday, '是未来?', isFuture);
+
+      const dayEl = document.getElementById('currentDay');
+      const fullEl = document.getElementById('currentDateFull');
+      const navEl = dayEl ? dayEl.closest('.date-nav') : null;
       
+      if (!dayEl || !fullEl) return;
+
+      // 用 innerHTML 直接重写整个元素内容，彻底清除所有残留
       if (isToday) {
-        // 今天：金色渐变 + "今天"标签
-        dayEl.classList.add('is-today');
-        fullEl.classList.add('is-today');
-        fullEl.textContent = `${year}年${month}月${day}日 ${weekday} · 今天`;
-        if (navEl) navEl.classList.add('is-today');
+        // 今天：金色渐变数字 + "今天"标签 + 金色完整日期
+        dayEl.outerHTML = `<span id="currentDay" class="day is-today" 
+          style="background:linear-gradient(135deg,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:3rem;font-weight:700;display:block;text-align:center;line-height:1;">${day}<span style="display:block;font-size:0.7rem;font-weight:600;-webkit-text-fill-color:#d97706;margin-top:2px;">今天</span></span>`;
+        fullEl.textContent = `${year}年${month}月${day}日 ${weekday}`;
+        fullEl.style.cssText = 'color:#d97706 !important;font-weight:600;';
+        if (navEl) navEl.style.cssText = 'position:relative;';
         
-        // 内联样式：金色渐变数字
-        dayEl.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-        dayEl.style.webkitBackgroundClip = 'text';
-        dayEl.style.webkitTextFillColor = 'transparent';
-        dayEl.style.backgroundClip = 'text';
-        dayEl.style.fontSize = '3rem';
-        dayEl.style.fontWeight = '700';
-        // 完整日期文字金色
-        fullEl.style.color = '#d97706';
-        fullEl.style.fontWeight = '600';
-        // 光晕背景
-        if (navEl) navEl.style.boxShadow = '0 0 20px rgba(245,158,11,0.25)';
+        // 添加光晕背景（通过伪元素无法用JS，改用box-shadow）
+        const dateContainer = document.querySelector('.current-date');
+        if (dateContainer) {
+          dateContainer.style.cssText = 'position:relative;z-index:1;background:radial-gradient(ellipse at center,rgba(245,158,11,0.12),transparent 70%);border-radius:16px;padding:12px 20px;';
+        }
       } else if (isFuture) {
-        // 未来日期：灰色
-        dayEl.classList.add('is-future');
-        fullEl.classList.add('is-future');
+        // 未来：灰色
+        dayEl.outerHTML = `<span id="currentDay" class="day is-future" 
+          style="font-size:3rem;font-weight:700;color:#9ca3af;display:block;text-align:center;line-height:1;">${day}</span>`;
         fullEl.textContent = `${year}年${month}月${day}日 ${weekday}`;
-        dayEl.style.color = '#9ca3af';
-        fullEl.style.color = '#9ca3af';
+        fullEl.style.cssText = 'color:#9ca3af !important;';
+        
+        const dateContainer = document.querySelector('.current-date');
+        if (dateContainer) {
+          dateContainer.style.cssText = 'position:relative;z-index:1;padding:12px 20px;';
+        }
       } else {
-        // 过去日期：默认蓝色
-        dayEl.classList.add('is-past');
-        fullEl.classList.add('is-past');
+        // 过去：默认色
+        dayEl.outerHTML = `<span id="currentDay" class="day is-past" 
+          style="font-size:3rem;font-weight:700;color:var(--primary);display:block;text-align:center;line-height:1;">${day}</span>`;
         fullEl.textContent = `${year}年${month}月${day}日 ${weekday}`;
-        dayEl.style.color = 'var(--primary)';
-        fullEl.style.color = '#64748b';
+        fullEl.style.cssText = 'color:#64748b !important;';
+        
+        const dateContainer = document.querySelector('.current-date');
+        if (dateContainer) {
+          dateContainer.style.cssText = 'position:relative;z-index:1;padding:12px 20px;';
+        }
       }
     }
 
