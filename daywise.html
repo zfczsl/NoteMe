@@ -5910,19 +5910,39 @@
       const pageKey = getCurrentPageDateStr();
       
       if (pageKey === todayKey) {
-        // 今天：加高亮和"今天"标签
+        // 今天：加高亮和"今天"标签（class + 内联样式双重保险）
         dayEl.classList.add('is-today');
         fullEl.classList.add('is-today');
         fullEl.textContent = `${year}年${month}月${day}日 ${weekday} · 今天`;
         if (navEl) navEl.classList.add('is-today');
+        // 内联样式确保生效
+        dayEl.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        dayEl.style.webkitBackgroundClip = 'text';
+        dayEl.style.webkitTextFillColor = 'transparent';
+        dayEl.style.backgroundClip = 'text';
+        fullEl.style.color = '#d97706';
+        fullEl.style.fontWeight = '500';
       } else if (new Date(pageKey) > new Date(todayKey)) {
         // 未来日期：灰色
         dayEl.classList.add('is-future');
         fullEl.classList.add('is-future');
+        // 内联样式
+        dayEl.style.color = '#9ca3af';
+        fullEl.style.color = '#9ca3af';
       } else {
         dayEl.classList.add('is-past');
         fullEl.classList.add('is-past');
+        // 过去日期恢复默认色
+        dayEl.style.color = '';
+        dayEl.style.background = '';
+        dayEl.style.webkitBackgroundClip = '';
+        dayEl.style.webkitTextFillColor = '';
+        dayEl.style.backgroundClip = '';
+        fullEl.style.color = '';
+        fullEl.style.fontWeight = '';
       }
+      
+      console.log('[日期显示] pageKey=', pageKey, 'todayKey=', todayKey, '是今天?', pageKey === todayKey);
     }
 
     function changeDate(delta) {
