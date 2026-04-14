@@ -2909,10 +2909,9 @@
       return `${y}-${m}-${d}`;
     }
     
-    // 获取当前页面日期的显示标签（直接显示几月几日）
+    // 获取当前页面日期的显示标签（始终显示"今日"，因为当前页日期即视为今日）
     function getTodoDateLabel(dateStr) {
-      const d = new Date(dateStr);
-      return `${d.getMonth() + 1}月${d.getDate()}日`;
+      return '今日';
     }
 
     // 渲染待办横幅（只显示当前页面日期的待办，一行）
