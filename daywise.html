@@ -3453,10 +3453,26 @@
           }
         }
         
-        // 如果本地有数据，保存到云端（确保最新）
-        if (localData.entries.length > 0) {
-          await saveCloudData(localData);
-        }
+        // 用恢复后的变量重新构建数据再保存（确保不覆盖云端已有的角色/目标）
+        const syncedData = {
+          entries: entries || [],
+          dailyReviews: dailyReviews || {},
+          weeklyReviews: weeklyReviews || {},
+          aiSummaries: aiSummaries || {},
+          aiInsights: aiInsights || {},
+          weeklyInsights: weeklyInsights || [],
+          mindMaps: mindMaps || {},
+          todos: todos || [],
+          userRole: userRole || '',
+          userGoals: userGoals || [],
+          apiCalls: {
+            date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
+            count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
+          }
+        };
+        
+        // 保存合并后的完整数据到云端（包含从云端恢复的角色和目标）
+        await saveCloudData(syncedData);
         
         // 保存到 localStorage
         localStorage.setItem('daywise_entries', JSON.stringify(entries));
