@@ -242,16 +242,7 @@
       background-clip: text;
     }
 
-    .current-date .day.is-today::after {
-      content: '今天';
-      display: block;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      -webkit-text-fill-color: #d97706;
-      margin-top: 2px;
-      text-align: center;
-    }
+    /* "今天"标签由 JS innerHTML 渲染，不再用伪元素 */
 
     .current-date .date-full.is-today {
       color: #d97706;
