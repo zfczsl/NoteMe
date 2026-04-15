@@ -3410,8 +3410,16 @@
         mindMaps = cloudData.mindMaps || {};
         todos = cloudData.todos || [];
         // 恢复个人背景（角色+目标）
-        if (cloudData.userRole) userRole = cloudData.userRole;
-        if (cloudData.userGoals) userGoals = cloudData.userGoals;
+        if (cloudData.userRole) {
+          userRole = cloudData.userRole;
+          localStorage.setItem('daywise_user_role', userRole);
+          console.log('[同步] 恢复角色:', userRole);
+        }
+        if (cloudData.userGoals) {
+          userGoals = cloudData.userGoals;
+          localStorage.setItem('daywise_user_goals', JSON.stringify(userGoals));
+          console.log('[同步] 恢复目标数量:', userGoals.length);
+        }
         
         // 如果云端没有脑图数据，尝试从 localStorage 恢复
         if (Object.keys(mindMaps).length === 0) {
@@ -5863,6 +5871,9 @@
       aiInsights = JSON.parse(localStorage.getItem('daywise_ai_insights') || '{}');
       weeklyInsights = JSON.parse(localStorage.getItem('daywise_weekly_insights') || '{}');
       mindMaps = JSON.parse(localStorage.getItem('daywise_mind_maps') || '{}');
+      // 加载个人背景（角色+目标）
+      userRole = localStorage.getItem('daywise_user_role') || '';
+      try { userGoals = JSON.parse(localStorage.getItem('daywise_user_goals') || '[]'); } catch(e) { userGoals = []; }
       // todos 已在 loadTodos() 中单独加载
     }
     
@@ -6268,25 +6279,12 @@
       localStorage.setItem('daywise_api_endpoint', apiEndpoint);
       localStorage.setItem('daywise_api_model', apiModel);
 
-      alert('设置已保存！');
+      console.log('[保存设置] userRole=', userRole, 'userGoals=', JSON.stringify(userGoals));
       
-      // 如果已登录，同步个人背景到云端
-      if (currentUser && !isSyncing) {
-        const data = {
-          entries: entries,
-          dailyReviews: dailyReviews,
-          weeklyReviews: weeklyReviews,
-          aiSummaries: aiSummaries,
-          aiInsights: aiInsights,
-          weeklyInsights: weeklyInsights,
-          mindMaps: mindMaps,
-          todos: todos,
-          userRole: userRole,
-          userGoals: userGoals,
-        };
-        saveCloudData(data);
-        console.log('[设置] 个人背景已同步到云端:', {userRole, goalsCount: userGoals.length});
-      }
+      alert('设置已保存！');
+
+      // 同步到云端（通过 saveData 触发）
+      saveData();
     }
 
     // AI Display - 首页版本
