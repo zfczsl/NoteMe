@@ -2169,6 +2169,66 @@
           </div>
         </div>
         
+        <!-- 导出数据 -->
+        <div style="margin-top: 1.5rem;">
+          <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+            <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">📥 导出数据</div>
+            
+            <!-- 导出模式选择 -->
+            <style>
+              .export-mode { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+              .export-mode label {
+                flex: 1; min-width: 100px;
+                background: rgba(255,255,255,0.15);
+                border: 2px solid transparent;
+                border-radius: 10px; padding: 0.5rem 0.4rem;
+                text-align: center; cursor: pointer; transition: all 0.2s;
+                font-size: 0.78rem; line-height: 1.35;
+              }
+              .export-mode label:hover { background: rgba(255,255,255,0.25); }
+              .export-mode input:checked + span { color: #fbbf24; font-weight: 700; }
+            </style>
+            <div class="export-mode">
+              <label><input type="radio" name="exportMode" value="dateRange" checked><span>按日期范围</span></label>
+              <label><input type="radio" name="exportMode" value="starred"><span>按星标</span></label>
+              <label><input type="radio" name="exportMode" value="aiAnalysis"><span>导出AI分析</span></label>
+            </div>
+            
+            <!-- 日期范围（默认显示） -->
+            <div id="exportDateRange" style="margin-bottom: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="date" id="exportStartDate" style="flex:1;padding:0.5rem;border-radius:8px;border:none;font-size:0.82rem;background:rgba(255,255,255,0.9);">
+                <span style="font-size:0.85rem;">→</span>
+                <input type="date" id="exportEndDate" style="flex:1;padding:0.5rem;border-radius:8px;border:none;font-size:0.82rem;background:rgba(255,255,255,0.9);">
+              </div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <button onclick="handleExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #6366f1; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer; margin-bottom: 0.5rem;">
+              📥 导出 & 发送到邮箱
+            </button>
+            <button onclick="downloadExport()" style="width: 100%; padding: 0.55rem 1rem; background: rgba(255,255,255,0.25); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 10px; font-size: 0.8rem; font-weight: 500; cursor: pointer;">
+              📄 仅下载 Markdown 文件
+            </button>
+          </div>
+        </div>
+        
+        <!-- 邮箱输入弹窗 -->
+        <div id="emailModalOverlay" onclick="closeEmailModal(event)" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9999;justify-content:center;align-items:center;">
+          <div id="emailModalBox" onclick="event.stopPropagation()" style="background:white;border-radius:16px;padding:1.5rem;width:88%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <h3 style="margin:0 0 1rem;font-size:1.1rem;color:#333;text-align:center;">✉️ 发送到邮箱</h3>
+            <p style="margin:-0.5rem 0 1rem;font-size:0.82rem;color:#666;text-align:center;">将导出的 Markdown 文件发送到你的邮箱</p>
+            <input type="email" id="emailInput" placeholder="请输入邮箱地址..." 
+              style="width:100%;padding:0.75rem 1rem;border:2px solid #e2e8f0;border-radius:10px;font-size:0.92rem;outline:none;margin-bottom:1rem;"
+              onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#e2e8f0'"
+              onkeydown="if(event.key==='Enter')confirmSendEmail()">
+            <div style="display:flex;gap:0.65rem;">
+              <button onclick="closeEmailModalDirect()" style="flex:1;padding:0.65rem;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-size:0.88rem;font-weight:500;cursor:pointer;">取消</button>
+              <button onclick="confirmSendEmail()" style="flex:1;padding:0.65rem;background:#6366f1;color:white;border:none;border-radius:10px;font-size:0.88rem;font-weight:600;cursor:pointer;">发送</button>
+            </div>
+          </div>
+        </div>
+        
         <!-- 反馈与支持 -->
         <div style="margin-top: 1.5rem;">
           <div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); border-radius: var(--radius); padding: 1rem; color: white;">
@@ -6624,6 +6684,345 @@ ${entry.content}`;
         saveEntry();
       }
     });
+
+    // ========== 导出功能 ==========
+    let lastExportContent = '';
+    let lastExportFilename = '';
+
+    // 获取选中的导出模式
+    function getSelectedExportMode() {
+      const selected = document.querySelector('input[name="exportMode"]:checked');
+      return selected ? selected.value : 'dateRange';
+    }
+
+    // 按日期范围生成 Markdown
+    function generateDateRangeMarkdown() {
+      const startEl = document.getElementById('exportStartDate');
+      const endEl = document.getElementById('exportEndDate');
+      
+      let startDate, endDate;
+      if (startEl && startEl.value) {
+        startDate = new Date(startEl.value + 'T00:00:00');
+      } else {
+        // 默认：最早记录日期到今天
+        const dates = entries.map(e => new Date(e.dateKey));
+        startDate = dates.length > 0 ? new Date(Math.min(...dates)) : new Date();
+      }
+      if (endEl && endEl.value) {
+        endDate = new Date(endEl.value + 'T23:59:59');
+      } else {
+        endDate = new Date();
+      }
+      
+      const startStr = formatDateCN(startDate);
+      const endStr = formatDateCN(endDate);
+      
+      let md = `# 📝 NoteMe 记录导出\n`;
+      md += `\n> 导出时间：${formatDateTimeCN(new Date())}\n`;
+      md += `> 时间范围：${startStr} ~ ${endStr}\n`;
+      md += `> 导出方式：按日期范围\n\n`;
+      md += `---\n\n`;
+      
+      const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+      const allDates = [];
+      const d = new Date(startDate);
+      while (d <= endDate) {
+        allDates.push(new Date(d));
+        d.setDate(d.getDate() + 1);
+      }
+      
+      let totalEntries = 0;
+      let totalStarred = 0;
+      let totalTodos = 0;
+      
+      for (const date of allDates) {
+        const dateKey = getDateKey(date);
+        const dayEntries = entries.filter(e => e.dateKey === dateKey)
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const dayTodos = todos.filter(t => t.date === dateKey && !t.completed);
+        const review = dailyReviews[dateKey];
+        const insight = aiInsights[dateKey];
+        const summary = aiSummaries[dateKey];
+        
+        if (dayEntries.length === 0 && (!review || !hasReviewContent(review)) && 
+            dayTodos.length === 0 && !insight && !summary) continue;
+        
+        totalEntries += dayEntries.length;
+        totalStarred += dayEntries.filter(e => e.starred).length;
+        totalTodos += dayTodos.length;
+        
+        const weekday = dayNames[date.getDay()];
+        md += `## 📅 ${formatDateCN(date)} ${weekday}\n\n`;
+        
+        // 记录
+        if (dayEntries.length > 0) {
+          md += `### 📝 记录（${dayEntries.length}条）\n\n`;
+          for (const e of dayEntries) {
+            const time = e.createdAt ? new Date(e.createdAt).toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}) : '';
+            const starIcon = e.starred ? '⭐ ' : '';
+            md += `**${time}** ${starIcon}${escapeMd(e.content)}\n\n`;
+          }
+        }
+        
+        // 待办
+        if (dayTodos.length > 0) {
+          md += `### 📋 待办（${dayTodos.length}项）\n\n`;
+          for (const t of dayTodos) {
+            const sourceNote = t.createdDate && t.createdDate !== t.date ? `（设置自${new Date(t.createdDate).getMonth()+1}月${new Date(t.createdDate).getDate()}日）` : '';
+            md += `- [ ] ${escapeMd(t.text)}${sourceNote}\n`;
+          }
+          md += '\n';
+        }
+        
+        // AI 分析
+        if (summary || insight) {
+          md += `### 🤖 AI分析\n\n`;
+          if (insight?.energyLevel) {
+            const stars = '★'.repeat(Math.min(5, Math.ceil(insight.energyLevel / 2)));
+            const empty = '☆'.repeat(5 - stars.length);
+            md += `- **能量水平**: ${stars}${empty} ${insight.energyLevel}/10\n`;
+          }
+          if (insight?.keywords && insight.keywords.length > 0) {
+            md += `- **关键词**: ${insight.keywords.map(k => escapeMd(k)).join('、')}\n`;
+          }
+          if (insight?.insights && insight.insights.length > 0) {
+            md += `- **关键洞察**:\n`;
+            for (let i = 0; i < insight.insights.length; i++) {
+              md += `  ${i + 1}. ${escapeMd(insight.insights[i])}\n`;
+            }
+          }
+          if (summary) {
+            md += `\n> ${escapeMd(summary)}\n`;
+          }
+          md += '\n';
+        }
+        
+        md += `---\n\n`;
+      }
+      
+      md = md.replace(/---\n\n$/, '');
+      md += `\n\n> **统计**: 共 **${totalEntries}** 条记录，**${totalStarred}** 条星标，**${totalTodos}** 项待办\n`;
+      
+      return { content: md, filename: `NoteMe_${startStr.replace(/[-:]/g,'')}_${endStr.replace(/[-:]/g,'')}_日期.md` };
+    }
+
+    // 按星标生成 Markdown
+    function generateStarredMarkdown() {
+      const starredEntries = entries.filter(e => e.starred).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      let md = `# ⭐ NoteMe 星标精选\n`;
+      md += `\n> 导出时间：${formatDateTimeCN(new Date())}\n`;
+      md += `> 导出方式：按星标\n`;
+      md += `> 共 ${starredEntries.length} 条星标记录\n\n`;
+      md += `---\n\n`;
+      
+      if (starredEntries.length === 0) {
+        md += `暂无星标记录。在记录条目上点击 ⭐ 即可标记星标。\n`;
+      } else {
+        const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+        let currentDateKey = null;
+        
+        for (const e of starredEntries) {
+          if (e.dateKey !== currentDateKey) {
+            currentDateKey = e.dateKey;
+            const d = new Date(e.dateKey.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+            const weekday = dayNames[d.getDay()];
+            md += `## ⭐ ${formatDateCN(d)} ${weekday}\n\n`;
+          }
+          
+          const time = e.createdAt ? new Date(e.createdAt).toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}) : '';
+          md += `**${time}** ⭐ ${escapeMd(e.content)}\n\n`;
+        }
+      }
+      
+      return { content: md, filename: `NoteMe_星标精选.md` };
+    }
+
+    // AI 分析汇总
+    function generateAIAnalysisMarkdown() {
+      let md = `# 🤖 NoteMe AI 分析汇总\n`;
+      md += `\n> 导出时间：${formatDateTimeCN(new Date())}\n`;
+      md += `> 导出方式：AI分析\n\n`;
+      md += `---\n\n`;
+      
+      const sortedDates = Object.keys(aiInsights).concat(Object.keys(aiSummaries))
+        .filter((v, i, arr) => arr.indexOf(v) === i).sort().reverse();
+      
+      if (sortedDates.length === 0) {
+        md += `暂无 AI 分析数据。使用"每日AI复盘"或"每周AI洞察"功能后即可导出。\n`;
+        return { content: md, filename: `NoteMe_AI分析汇总.md` };
+      }
+      
+      const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+      
+      for (const dateKey of sortedDates) {
+        const d = dateKey.includes('-') ? new Date(dateKey + 'T00:00:00') :
+          new Date(dateKey.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+        const weekday = dayNames[d.getDay()];
+        const insight = aiInsights[dateKey];
+        const summary = aiSummaries[dateKey];
+        const mindMap = mindMaps[dateKey];
+        
+        if (!insight && !summary && !mindMap) continue;
+        
+        md += `## 🤖 ${formatDateCN(d)} ${weekday}\n\n`;
+        
+        if (summary) {
+          md += `### 📊 每日摘要\n\n`;
+          md += `${escapeMd(summary)}\n\n`;
+        }
+        
+        if (insight) {
+          if (insight.energyLevel) {
+            const stars = '★'.repeat(Math.min(5, Math.ceil(insight.energyLevel / 2)));
+            const empty = '☆'.repeat(5 - stars.length);
+            md += `- **能量水平**: ${stars}${empty} ${insight.energyLevel}/10\n`;
+          }
+          if (insight.moodLabel) {
+            md += `- **情绪状态**: ${escapeMd(insight.moodLabel)}\n`;
+          }
+          if (insight.keywords && insight.keywords.length > 0) {
+            md += `- **关键词**: ${insight.keywords.map(k => escapeMd(k)).join('、')}\n`;
+          }
+          if (insight.insights && insight.insights.length > 0) {
+            md += `\n### 💡 关键洞察\n\n`;
+            for (let i = 0; i < Math.min(insight.insights.length, 5); i++) {
+              md += `${i + 1}. **${escapeMd(insight.insights[i])}**\n\n`;
+            }
+          }
+          if (insight.positiveAspects && insight.positiveAspects.length > 0) {
+            md += `✅ **积极面**：${insight.positiveAspects.map(a => escapeMd(a)).join('、')}\n\n`;
+          }
+          if (insight.suggestions && insight.suggestions.length > 0) {
+            md += `💡 **建议**：${insight.suggestions.map(s => escapeMd(s)).join('；')}\n\n`;
+          }
+        }
+        
+        if (mindMap && mindMap.branches) {
+          md += `### 🧠 思维导图\n\n`;
+          md += `- **中心主题**: ${escapeMd(mindMap.centerText || mindMap.centerTopic || '未命名')} ${mindMap.centerEmoji || ''}\n`;
+          for (const branch of mindMap.branches) {
+            md += `  - ${branch.emoji || '📌'} **${escapeMd(branch.title)}**: `;
+            md += `${branch.points ? branch.points.map(p => escapeMd(p)).join(' | ') : ''}\n`;
+          }
+          md += '\n';
+        }
+        
+        md += `---\n\n`;
+      }
+      
+      return { content: md, filename: `NoteMe_AI分析汇总.md` };
+    }
+
+    // 根据选中模式生成 Markdown
+    function generateExportMarkdown() {
+      const mode = getSelectedExportMode();
+      switch (mode) {
+        case 'dateRange': return generateDateRangeMarkdown();
+        case 'starred': return generateStarredMarkdown();
+        case 'aiAnalysis': return generateAIAnalysisMarkdown();
+        default: return generateDateRangeMarkdown();
+      }
+    }
+
+    // 下载 .md 文件
+    function downloadExport() {
+      const result = generateExportMarkdown();
+      if (!result || !result.content) { alert('没有可导出的数据'); return; }
+      
+      const blob = new Blob([result.content], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = result.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // 打开邮箱弹窗
+    function handleExport() {
+      const result = generateExportMarkdown();
+      if (!result || !result.content) { alert('没有可导出的数据'); return; }
+      
+      lastExportContent = result.content;
+      lastExportFilename = result.filename;
+      
+      const overlay = document.getElementById('emailModalOverlay');
+      overlay.style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('emailInput').focus();
+      }, 100);
+    }
+
+    // 关闭邮箱弹窗（点背景）
+    function closeEmailModal(event) {
+      if (event.target.id === 'emailModalOverlay') closeEmailModalDirect();
+    }
+
+    // 直接关闭弹窗
+    function closeEmailModalDirect() {
+      document.getElementById('emailModalOverlay').style.display = 'none';
+    }
+
+    // 确认发送邮件（mailto）
+    function confirmSendEmail() {
+      const emailInput = document.getElementById('emailInput');
+      const email = emailInput.value.trim();
+      
+      if (!email) { alert('请输入邮箱地址'); emailInput.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('邮箱格式不正确'); emailInput.focus(); return; }
+      if (!lastExportContent) { alert('没有可导出的内容'); return; }
+      
+      // 编码内容为 mailto 兼容格式
+      const subject = encodeURIComponent(`📝 NoteMe 记录导出 - ${lastExportFilename.replace('.md', '')}`);
+      const body = encodeURIComponent(lastExportContent);
+      const mailtoUrl = `mailto:${email}?subject=${subject}&body=${body}`;
+      
+      closeEmailModalDirect();
+      
+      // 尝试打开系统邮件 App
+      try {
+        window.location.href = mailtoUrl;
+      } catch (e) {
+        console.error('[导出] 邮件打开失败:', e);
+        alert('无法打开邮件应用，请检查设备是否配置了邮件客户端。你可以先下载文件再手动发邮件。');
+        downloadExport();
+      }
+    }
+
+    // 工具函数：格式化中文日期
+    function formatDateCN(d) {
+      return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+    }
+
+    // 工具函数：格式化中文日期+时间
+    function formatDateTimeCN(d) {
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    // 工具函数：转义 Markdown 特殊字符
+    function escapeMd(text) {
+      if (!text) return '';
+      return text.replace(/[\\`*_{}[\]#+\-!.|()~<>&]/g, '\\$&').replace(/\n/g, ' ');
+    }
+
+    // 初始化导出默认日期
+    function initExportDates() {
+      const startEl = document.getElementById('exportStartDate');
+      const endEl = document.getElementById('exportEndDate');
+      if (!startEl || !endEl) return;
+      
+      // 默认开始日期：30天前
+      const today = new Date();
+      const thirtyDaysAgo = new Date(today);
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      startEl.value = thirtyDaysAgo.toISOString().split('T')[0];
+      endEl.value = today.toISOString().split('T')[0];
+    }
+
+    // 页面加载时初始化导出日期
+    initExportDates();
 
     // Modal Management
     function openModal(id) {
