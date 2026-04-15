@@ -3410,15 +3410,20 @@
         mindMaps = cloudData.mindMaps || {};
         todos = cloudData.todos || [];
         // 恢复个人背景（角色+目标）
+        console.log('[同步] 云端 userRole=', cloudData.userRole, 'userGoals=', JSON.stringify(cloudData.userGoals));
         if (cloudData.userRole) {
           userRole = cloudData.userRole;
           localStorage.setItem('daywise_user_role', userRole);
-          console.log('[同步] 恢复角色:', userRole);
+          console.log('[同步] ✓ 恢复角色:', userRole);
+        } else {
+          console.log('[同步] ✗ 云端无角色数据');
         }
-        if (cloudData.userGoals) {
+        if (cloudData.userGoals && cloudData.userGoals.length > 0) {
           userGoals = cloudData.userGoals;
           localStorage.setItem('daywise_user_goals', JSON.stringify(userGoals));
-          console.log('[同步] 恢复目标数量:', userGoals.length);
+          console.log('[同步] ✓ 恢复目标数量:', userGoals.length, '内容:', JSON.stringify(userGoals));
+        } else {
+          console.log('[同步] ✗ 云端无目标数据或为空');
         }
         
         // 如果云端没有脑图数据，尝试从 localStorage 恢复
@@ -4895,6 +4900,7 @@
 
     function renderGoalsEditorPage() {
       const container = document.getElementById('goalsContainerPage');
+      console.log('[目标渲染] renderGoalsEditorPage 调用, userGoals=', JSON.stringify(userGoals), '容器存在?', !!container);
       if (!container) return;
 
       if (userGoals.length === 0) {
@@ -6117,7 +6123,8 @@
         if (countEl) countEl.textContent = `${limitInfo.count} / ${limitInfo.limit} 次`;
         if (progressEl) progressEl.style.width = `${(limitInfo.count / limitInfo.limit) * 100}%`;
 
-        // 加载角色设置
+        // 加载角色设置（每次进入设置页面都重新渲染，确保同步数据生效）
+      console.log('[设置页] 切换到设置页面, 当前 userRole=', userRole, 'userGoals=', JSON.stringify(userGoals));
         const roleSelectPage = document.getElementById('userRoleInputPage');
         const customRoleInputPage = document.getElementById('customRoleInputPage');
         if (roleSelectPage) {
