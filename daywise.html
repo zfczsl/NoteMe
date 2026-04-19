@@ -3363,8 +3363,9 @@
       if (result.success) {
         msgEl.textContent = '✅ 登录成功';
         
-        // 标记为已登录
+        // 标记为已登录（记录时间戳用于15天保持登录）
         localStorage.setItem('daywise_logged_in', 'true');
+        localStorage.setItem('daywise_login_time', Date.now().toString());
         
         // 延迟关闭弹窗 + 解锁应用
         setTimeout(() => {
@@ -4818,62 +4819,59 @@
       // 初始化 CloudBase 并检查登录状态
       await initCloudBase();
       
-      // 检查是否需要弹出登录引导
+      // ===== 登录状态检查（核心逻辑） =====
+      // 规则：
+      //   - 全新用户(从未登录) → 弹出登录
+      //   - 已登录且在15天内 → 直接进入（信任 localStorage）
+      //   - 已登录但超过15天 → 弹出重新登录
+      //   CloudBase session 恢复在后台进行，不阻塞用户使用
+      
+      const LOGIN_VALID_DAYS = 15; // 登录保持天数
       const loginStatus = localStorage.getItem('daywise_logged_in');
+      const loginTime = parseInt(localStorage.getItem('daywise_login_time') || '0');
+      const now = Date.now();
+      const isLoginExpired = (now - loginTime) > LOGIN_VALID_DAYS * 24 * 60 * 60 * 1000;
       
-      // 情况1：全新用户，从未登录过 → 弹出登录
-      if (!loginStatus || (loginStatus !== 'true' && loginStatus !== 'skipped')) {
+      // 全新用户 / 登录过期 → 必须登录
+      if (loginStatus !== 'true' || isLoginExpired || !loginTime) {
+        if (isLoginExpired || (!loginTime && loginStatus === 'true')) {
+          localStorage.removeItem('daywise_logged_in');
+          localStorage.removeItem('daywise_login_time');
+        }
         document.getElementById('appLockOverlay').style.display = 'block';
         setTimeout(() => {
           document.getElementById('globalLoginModal').style.display = 'flex';
         }, 300);
-        return; // 不加载数据，等用户登录
-      }
-      
-      // 情况2：之前登录过（localStorage 有记录）
-      //   - 如果 CloudBase session 还在 → 直接进入
-      //   - 如果 session 过期了 → 尝试静默恢复（匿名或重新鉴权）
-      if (loginStatus === 'true') {
-        if (authState && authState?.userInfo?.uid) {
-          // session 有效 → 正常加载
-          appUnlockAndLoad();
-          return;
+        
+        // 后台尝试恢复 CloudBase session（不阻塞）
+        if (loginStatus === 'true' && app) {
+          trySilentSessionRecover();
         }
-        
-        // session 看起来无效 → 尝试静默恢复一次（CloudBase 可能需要时间恢复持久化登录）
-        console.log('Session 未就绪，尝试静默恢复...');
-        
-        // 给 CloudBase SDK 一点时间恢复 session（最多等 2 秒）
-        let retried = false;
-        for (let i = 0; i < 4; i++) {
-          await new Promise(r => setTimeout(r, 500));
-          try {
-            authState = await app.auth().getLoginState();
-            if (authState && authState?.userInfo?.uid) {
-              currentUser = authState.userInfo;
-              console.log('静默恢复成功:', currentUser);
-              updateLoginUI(true);
-              appUnlockAndLoad();
-              return;
-            }
-          } catch(e) {
-            console.warn('恢复尝试失败:', e.message);
-          }
-        }
-        
-        // 所有恢复尝试都失败了 → 清除旧记录，弹出登录
-        console.warn('Session 恢复失败，需要重新登录');
-        localStorage.removeItem('daywise_logged_in');
-        document.getElementById('appLockOverlay').style.display = 'block';
-        setTimeout(() => {
-          document.getElementById('globalLoginModal').style.display = 'flex';
-        }, 300);
         return;
       }
       
-      // 兜底：其他情况正常加载
+      // 已登录且未过期 → 直接进入！
       appUnlockAndLoad();
+      
+      // 后台尝试恢复/保持 CloudBase session
+      trySilentSessionRecover();
     });
+
+    // 后台静默恢复 CloudBase session（不阻塞用户操作）
+    async function trySilentSessionRecover() {
+      if (!app) return;
+      try {
+        const state = await app.auth().getLoginState();
+        if (state && state?.userInfo?.uid) {
+          authState = state;
+          currentUser = state.userInfo;
+          console.log('CloudBase session 已恢复:', currentUser.uid);
+          updateLoginUI(true);
+        }
+      } catch(e) {
+        console.warn('后台 session 恢复暂不可用:', e.message);
+      }
+    }
 
     // 登录成功后：解锁界面 + 加载所有数据
     function appUnlockAndLoad() {
