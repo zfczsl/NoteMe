@@ -1813,9 +1813,9 @@
           style="width: 100%; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; margin-bottom: 0.75rem; background: rgba(255,255,255,0.95); color: #333;">
         <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
           <input type="text" id="globalLoginCode" placeholder="验证码" maxlength="6"
-            style="flex: 1; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; background: rgba(255,255,255,0.95); color: #333;">
+            style="flex:1; min-width:0; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; background: rgba(255,255,255,0.95); color: #333;">
           <button id="globalSendCodeBtn" onclick="handleGlobalSendCode()" 
-            style="padding: 0 1.25rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; font-size: 0.85rem; cursor: pointer; white-space: nowrap;">
+            style="flex-shrink:0; padding: 0 1rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
             获取验证码
           </button>
         </div>
@@ -1826,18 +1826,20 @@
         <div id="globalLoginMsg" style="font-size: 0.8rem; margin-top: 0.75rem; text-align: center; min-height: 1.2rem; opacity: 0.9;"></div>
       </div>
       
-      <!-- 快速体验按钮 -->
-      <button onclick="quickStart()" id="quickStartBtn"
-        style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #10b981, #34d399); color: white; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
-        🚀 快速体验 · 匿名登录
-      </button>
-      
-      <!-- 暂不登录按钮 -->
-      <button onclick="skipGlobalLogin()" id="skipLoginBtn"
-        style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; background: transparent; color: #9ca3af; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 0.9rem; cursor: pointer;">
-        暂不登录 · 仅本地保存
-      </button>
+      <p style="font-size: 0.8rem; color: #9ca3af; text-align: center; margin-top: 1.25rem;">
+        首次使用将自动注册账号 · 数据安全加密存储
+      </p>
     </div>
+  </div>
+  
+  <!-- 未登录时锁定整个界面（遮罩层） -->
+  <div id="appLockOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; cursor: wait;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);"></div>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+      <div style="width: 48px; height: 48px; border: 4px solid #e5e7eb; border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem;"></div>
+      <p style="font-size: 1rem; color: #6b7280; font-weight: 500;">请先登录以继续使用</p>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
   </div>
   
   <!-- Header -->
@@ -3361,10 +3363,14 @@
       if (result.success) {
         msgEl.textContent = '✅ 登录成功';
         
-        // 延迟关闭弹窗
+        // 标记为已登录
+        localStorage.setItem('daywise_logged_in', 'true');
+        
+        // 延迟关闭弹窗 + 解锁应用
         setTimeout(() => {
-          updateGlobalLoginUI(true);
-          // 从云端加载数据
+          document.getElementById('globalLoginModal').style.display = 'none';
+          appUnlockAndLoad();
+          // 从云端加载数据（覆盖本地）
           loadCloudDataOnLogin();
         }, 500);
       } else {
@@ -3373,44 +3379,18 @@
       }
     }
     
-    // 跳过登录
+    // 跳过登录（已废弃，强制要求手机号登录）
     function skipGlobalLogin() {
-      loginSkipped = true;
-      localStorage.setItem('daywise_logged_in', 'skipped');
-      document.getElementById('globalLoginModal').style.display = 'none';
+      const msgEl = document.getElementById('globalLoginMsg');
+      if (msgEl) {
+        msgEl.textContent = '⚠️ 请完成手机号登录后继续使用';
+        msgEl.style.color = '#fca5a5';
+      }
     }
     
-    // 快速体验 - 匿名登录
+    // 匿名登录（已废弃，保留函数避免报错）
     async function quickStart() {
-      try {
-        const btn = document.getElementById('quickStartBtn');
-        btn.textContent = '正在登录...';
-        btn.disabled = true;
-        
-        if (!app) await initCloudBase();
-        
-        // 匿名登录
-        await authObj.signInAnonymously();
-        const authState = await authObj.getLoginState();
-        
-        if (authState) {
-          currentUser = authState.userInfo;
-          console.log('匿名登录成功:', currentUser);
-          localStorage.setItem('daywise_anonymous', 'true');
-          updateLoginUI(true);
-          updateGlobalLoginUI(true);
-          document.getElementById('globalLoginModal').style.display = 'none';
-          
-          // 尝试加载云端数据
-          await loadCloudDataOnLogin();
-        }
-      } catch (e) {
-        console.error('匿名登录失败:', e);
-        alert('登录失败: ' + (e.message || '请检查网络连接'));
-        const btn = document.getElementById('quickStartBtn');
-        btn.textContent = '🚀 快速体验 · 匿名登录';
-        btn.disabled = false;
-      }
+      skipGlobalLogin();
     }
     
     // 登录后从云端加载数据（自动同步，无需确认）
@@ -4838,15 +4818,50 @@
       // 初始化 CloudBase 并检查登录状态
       await initCloudBase();
       
+      // 检查是否需要弹出登录引导（未登录时强制显示）
+      const loginStatus = localStorage.getItem('daywise_logged_in');
+      let needLogin = false;
+      
+      // 检查 CloudBase 登录状态
+      if (loginStatus !== 'true') {
+        needLogin = true;
+      } else if (!authState || !authState?.userInfo?.uid) {
+        // localStorage 说登录了，但实际 session 已过期
+        needLogin = true;
+        localStorage.removeItem('daywise_logged_in');
+      }
+      
+      if (needLogin) {
+        // 未登录 → 锁定界面 + 弹出登录弹窗
+        document.getElementById('appLockOverlay').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('globalLoginModal').style.display = 'flex';
+        }, 300);
+        
+        // 不加载任何数据，等用户登录后由 onLoginSuccess 统一处理
+        return;
+      }
+      
+      // 已登录 → 解锁并正常加载所有数据
+      appUnlockAndLoad();
+    });
+
+    // 登录成功后：解锁界面 + 加载所有数据
+    function appUnlockAndLoad() {
+      // 隐藏锁定遮罩和登录弹窗
+      document.getElementById('appLockOverlay').style.display = 'none';
+      document.getElementById('globalLoginModal').style.display = 'none';
+      
+      // 加载所有数据
       loadData();
       loadSettings();
-      loadTodos(); // 加载待办
-      renderTodoBanner(); // 渲染待办横幅
+      loadTodos();
+      renderTodoBanner();
       updateDateDisplay();
       loadEntries();
-      updateDailyCharCounter(); // 更新每日字数计数器
+      updateDailyCharCounter();
       loadAiDisplay();
-      loadRecordMindMap(); // 加载当前日期的脑图
+      loadRecordMindMap();
       
       // 待办弹窗日期选择事件
       document.querySelectorAll('input[name="todoDate"]').forEach(radio => {
@@ -4858,20 +4873,20 @@
         });
       });
       
-      // 初始化周选择器（默认本周）
+      // 初始化周选择器
       renderWeekSelector();
       loadWeekData();
       
       // 检测 localStorage 状态
       if (!storageAvailable) {
         setTimeout(() => {
-          alert('⚠️ 警告：localStorage 不可用，您的数据将不会保存！\n\n建议使用以下方式打开页面：\n1. 启动本地服务器后访问 http://localhost:8080\n2. 或使用 Chrome/Edge 浏览器（推荐）\n\n启动服务器命令：\nD:\\Anaconda\\python.exe -m http.server 8080\n然后访问 http://localhost:8080/daywise.html');
+          alert('⚠️ 警告：localStorage 不可用，您的数据将不会保存！');
         }, 100);
       }
       
       // 每周日自动检查并生成周报
       checkAndAutoWeeklyReview();
-    });
+    }
 
     // Settings Management
     let userRole = '';
