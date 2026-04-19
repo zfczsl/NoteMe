@@ -4818,31 +4818,60 @@
       // 初始化 CloudBase 并检查登录状态
       await initCloudBase();
       
-      // 检查是否需要弹出登录引导（未登录时强制显示）
+      // 检查是否需要弹出登录引导
       const loginStatus = localStorage.getItem('daywise_logged_in');
-      let needLogin = false;
       
-      // 检查 CloudBase 登录状态
-      if (loginStatus !== 'true') {
-        needLogin = true;
-      } else if (!authState || !authState?.userInfo?.uid) {
-        // localStorage 说登录了，但实际 session 已过期
-        needLogin = true;
-        localStorage.removeItem('daywise_logged_in');
-      }
-      
-      if (needLogin) {
-        // 未登录 → 锁定界面 + 弹出登录弹窗
+      // 情况1：全新用户，从未登录过 → 弹出登录
+      if (!loginStatus || (loginStatus !== 'true' && loginStatus !== 'skipped')) {
         document.getElementById('appLockOverlay').style.display = 'block';
         setTimeout(() => {
           document.getElementById('globalLoginModal').style.display = 'flex';
         }, 300);
+        return; // 不加载数据，等用户登录
+      }
+      
+      // 情况2：之前登录过（localStorage 有记录）
+      //   - 如果 CloudBase session 还在 → 直接进入
+      //   - 如果 session 过期了 → 尝试静默恢复（匿名或重新鉴权）
+      if (loginStatus === 'true') {
+        if (authState && authState?.userInfo?.uid) {
+          // session 有效 → 正常加载
+          appUnlockAndLoad();
+          return;
+        }
         
-        // 不加载任何数据，等用户登录后由 onLoginSuccess 统一处理
+        // session 看起来无效 → 尝试静默恢复一次（CloudBase 可能需要时间恢复持久化登录）
+        console.log('Session 未就绪，尝试静默恢复...');
+        
+        // 给 CloudBase SDK 一点时间恢复 session（最多等 2 秒）
+        let retried = false;
+        for (let i = 0; i < 4; i++) {
+          await new Promise(r => setTimeout(r, 500));
+          try {
+            authState = await app.auth().getLoginState();
+            if (authState && authState?.userInfo?.uid) {
+              currentUser = authState.userInfo;
+              console.log('静默恢复成功:', currentUser);
+              updateLoginUI(true);
+              appUnlockAndLoad();
+              return;
+            }
+          } catch(e) {
+            console.warn('恢复尝试失败:', e.message);
+          }
+        }
+        
+        // 所有恢复尝试都失败了 → 清除旧记录，弹出登录
+        console.warn('Session 恢复失败，需要重新登录');
+        localStorage.removeItem('daywise_logged_in');
+        document.getElementById('appLockOverlay').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('globalLoginModal').style.display = 'flex';
+        }, 300);
         return;
       }
       
-      // 已登录 → 解锁并正常加载所有数据
+      // 兜底：其他情况正常加载
       appUnlockAndLoad();
     });
 
