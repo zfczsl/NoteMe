@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noteme-v14';
+const CACHE_NAME = 'noteme-v15';
 const urlsToCache = [
   '/',
   '/daywise.html',
