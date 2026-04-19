@@ -1879,6 +1879,7 @@
           placeholder="像给自己发消息一样，随手把想法、做的事情丢进来..."
         ></textarea>
         <div class="entry-footer">
+          <span id="dailyCharCounter" style="font-size: 0.75rem; color: var(--text-muted);"></span>
           <span class="entry-tips">按 Enter 提交，Shift+Enter 换行 · 结构化复盘格式：今日做了什么 → 有什么收获/反思 → 遇到什么困难 → 明天计划</span>
           <button class="btn btn-primary" onclick="saveEntry()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -2033,11 +2034,15 @@
 
     <!-- Page: 历史 -->
     <div id="page-history" class="page">
-      <div class="section-header" style="padding: 1rem;">
+      <div class="section-header" style="padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
         <div class="section-title">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           历史记录
         </div>
+        <button id="exportHistoryBtn" onclick="exportHistoryData()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(99,102,241,0.3);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          导出
+        </button>
       </div>
       <div id="historyContent"></div>
     </div>
@@ -2204,28 +2209,9 @@
             </div>
             
             <!-- 操作按钮 -->
-            <button onclick="handleExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #6366f1; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer; margin-bottom: 0.5rem;">
-              📥 导出 & 发送到邮箱
+            <button onclick="downloadExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #6366f1; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer;">
+              📥 导出 Markdown 文件
             </button>
-            <button onclick="downloadExport()" style="width: 100%; padding: 0.55rem 1rem; background: rgba(255,255,255,0.25); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 10px; font-size: 0.8rem; font-weight: 500; cursor: pointer;">
-              📄 仅下载 Markdown 文件
-            </button>
-          </div>
-        </div>
-        
-        <!-- 邮箱输入弹窗 -->
-        <div id="emailModalOverlay" onclick="closeEmailModal(event)" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:9999;justify-content:center;align-items:center;">
-          <div id="emailModalBox" onclick="event.stopPropagation()" style="background:white;border-radius:16px;padding:1.5rem;width:88%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
-            <h3 style="margin:0 0 1rem;font-size:1.1rem;color:#333;text-align:center;">✉️ 发送到邮箱</h3>
-            <p style="margin:-0.5rem 0 1rem;font-size:0.82rem;color:#666;text-align:center;">将导出的 Markdown 文件发送到你的邮箱</p>
-            <input type="email" id="emailInput" placeholder="请输入邮箱地址..." 
-              style="width:100%;padding:0.75rem 1rem;border:2px solid #e2e8f0;border-radius:10px;font-size:0.92rem;outline:none;margin-bottom:1rem;"
-              onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#e2e8f0'"
-              onkeydown="if(event.key==='Enter')confirmSendEmail()">
-            <div style="display:flex;gap:0.65rem;">
-              <button onclick="closeEmailModalDirect()" style="flex:1;padding:0.65rem;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-size:0.88rem;font-weight:500;cursor:pointer;">取消</button>
-              <button onclick="confirmSendEmail()" style="flex:1;padding:0.65rem;background:#6366f1;color:white;border:none;border-radius:10px;font-size:0.88rem;font-weight:600;cursor:pointer;">发送</button>
-            </div>
           </div>
         </div>
         
@@ -6342,6 +6328,56 @@
       loadHistoryContent();
     }
 
+    // 导出历史数据（下载 .txt 文件）
+    function exportHistoryData() {
+      if (!entries || entries.length === 0) {
+        alert('暂无数据可导出');
+        return;
+      }
+
+      // 按日期排序（从早到晚）
+      const sortedEntries = [...entries].sort((a, b) => a.dateKey.localeCompare(b.dateKey));
+
+      // 生成文本内容
+      let text = '📝 NoteMe 历史记录导出\n';
+      text += '导出时间：' + new Date().toLocaleString('zh-CN') + '\n';
+      text += '共 ' + sortedEntries.length + ' 条记录\n';
+      text += '═'.repeat(40) + '\n\n';
+
+      // 按日期分组
+      const grouped = {};
+      sortedEntries.forEach(entry => {
+        if (!grouped[entry.dateKey]) {
+          grouped[entry.dateKey] = [];
+        }
+        grouped[entry.dateKey].push(entry);
+      });
+
+      Object.keys(grouped).sort().forEach(dateKey => {
+        text += '📅 ' + formatDateKey(dateKey) + '\n';
+        text += '─'.repeat(30) + '\n';
+        grouped[dateKey].forEach(entry => {
+          const starMark = entry.starred ? ' ⭐' : '';
+          text += '[' + entry.time + ']' + starMark + ' ' + entry.content + '\n';
+        });
+        text += '\n';
+      });
+
+      text += '─'.repeat(40) + '\n';
+      text += '由 NoteMe 应用导出';
+
+      // 创建下载
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'NoteMe_历史记录_' + new Date().toISOString().slice(0, 10) + '.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
     function saveSettingsBottom() {
       // 保存角色
       const roleSelectPage = document.getElementById('userRoleInputPage');
@@ -6489,6 +6525,7 @@
       });
       
       listEl.innerHTML = html;
+      updateDailyCharCounter();
     }
     
     function hasReviewContent(review) {
@@ -6501,11 +6538,49 @@
              review.improve?.trim() || review.goals?.trim() || review.encourage?.trim();
     }
 
+    // ========== 每日输入字数限制 ==========
+    const DAILY_CHAR_LIMIT = 5000;  // 每日最多输入 5000 字
+
+    // 获取今日已输入的总字数
+    function getTodayCharCount() {
+      const todayKey = getDateKey(currentDate);
+      return entries
+        .filter(e => e.dateKey === todayKey)
+        .reduce((sum, e) => sum + (e.content || '').length, 0);
+    }
+
+    // 更新字数计数器显示
+    function updateDailyCharCounter() {
+      const el = document.getElementById('dailyCharCounter');
+      if (!el) return;
+      const used = getTodayCharCount();
+      const remaining = Math.max(0, DAILY_CHAR_LIMIT - used);
+      const pct = Math.min(100, Math.round(used / DAILY_CHAR_LIMIT * 100));
+      
+      if (used >= DAILY_CHAR_LIMIT) {
+        el.innerHTML = `<span style="color:#ef4444;font-weight:600;">⚠️ 今日已用 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字（已达上限）</span>`;
+      } else if (pct >= 80) {
+        el.innerHTML = `<span style="color:#f59e0b;">今日已输入 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字，剩余 ${remaining.toLocaleString()}</span>`;
+      } else {
+        el.innerHTML = `今日已输入 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字`;
+      }
+    }
+
     function saveEntry() {
       const input = document.getElementById('entryInput');
       const content = input.value.trim();
       
       if (!content) {
+        return;
+      }
+
+      // 检查每日字数限制
+      const todayUsed = getTodayCharCount();
+      const newChars = content.length;
+      
+      if (todayUsed + newChars > DAILY_CHAR_LIMIT) {
+        const remaining = Math.max(0, DAILY_CHAR_LIMIT - todayUsed);
+        alert(`⚠️ 今日输入已达上限！\n\n已用：${todayUsed.toLocaleString()} / ${DAILY_CHAR_LIMIT.toLocaleString()} 字\n剩余可输：${remaining} 字\n当前内容：${newChars} 字\n\n建议：明天再记录，或精简一下内容~`);
         return;
       }
 
@@ -6525,6 +6600,7 @@
       saveData();
       input.value = '';
       loadEntries();
+      updateDailyCharCounter();
     }
 
     function editEntry(id) {
@@ -6686,8 +6762,6 @@ ${entry.content}`;
     });
 
     // ========== 导出功能 ==========
-    let lastExportContent = '';
-    let lastExportFilename = '';
 
     // 获取选中的导出模式
     function getSelectedExportMode() {
@@ -6937,57 +7011,6 @@ ${entry.content}`;
       a.download = result.filename;
       a.click();
       URL.revokeObjectURL(url);
-    }
-
-    // 打开邮箱弹窗
-    function handleExport() {
-      const result = generateExportMarkdown();
-      if (!result || !result.content) { alert('没有可导出的数据'); return; }
-      
-      lastExportContent = result.content;
-      lastExportFilename = result.filename;
-      
-      const overlay = document.getElementById('emailModalOverlay');
-      overlay.style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('emailInput').focus();
-      }, 100);
-    }
-
-    // 关闭邮箱弹窗（点背景）
-    function closeEmailModal(event) {
-      if (event.target.id === 'emailModalOverlay') closeEmailModalDirect();
-    }
-
-    // 直接关闭弹窗
-    function closeEmailModalDirect() {
-      document.getElementById('emailModalOverlay').style.display = 'none';
-    }
-
-    // 确认发送邮件（mailto）
-    function confirmSendEmail() {
-      const emailInput = document.getElementById('emailInput');
-      const email = emailInput.value.trim();
-      
-      if (!email) { alert('请输入邮箱地址'); emailInput.focus(); return; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('邮箱格式不正确'); emailInput.focus(); return; }
-      if (!lastExportContent) { alert('没有可导出的内容'); return; }
-      
-      // 编码内容为 mailto 兼容格式
-      const subject = encodeURIComponent(`📝 NoteMe 记录导出 - ${lastExportFilename.replace('.md', '')}`);
-      const body = encodeURIComponent(lastExportContent);
-      const mailtoUrl = `mailto:${email}?subject=${subject}&body=${body}`;
-      
-      closeEmailModalDirect();
-      
-      // 尝试打开系统邮件 App
-      try {
-        window.location.href = mailtoUrl;
-      } catch (e) {
-        console.error('[导出] 邮件打开失败:', e);
-        alert('无法打开邮件应用，请检查设备是否配置了邮件客户端。你可以先下载文件再手动发邮件。');
-        downloadExport();
-      }
     }
 
     // 工具函数：格式化中文日期
