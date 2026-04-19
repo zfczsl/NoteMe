@@ -2714,8 +2714,8 @@
           if (currentUser?.uid) {
             updateLoginUI(true);
             updateGlobalLoginUI(true);
-            // 从云端加载数据
-            loadCloudDataOnLogin();
+            // 从云端加载数据（等待完成）
+            try { await loadCloudDataOnLogin(); } catch(e) { console.warn('初始化时云端数据加载失败:', e); }
           } else {
             console.log('登录状态存在但无有效用户信息，不自动登录');
             updateLoginUI(false);
@@ -3368,11 +3368,11 @@
         localStorage.setItem('daywise_login_time', Date.now().toString());
         
         // 延迟关闭弹窗 + 解锁应用
-        setTimeout(() => {
+        setTimeout(async () => {
           document.getElementById('globalLoginModal').style.display = 'none';
           appUnlockAndLoad();
           // 从云端加载数据（覆盖本地）
-          loadCloudDataOnLogin();
+          try { await loadCloudDataOnLogin(); } catch(e) { console.error('登录后云端数据同步失败:', e); }
         }, 500);
       } else {
         msgEl.textContent = result.message || '登录失败';
@@ -3396,7 +3396,8 @@
     
     // 登录后从云端加载数据（自动同步，无需确认）
     async function loadCloudDataOnLogin() {
-      const cloudData = await getCloudData();
+      try {
+        const cloudData = await getCloudData();
       
       // 如果本地有数据，先尝试保存到云端
       const localData = {
@@ -3532,6 +3533,14 @@
         }
         // 渲染目标列表
         renderGoalsEditorPage();
+      } else {
+        console.warn('[同步] 云端无数据，保持本地数据不变');
+      }
+    } catch(e) {
+      console.error('[同步] 云端数据加载失败:', e.message || e);
+      // 同步失败时不影响用户使用本地数据，只记录日志
+      if (String(e).includes('未登录') || String(e).includes('login') || String(e).includes('auth')) {
+        console.warn('[同步] 原因: CloudBase session 未就绪');
       }
     }
     
@@ -4859,21 +4868,36 @@
 
     // 后台静默恢复 CloudBase session（不阻塞用户操作）
     async function trySilentSessionRecover() {
-      if (!app) return;
-      try {
-        const state = await app.auth().getLoginState();
-        if (state && state?.userInfo?.uid) {
-          authState = state;
-          currentUser = state.userInfo;
-          console.log('CloudBase session 已恢复:', currentUser.uid);
-          updateLoginUI(true);
-          // session恢复后，自动从云端同步数据到本地
-          console.log('开始云端数据同步...');
-          loadCloudDataOnLogin();
-        }
-      } catch(e) {
-        console.warn('后台 session 恢复暂不可用:', e.message);
+      if (!app) {
+        console.warn('[Session恢复] app 未初始化，尝试先初始化');
+        try { await initCloudBase(); } catch(e) { console.warn('[Session恢复] 初始化失败:', e); }
       }
+      if (!app) return;
+      
+      // 重试最多 3 次，每次间隔 1 秒
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const state = await app.auth().getLoginState();
+          if (state && state?.userInfo?.uid) {
+            authState = state;
+            currentUser = state.userInfo;
+            console.log('[Session恢复] ✓ 成功:', currentUser.uid, '(尝试', attempt + ')');
+            updateLoginUI(true);
+            // session恢复后，自动从云端同步数据到本地
+            console.log('[Session恢复] 开始云端数据同步...');
+            try { await loadCloudDataOnLogin(); } catch(e) { console.error('[Session恢复] 云端数据同步失败:', e); }
+            return; // 成功就退出
+          } else {
+            console.log('[Session恢复] 第' + attempt + '次: 无有效session, 等待重试...');
+          }
+        } catch(e) {
+          console.warn('[Session恢复] 第' + attempt + '次尝试出错:', e.message || e);
+        }
+        if (attempt < 3) {
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+      console.warn('[Session恢复] ✗ 3次尝试均未成功');
     }
 
     // 登录成功后：解锁界面 + 加载所有数据
