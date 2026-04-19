@@ -4867,6 +4867,9 @@
           currentUser = state.userInfo;
           console.log('CloudBase session 已恢复:', currentUser.uid);
           updateLoginUI(true);
+          // session恢复后，自动从云端同步数据到本地
+          console.log('开始云端数据同步...');
+          loadCloudDataOnLogin();
         }
       } catch(e) {
         console.warn('后台 session 恢复暂不可用:', e.message);
