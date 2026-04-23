@@ -2968,45 +2968,16 @@
     }
     
     // 立即同步待办到云端（添加/删除/切换完成后调用）
+    // 复用已有的 saveData 函数，确保和记录(entries)使用完全相同的同步逻辑
     function syncTodosToCloud() {
-      if (!app || !currentUser || isSyncing) return;
-      console.log('[待办同步] 开始同步', todos.length, '条待办到云端');
-      
-      clearTimeout(window.todoSyncTimer);
-      window.todoSyncTimer = setTimeout(async () => {
-        try {
-          const db = app.database();
-          const existing = await db.collection('user_data').limit(1).get();
-          
-          let cloudData = {};
-          if (existing.data && existing.data.length > 0) {
-            cloudData = existing.data[0].data || {};
-          }
-          
-          // 只更新 todos 字段，保留其他字段不变
-          cloudData.todos = todos;
-          cloudData.updatedAt = new Date().toISOString();
-          
-          isSyncing = true;
-          if (existing.data && existing.data.length > 0) {
-            await db.collection('user_data').doc(existing.data[0]._id).set({
-              data: cloudData,
-              updatedAt: db.serverDate()
-            });
-          } else {
-            await db.collection('user_data').add({
-              data: cloudData,
-              createdAt: db.serverDate(),
-              updatedAt: db.serverDate()
-            });
-          }
-          isSyncing = false;
-          console.log('[待办同步] ✓ 同步完成');
-        } catch(e) {
-          console.error('[待办同步] ✗ 失败:', e.message || e);
-          isSyncing = false;
-        }
-      }, 1000); // 1秒防抖
+      console.log('[待办同步] 触发同步，当前待办数:', todos.length, '已登录:', !!currentUser);
+      if (!currentUser) {
+        console.warn('[待办同步] 跳过: 未登录');
+        return;
+      }
+      // 直接调用已有的 saveData，它会自动把 todos 同步到云端（2秒防抖）
+      saveData();
+      console.log('[待办同步] ✓ 已触发 saveData');
     }
     
     // 添加待办
@@ -3442,8 +3413,15 @@
     
     // 登录后从云端加载数据（自动同步，无需确认）
     async function loadCloudDataOnLogin() {
+      console.log('=== [云端同步] 开始 ===');
       try {
         const cloudData = await getCloudData();
+        console.log('=== [云端同步] getCloudData 返回:', cloudData ? '有数据' : 'NULL/空');
+        if (cloudData) {
+          console.log('=== [云端同步] 云端 entries 数量:', (cloudData.entries||[]).length);
+          console.log('=== [云端同步] 云端 todos 数量:', (cloudData.todos||[]).length);
+          console.log('=== [云端同步] 云端 todos 内容:', JSON.stringify(cloudData.todos||[]));
+        }
       
       // 如果本地有数据，先尝试保存到云端
       const localData = {
@@ -3484,6 +3462,8 @@
         weeklyInsights = cloudData.weeklyInsights || {};
         mindMaps = cloudData.mindMaps || {};
         todos = cloudData.todos || [];
+        console.log('=== [云端同步] ✓ 已恢复 todos 到内存, 数量:', todos.length);
+        console.log('=== [云端同步] todos 内容:', JSON.stringify(todos.map(t => ({id:t.id, text:t.text.substring(0,20), date:t.date}))));
         // 恢复个人背景（角色+目标）
         console.log('[同步] 云端 userRole=', cloudData.userRole, 'userGoals=', JSON.stringify(cloudData.userGoals));
         if (cloudData.userRole) {
@@ -3558,6 +3538,7 @@
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
         localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         localStorage.setItem('daywise_todos', JSON.stringify(todos));  // 待办也写回本地
+        console.log('=== [云端同步] ✓ todos 已写入 localStorage');
         
         // 保存个人背景（角色+目标）到本地
         if (userRole) localStorage.setItem('daywise_user_role', userRole);
@@ -3567,6 +3548,7 @@
         loadEntries();
         updateDateDisplay();
         renderTodoBanner();  // 重新渲染待办横幅
+        console.log('=== [云端同步] ✓ renderTodoBanner 已调用 ===');
         
         // 刷新个人背景UI（角色+目标）
         const roleSelectPage = document.getElementById('userRoleInputPage');
@@ -3584,7 +3566,8 @@
         renderGoalsEditorPage();
       }
       } catch(e) {
-        console.error('[同步] 云端数据加载失败:', e.message || e);
+        console.error('=== [云端同步] ✗ 失败:', e.message || e);
+        console.error('=== [云端同步] ✗ 完整错误:', e);
       }
     }
     
@@ -6060,6 +6043,7 @@
       
       // 如果已登录，自动同步到云端（防抖）
       if (currentUser && !isSyncing) {
+        console.log('[saveData] 触发云端同步, todos数量:', todos.length, 'todos内容:', JSON.stringify(todos.map(t=>({id:t.id,text:t.text.substring(0,15),date:t.date}))));
         const data = {
           entries: entries,
           dailyReviews: dailyReviews,
