@@ -1156,6 +1156,10 @@
       border: 1px solid #fcd34d;
       transition: all 0.2s;
     }
+    .todo-banner-all-done {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0) !important;
+      border-color: #10b981 !important;
+    }
     .todo-banner:hover {
       transform: translateY(-1px);
       box-shadow: var(--shadow);
@@ -3041,7 +3045,14 @@
     }
     
     // 获取当前页面日期对应的待办数量（只取当前页面日期本身，不分今日明日）
+    // 获取当前页面日期的待办总数（含已完成和未完成）
     function getCurrentPageTodoCount() {
+      const dateStr = getCurrentPageDateStr();
+      return todos.filter(t => t.date === dateStr).length;
+    }
+    
+    // 获取当前页面日期的未完成待办数
+    function getUncompletedTodoCount() {
       const dateStr = getCurrentPageDateStr();
       return todos.filter(t => t.date === dateStr && !t.completed).length;
     }
@@ -3064,25 +3075,38 @@
       const container = document.getElementById('todoBannerContainer');
       if (!container) return;
       
-      const count = getCurrentPageTodoCount();
+      const totalCount = getCurrentPageTodoCount();
+      const uncompletedCount = getUncompletedTodoCount();
       const dateStr = getCurrentPageDateStr();
       const label = getTodoDateLabel(dateStr);
       
-      console.log('[横幅调试] 页面日期:', dateStr, '待办数量:', count);
+      console.log('[横幅调试] 页面日期:', dateStr, '待办总数:', totalCount, '未完成:', uncompletedCount);
       
-      if (count === 0) {
+      if (totalCount === 0) {
         container.innerHTML = '';
         return;
       }
       
+      // 根据完成状态决定横幅样式和文字
+      let statusText, statusClass;
+      if (uncompletedCount === 0) {
+        // 全部完成了
+        statusText = `✅ 全部完成`;
+        statusClass = 'todo-banner-all-done';
+      } else {
+        statusText = `${label}待办 <strong>${totalCount}</strong>项`;
+        statusClass = '';
+      }
+      
       container.innerHTML = `
-        <div class="todo-banner" onclick="toggleTodoList()" style="cursor: pointer;">
+        <div class="todo-banner ${statusClass}" onclick="toggleTodoList()" style="cursor: pointer;">
           <div class="todo-banner-left">
             <span class="todo-icon">📋</span>
             <span class="todo-banner-text">
-              ${label}待办 <strong>${count}</strong>项
+              ${statusText}
             </span>
-            <span style="font-size:0.7rem;color:#9ca3af;margin-left:4px;">(${dateStr})</span>
+            ${uncompletedCount > 0 ? `<span style="font-size:0.7rem;color:#9ca3af;margin-left:4px;">(${dateStr})</span>` : ''}
+            ${uncompletedCount > 0 && uncompletedCount < totalCount ? `<span style="font-size:0.7rem;color:#10b981;margin-left:4px;">(剩${uncompletedCount}项)</span>` : ''}
           </div>
           <span class="todo-banner-arrow" id="todoBannerArrow">▼</span>
         </div>
