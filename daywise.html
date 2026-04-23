@@ -1208,21 +1208,22 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem;
+      padding: 0.6rem 0.5rem;
       border-radius: 8px;
       transition: background 0.2s;
     }
     .todo-item:hover {
       background: var(--bg-secondary);
     }
-    .todo-item.checked {
-      opacity: 0.6;
+    .todo-item-checked {
+      background: #f0fdf4 !important;
     }
     .todo-checkbox {
       position: relative;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       cursor: pointer;
+      flex-shrink: 0;
     }
     .todo-checkbox input {
       position: absolute;
@@ -1230,37 +1231,55 @@
       width: 100%;
       height: 100%;
       cursor: pointer;
+      z-index: 2;
     }
     .todo-checkbox .checkmark {
       position: absolute;
       top: 0;
       left: 0;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #d1d5db;
-      border-radius: 4px;
+      width: 22px;
+      height: 22px;
+      border: 2px solid #10b981;
+      border-radius: 6px;
       background: white;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .todo-checkbox input:checked + .checkmark {
-      background: var(--primary);
-      border-color: var(--primary);
+      background: #10b981;
+      border-color: #10b981;
+      animation: checkPop 0.25s ease;
+    }
+    @keyframes checkPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .todo-checkbox .checkmark::after {
+      content: '';
+      display: none;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2.5px 2.5px 0;
+      transform: rotate(45deg);
+      margin-top: -2px;
     }
     .todo-checkbox input:checked + .checkmark::after {
-      content: '✓';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 10px;
-      font-weight: bold;
+      display: block;
     }
     .todo-text {
       flex: 1;
       font-size: 0.9rem;
       color: var(--text-primary);
       line-height: 1.4;
+      transition: all 0.2s;
+    }
+    .todo-item-checked .todo-text {
+      text-decoration: line-through;
+      color: #9ca3af;
     }
     .todo-time {
       font-size: 0.8rem;
@@ -3109,7 +3128,6 @@
     // 渲染单个待办项
     function renderTodoItem(todo) {
       const checkedClass = todo.completed ? 'todo-item-checked' : '';
-      const lineStyle = todo.completed ? 'text-decoration: line-through; opacity: 0.5;' : '';
       
       // 判断是否需要显示来源日期标注（目标日期和创建日期不同，如"明天"的待办）
       let sourceNote = '';
@@ -3124,7 +3142,7 @@
             <input type="checkbox" ${todo.completed ? 'checked' : ''}>
             <span class="checkmark"></span>
           </label>
-          <span class="todo-text" style="${lineStyle}">
+          <span class="todo-text">
             ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${todo.text}${sourceNote}
           </span>
           <button class="todo-delete" onclick="event.stopPropagation(); deleteTodo('${todo.id}')">✕</button>
@@ -7884,6 +7902,25 @@ ${entry.content}`;
       const [year, month, day] = dateKey.split('-');
       const entryTexts = dayEntries.map(e => `[${e.time}] ${e.content}`).join('\n');
 
+      // 获取当天的待办数据
+      const dayTodos = todos.filter(t => t.date === dateKey);
+      let todoSection = '';
+      if (dayTodos.length > 0) {
+        const completedTodos = dayTodos.filter(t => t.completed);
+        const uncompletedTodos = dayTodos.filter(t => !t.completed);
+        todoSection = `\n\n【今日待办】共${dayTodos.length}项，已完成${completedTodos.length}项，未完成${uncompletedTodos.length}项`;
+        if (completedTodos.length > 0) {
+          todoSection += '\n✅ 已完成：\n' + completedTodos.map(t => `- ${t.text}`).join('\n');
+        }
+        if (uncompletedTodos.length > 0) {
+          todoSection += '\n⬜ 未完成：\n' + uncompletedTodos.map(t => `- ${t.text}`).join('\n');
+        }
+        const completionRate = Math.round((completedTodos.length / dayTodos.length) * 100);
+        todoSection += `\n（完成率：${completionRate}%）`;
+      } else {
+        todoSection = '\n\n【今日待办】无';
+      }
+
       // 构建用户背景信息
       let userBackground = '';
       if (userRole) {
@@ -7906,6 +7943,8 @@ ${userBackground}
 【今日记录】
 ${entryTexts || '无记录'}
 
+\r
+
 【复盘信息】${review ? `
 - 今日成就：${review.achievement || '未填写'}
 - 遇到的挑战：${review.challenge || '未填写'}
@@ -7917,8 +7956,9 @@ ${entryTexts || '无记录'}
 1. 今日整体表现概述
 2. 主要成就和亮点
 3. 【重点】今日做的事情是否帮助接近目标？哪些行动是有效的，哪些可能让你偏离了方向？
-4. 需要改进的地方（如有）
-5. 具体的行动建议（最好能与目标相关）
+4. 今日待办完成情况分析：完成的待办反映了什么？未完成的待办原因是什么？是否需要调整计划或优先级？
+5. 需要改进的地方（如有）
+6. 具体的行动建议（最好能与目标相关）
 6. 一句鼓励的话语
 
 请用温暖、鼓励的语气回答，格式清晰，使用 emoji 增强可读性。在分析中适当联系你的目标背景，让建议更有针对性。
@@ -7936,7 +7976,8 @@ ${entryTexts || '无记录'}
   "alignmentSuggestion": "今天大部分时间都花在目标上，建议继续保持...",
   "categories": {"工作": 3, "学习": 1, "生活": 2, "社交": 0, "健康": 0, "其他": 0},
   "categorizedEntries": {"工作": ["记录内容1", "记录内容2"], "学习": ["记录内容3"], "生活": [], "社交": [], "健康": [], "其他": []},
-  "highlight": "今天最有价值的事情是..."
+  "highlight": "今天最有价值的事情是...",
+  "todoStats": {"total": 5, "completed": 3, "uncompleted": 2, "completionRate": 60}
 }
 \`\`\`
 字段说明：
@@ -7949,7 +7990,8 @@ ${entryTexts || '无记录'}
 - alignmentSuggestion：对齐度建议（一句话）
 - categories：今日事件类型统计，对象格式如 {"工作":3,"学习":1,"生活":2,"社交":0,"健康":0,"其他":0}，所有数值加起来应等于今日记录数
 - categorizedEntries：**重要**- 今日每条记录对应的类型分类，对象格式如 {"工作":["记录1","记录2"],"学习":["记录3"],"生活":[]...}，请将每条记录归类到对应类别，未分类的归入"其他"
-- highlight：今日最有价值/最值得记录的高光时刻（一句话，30字以内）`;
+- highlight：今日最有价值/最值得记录的高光时刻（一句话，30字以内）
+- todoStats：今日待办统计{"total":总数量,"completed":已完成,"uncompleted":未完成,"completionRate":完成率(0-100)}`;
     }
 
     // 生成每周 AI 复盘
