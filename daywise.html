@@ -3418,11 +3418,12 @@
       };
       
       // 如果本地有数据但云端没有，直接保存到云端
-      if (!cloudData && localData.entries.length > 0) {
+      if (!cloudData && (localData.entries.length > 0 || localData.todos.length > 0)) {
         console.log('[同步] 本地有数据，云端没有，保存到云端');
         await saveCloudData(localData);
         loadEntries();
         updateDateDisplay();
+        renderTodoBanner();  // 重新渲染待办
         return;
       }
       
@@ -3510,6 +3511,7 @@
         localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
         localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
+        localStorage.setItem('daywise_todos', JSON.stringify(todos));  // 待办也写回本地
         
         // 保存个人背景（角色+目标）到本地
         if (userRole) localStorage.setItem('daywise_user_role', userRole);
@@ -3518,6 +3520,7 @@
         // 重新加载UI
         loadEntries();
         updateDateDisplay();
+        renderTodoBanner();  // 重新渲染待办横幅
         
         // 刷新个人背景UI（角色+目标）
         const roleSelectPage = document.getElementById('userRoleInputPage');
