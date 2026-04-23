@@ -2967,6 +2967,48 @@
       localStorage.setItem('daywise_todos', JSON.stringify(todos));
     }
     
+    // 立即同步待办到云端（添加/删除/切换完成后调用）
+    function syncTodosToCloud() {
+      if (!app || !currentUser || isSyncing) return;
+      console.log('[待办同步] 开始同步', todos.length, '条待办到云端');
+      
+      clearTimeout(window.todoSyncTimer);
+      window.todoSyncTimer = setTimeout(async () => {
+        try {
+          const db = app.database();
+          const existing = await db.collection('user_data').limit(1).get();
+          
+          let cloudData = {};
+          if (existing.data && existing.data.length > 0) {
+            cloudData = existing.data[0].data || {};
+          }
+          
+          // 只更新 todos 字段，保留其他字段不变
+          cloudData.todos = todos;
+          cloudData.updatedAt = new Date().toISOString();
+          
+          isSyncing = true;
+          if (existing.data && existing.data.length > 0) {
+            await db.collection('user_data').doc(existing.data[0]._id).set({
+              data: cloudData,
+              updatedAt: db.serverDate()
+            });
+          } else {
+            await db.collection('user_data').add({
+              data: cloudData,
+              createdAt: db.serverDate(),
+              updatedAt: db.serverDate()
+            });
+          }
+          isSyncing = false;
+          console.log('[待办同步] ✓ 同步完成');
+        } catch(e) {
+          console.error('[待办同步] ✗ 失败:', e.message || e);
+          isSyncing = false;
+        }
+      }, 1000); // 1秒防抖
+    }
+    
     // 添加待办
     function addTodo(text, dateStr, sourceEntryId = null, timeHint = '') {
       const todo = {
@@ -2982,6 +3024,8 @@
       todos.push(todo);
       saveTodos();
       renderTodoBanner();
+      // 立即同步到云端（不依赖 beforeunload）
+      syncTodosToCloud();
       return todo;
     }
     
@@ -2991,6 +3035,7 @@
       saveTodos();
       renderTodoBanner();
       renderTodoList();
+      syncTodosToCloud(); // 同步到云端
     }
     
     // 切换待办完成状态
@@ -3001,6 +3046,7 @@
         saveTodos();
         renderTodoBanner();
         renderTodoList();
+        syncTodosToCloud(); // 同步到云端
       }
     }
     
