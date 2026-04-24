@@ -3319,10 +3319,7 @@
       } catch(e) { subscriptionInfo = { plan: 'free', status: 'active' }; }
       checkPremium(); updateDailyLimit(); updateMemberBadge(); updateMemberCard();
     }
-        updateMemberCard();
-      }
-    }
-
+    
     // 根据会员状态更新每日AI调用限制
     function updateDailyLimit() {
       dailyLimit = isPremium ? PREMIUM_DAILY_LIMIT : FREE_DAILY_LIMIT;
