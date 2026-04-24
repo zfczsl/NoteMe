@@ -1871,6 +1871,7 @@
       <div class="logo">
         <div class="logo-icon">记</div>
         <div class="logo-text">记我<span></span><span class="en">Noteme</span></div>
+        <span id="memberBadge" style="display:none;margin-left:auto;"></span>
       </div>
     </div>
   </header>
@@ -2425,16 +2426,39 @@
           </button>
         </div>
         
+        <!-- 会员状态卡片 -->
+        <div id="memberCard" style="margin-top: 1rem; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 1rem; border: 1px solid #fcd34d;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <span style="font-weight:600;color:#92400e;font-size:0.9rem;" id="memberStatusText">免费版</span>
+            <span id="memberBadgeSmall" style="font-size:0.75rem;"></span>
+          </div>
+          <div style="font-size:0.82rem;color:#a16207;line-height:1.6;" id="memberDetailText">
+            AI 调用：<strong>2次/天</strong><br/>
+            <button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#92400e;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500;">🔓 输入激活码升级</button>
+          </div>
+        </div>
+
         <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); margin-top: 1.5rem;">
-          <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">💡 为什么要设置目标？</div>
           <div style="font-size: 0.85rem; color: var(--text-secondary);">
             设置你的角色和目标后，AI分析会更加有针对性。它会帮助你判断：今天的行动是否在帮助我接近目标？有哪些事情让我偏离了方向？
           </div>
         </div>
 
+        <!-- 数据管理（本地存储版本） -->
         <div style="border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem;">
-          <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); text-align: center;">
-            <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">⚙️ API 配置</div>
+          <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">💾 数据管理</div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">所有数据存储在浏览器本地，建议定期导出备份。</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button onclick="exportAllData()" style="flex:1;min-width:120px;padding:0.75rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;">📤 导出全部数据</button>
+            <label style="flex:1;min-width:120px;padding:0.75rem;background:white;color:#6366f1;border:2px dashed #c7d2fe;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;">
+              📥 导入数据
+              <input type="file" accept=".json" onchange="if(this.files[0])importAllData(this.files[0])" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); margin-top: 1.5rem;">
+          <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">⚙️ API 配置</div>
             <div style="font-size: 0.85rem; color: var(--text-secondary);">
               AI 配置已内置到程序中，无需手动配置
             </div>
@@ -2735,10 +2759,7 @@
           
           // 只有确实有 uid 时才算真正登录
           if (currentUser?.uid) {
-            updateLoginUI(true);
-            updateGlobalLoginUI(true);
-            // 从云端加载数据
-            loadCloudDataOnLogin();
+            updateLoginUI(true); updateGlobalLoginUI(true);
           } else {
             console.log('登录状态存在但无有效用户信息，不自动登录');
             updateLoginUI(false);
@@ -2860,28 +2881,12 @@
     }
     
     // 获取云端数据
+    // 获取云端数据（本地模式 - 不使用云端）
     async function getCloudData() {
-      // GitHub Pages 环境不使用云端数据
-      if (isGitHubPages()) {
-        return null;
-      }
+      console.log('[本地模式] 跳过云端读取');
+      return null;
+    }
       
-      if (!app) await initCloudBase();
-      if (!currentUser) return null;
-      
-      console.log('[同步] 获取云端数据，用户:', currentUser.uid, currentUser.name, currentUser.phoneNumber);
-      
-      try {
-        const db = app.database();
-        // 不指定 where 条件，直接获取用户自己的数据（CloudBase 会自动根据权限过滤）
-        const res = await db.collection('user_data').limit(1).get();
-        
-        console.log('[同步] 查询结果, 数量:', res.data?.length || 0);
-        
-        if (res.data && res.data.length > 0) {
-          console.log('[同步] 找到云端数据');
-          return res.data[0].data;
-        }
         console.log('[同步] 云端没有数据');
         return null;
       } catch (e) {
@@ -2893,49 +2898,10 @@
     }
     
     // 保存数据到云端
+    // 保存数据到云端（本地模式 - 不使用）
     async function saveCloudData(data) {
-      // GitHub Pages 环境不保存云端数据
-      if (isGitHubPages()) {
-        return false;
-      }
-      
-      if (!app || !currentUser || isSyncing) return false;
-      isSyncing = true;
-      
-      console.log('[同步] 保存数据到云端');
-      
-      try {
-        const db = app.database();
-        
-        // 先尝试获取用户现有数据
-        const existing = await db.collection('user_data').limit(1).get();
-        
-        if (existing.data && existing.data.length > 0) {
-          // 更新现有数据
-          console.log('[同步] 更新现有数据, _id:', existing.data[0]._id);
-          await db.collection('user_data').doc(existing.data[0]._id).set({
-            data: data,
-            updatedAt: db.serverDate()
-          });
-        } else {
-          // 新增数据
-          console.log('[同步] 创建新数据');
-          await db.collection('user_data').add({
-            data: data,
-            createdAt: db.serverDate(),
-            updatedAt: db.serverDate()
-          });
-        }
-        console.log('[同步] 数据已保存到云端');
-        isSyncing = false;
-        return true;
-      } catch (e) {
-        console.error('[同步] 保存到云端失败:', e);
-        console.error('错误详情:', JSON.stringify(e));
-        alert('⚠️ 同步失败: ' + e.message);
-        isSyncing = false;
-        return false;
-      }
+      console.log('[本地模式] 跳过云端保存');
+      return true;
     }
     
     // ========== 待办事项功能 ==========
@@ -2992,16 +2958,8 @@
     
     // 立即同步待办到云端（添加/删除/切换完成后调用）
     // 复用已有的 saveData 函数，确保和记录(entries)使用完全相同的同步逻辑
-    function syncTodosToCloud() {
-      console.log('[待办同步] 触发同步，当前待办数:', todos.length, '已登录:', !!currentUser);
-      if (!currentUser) {
-        console.warn('[待办同步] 跳过: 未登录');
-        return;
-      }
-      // 直接调用已有的 saveData，它会自动把 todos 同步到云端（2秒防抖）
-      saveData();
-      console.log('[待办同步] ✓ 已触发 saveData');
-    }
+    // 待办同步（本地模式 - 无需云端同步）
+    function syncTodosToCloud() {}
     
     // 添加待办
     function addTodo(text, dateStr, sourceEntryId = null, timeHint = '') {
@@ -3312,8 +3270,12 @@
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
     let apiModel = 'deepseek-chat';
-    let dailyLimit = 10; // 每日调用次数限制
+    let dailyLimit = 10; // 每日调用次数限制（动态调整）
     let historyFilterStarred = false; // 历史页面筛选：只看星标
+    let isPremium = false; // 是否为付费会员
+    let subscriptionInfo = null; // 订阅详情 {plan, status, expireAt, activatedBy}
+    const FREE_DAILY_LIMIT = 2; // 免费用户每日AI调用次数
+    const PREMIUM_DAILY_LIMIT = 15; // 付费会员每日AI调用次数
     
     // 获取今日调用次数
     function getTodayApiCalls() {
@@ -3336,6 +3298,209 @@
       localStorage.setItem('daywise_api_date', today);
       const count = parseInt(localStorage.getItem('daywise_api_calls') || '0');
       localStorage.setItem('daywise_api_calls', (count + 1).toString());
+    }
+    
+    // ========== 会员系统 ==========
+
+    // 检测用户是否为有效付费会员
+    function checkPremium() {
+      if (!subscriptionInfo) return false;
+      if (subscriptionInfo.plan === 'free' || !subscriptionInfo.plan) return false;
+      if (subscriptionInfo.status !== 'active') return false;
+      if (subscriptionInfo.expireAt) {
+        var expireTime = new Date(subscriptionInfo.expireAt).getTime();
+        if (Date.now() > expireTime) {
+          console.log('[会员] 已过期:', subscriptionInfo.expireAt);
+          subscriptionInfo.status = 'expired';
+          isPremium = false;
+          return false;
+        }
+      }
+      isPremium = true;
+      return true;
+    }
+
+    // 从云端数据中加载会员状态（登录后调用）
+    // 加载会员状态（从 localStorage）
+    function loadSubscriptionFromCloud() {
+      try {
+        var s = localStorage.getItem('daywise_subscription');
+        subscriptionInfo = s ? JSON.parse(s) : { plan: 'free', status: 'active' };
+      } catch(e) { subscriptionInfo = { plan: 'free', status: 'active' }; }
+      checkPremium(); updateDailyLimit(); updateMemberBadge(); updateMemberCard();
+    }
+        updateMemberCard();
+      }
+    }
+
+    // 根据会员状态更新每日AI调用限制
+    function updateDailyLimit() {
+      dailyLimit = isPremium ? PREMIUM_DAILY_LIMIT : FREE_DAILY_LIMIT;
+      console.log('[会员] AI每日限额:', dailyLimit, isPremium ? '(付费会员)' : '(免费用户)');
+    }
+
+    // 使用激活码开通会员
+    async function activateWithCode(code) {
+      if (!code || !code.trim()) {
+        alert('请输入激活码');
+        return false;
+      }
+      code = code.trim().toUpperCase();
+
+      if (code.length < 8) {
+        alert('激活码格式不正确，请检查后重试');
+        return false;
+      }
+
+      // TODO: 后续对接发卡平台API或云函数验证
+      var validCodes = [
+        'NOTEME-MONTH-2026',
+        'NOTEME-YEAR-2026',
+        'TEST-PREMIUM-001',
+        'TEST-PREMIUM-002'
+      ];
+
+      if (validCodes.indexOf(code) === -1) {
+        alert('激活码无效，请核对后重试\n\n如需购买请联系客服获取激活码');
+        return false;
+      }
+
+      var plan = 'monthly';
+      var expireDays = 30;
+      if (code.indexOf('YEAR') >= 0) {
+        plan = 'yearly';
+        expireDays = 365;
+      }
+
+      var now = new Date();
+      var expireAt = new Date(now.getTime() + expireDays * 24 * 60 * 60 * 1000);
+
+      subscriptionInfo = {
+        plan: plan,
+        status: 'active',
+        expireAt: expireAt.toISOString(),
+        activatedAt: now.toISOString(),
+        activatedBy: 'code:' + code
+      };
+
+      isPremium = true;
+      updateDailyLimit();
+      updateMemberBadge();
+      updateMemberCard();
+      await saveSubscriptionToCloud();
+
+      var planName = plan === 'monthly' ? '月度会员' : '年度会员';
+      alert('开通成功！\n套餐：' + planName + '\n有效期至：' + expireAt.getFullYear() + '年' + (expireAt.getMonth()+1) + '月' + expireAt.getDate() + '日\n\n每日AI调用已提升至 ' + PREMIUM_DAILY_LIMIT + ' 次！');
+
+      closeModal('activationModal');
+      return true;
+    }
+
+    async function saveSubscriptionToCloud() { if(!subscriptionInfo) return; try{ localStorage.setItem('daywise_subscription', JSON.stringify(subscriptionInfo)); }catch(e){} }
+
+    function showUpgradePrompt(featureName) {
+      featureName = featureName || 'AI 功能';
+      var modal = document.getElementById('upgradePromptModal');
+      if (modal) { modal.style.display = 'flex'; return; }
+      
+      var overlay = document.createElement('div');
+      overlay.id = 'upgradePromptModal';
+      overlay.innerHTML = '<div class="modal-overlay" onclick="closeModal(\'upgradePromptModal\')" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center"><div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.3s ease"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#f59e0b,#ef4444);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">👑</div><h3 style="margin:0 0 0.5rem;font-size:1.25rem;color:#1f2937">解锁全部功能</h3><p style="margin:0;color:#6b7280;font-size:0.9rem">今日免费AI次数已用完</p></div><div style="background:#fef3c7;border-radius:12px;padding:1rem;margin-bottom:1.5rem"><div style="font-weight:600;color:#92400e;margin-bottom:0.75rem;font-size:0.95rem">💎 付费会员 ¥19.9/月</div><div style="font-size:0.85rem;color:#a16207;line-height:1.8">✅ AI调用提升至 <strong>15次/天</strong><br/>✅ 无限记录 & 待办管理<br/>✅ 云端多端同步<br/>✅ 优先体验新功能</div></div><button onclick="openActivationModal()" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">立即开通</button><button onclick="closeModal(\'upgradePromptModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">稍后再说</button></div></div><style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}</style>';
+      document.body.appendChild(overlay);
+    }
+
+    function openActivationModal() {
+      var upgradeModal = document.getElementById('upgradePromptModal');
+      if (upgradeModal) upgradeModal.style.display = 'none';
+
+      var modal = document.getElementById('activationModal');
+      if (modal) { modal.style.display = 'flex'; return; }
+
+      modal = document.createElement('div');
+      modal.id = 'activationModal';
+      modal.innerHTML = '<div class="modal-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)closeModal(\'activationModal\')"><div style="background:white;border-radius:16px;padding:2rem;max-width:360px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">🎫</div><h3 style="margin:0 0 0.5rem;font-size:1.2rem;color:#1f2937">激活会员</h3><p style="margin:0;color:#6b7280;font-size:0.85rem">请输入购买获得的激活码</p></div><input type="text" id="activationCodeInput" placeholder="请输入激活码（如：XXXX-XXXX）" maxlength="30" style="width:100%;padding:0.9rem 1rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;text-align:center;letter-spacing:1px;margin-bottom:1rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'#6366f1\'" onblur="this.style.borderColor=\'#e5e7eb\'" onkeydown="if(event.key===\'Enter\')doActivate()"><div id="activationMsg" style="font-size:0.85rem;text-align:center;margin-bottom:1rem;min-height:1.2rem"></div><button onclick="doActivate()" id="activateBtn" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">确认激活</button><button onclick="closeModal(\'activationModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">取消</button><p style="text-align:center;margin-top:1rem;font-size:0.78rem;color:#9ca3af">还没有激活码？<br/>联系客服获取 →</p></div></div>';
+      document.body.appendChild(modal);
+    }
+
+    async function doActivate() {
+      var input = document.getElementById('activationCodeInput');
+      var msgEl = document.getElementById('activationMsg');
+      var btn = document.getElementById('activateBtn');
+      if (!input) return;
+
+      var code = input.value.trim();
+      btn.disabled = true;
+      btn.textContent = '验证中...';
+      msgEl.textContent = '';
+      msgEl.style.color = '#6366f1';
+
+      try {
+        var success = await activateWithCode(code);
+        if (success) {
+          msgEl.style.color = '#10b981';
+          msgEl.textContent = '✅ 激活成功！';
+        } else {
+          msgEl.style.color = '#ef4444';
+          btn.disabled = false;
+          btn.textContent = '确认激活';
+        }
+      } catch(e) {
+        msgEl.style.color = '#ef4444';
+        msgEl.textContent = '⚠️ ' + (e.message || '激活失败，请重试');
+        btn.disabled = false;
+        btn.textContent = '确认激活';
+      }
+    }
+
+    function updateMemberBadge() {
+      var badge = document.getElementById('memberBadge');
+      if (!badge) return;
+
+      if (isPremium && subscriptionInfo && subscriptionInfo.status === 'active') {
+        var exp = subscriptionInfo.expireAt ? new Date(subscriptionInfo.expireAt) : null;
+        var expStr = exp ? ((exp.getMonth()+1) + '/' + exp.getDate() + '到期') : '';
+        badge.innerHTML = '<span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:600">👑 会员 ' + expStr + '</span>';
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function updateMemberCard() {
+      var card = document.getElementById('memberCard');
+      var statusText = document.getElementById('memberStatusText');
+      var detailText = document.getElementById('memberDetailText');
+      var badgeSmall = document.getElementById('memberBadgeSmall');
+      if (!card || !statusText || !detailText) return;
+
+      if (isPremium && subscriptionInfo && subscriptionInfo.status === 'active') {
+        card.style.background = 'linear-gradient(135deg, #d1fae5, #a7f3d0)';
+        card.style.borderColor = '#10b981';
+        statusText.textContent = subscriptionInfo.plan === 'yearly' ? '🏆 年度会员' : '👑 月度会员';
+        statusText.style.color = '#065f46';
+
+        var exp = subscriptionInfo.expireAt ? new Date(subscriptionInfo.expireAt) : null;
+        var expStr = exp ? (exp.getFullYear() + '-' + ('0'+(exp.getMonth()+1)).slice(-2) + '-' + ('0'+exp.getDate()).slice(-2) + ' 到期') : '';
+        detailText.innerHTML = 'AI 调用：<strong>15次/天</strong><br/>有效期：' + expStr + '<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#065f46;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔄 续费/换码</button>';
+        if (badgeSmall) badgeSmall.innerHTML = '<span style="background:#10b981;color:white;padding:1px 6px;border-radius:10px;font-size:0.7rem">生效中</span>';
+      } else {
+        card.style.background = 'linear-gradient(135deg, #fef3c7, #fde68a)';
+        card.style.borderColor = '#fcd34d';
+        statusText.textContent = '免费版';
+        statusText.style.color = '#92400e';
+        var count = getTodayApiCalls();
+        detailText.innerHTML = 'AI 调用：<strong>2次/天</strong> (今日已用' + count + '/2)<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#92400e;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔓 输入激活码升级</button>';
+        if (badgeSmall) badgeSmall.innerHTML = '';
+      }
+    }
+
+    function checkAIAccess(featureName) {
+      var limitInfo = checkApiLimit();
+      if (limitInfo.limited) {
+        showUpgradePrompt(featureName);
+        return false;
+      }
+      return true;
     }
     
     // ========== 登录相关函数 ==========
@@ -3430,8 +3595,6 @@
         setTimeout(() => {
           document.getElementById('globalLoginModal').style.display = 'none';
           appUnlockAndLoad();
-          // 从云端加载数据（覆盖本地）
-          loadCloudDataOnLogin();
         }, 500);
       } else {
         msgEl.textContent = result.message || '登录失败';
@@ -3454,163 +3617,10 @@
     }
     
     // 登录后从云端加载数据（自动同步，无需确认）
+    // 登录后加载数据（本地模式：从 localStorage 恢复会员状态）
     async function loadCloudDataOnLogin() {
-      console.log('=== [云端同步] 开始 ===');
-      try {
-        const cloudData = await getCloudData();
-        console.log('=== [云端同步] getCloudData 返回:', cloudData ? '有数据' : 'NULL/空');
-        if (cloudData) {
-          console.log('=== [云端同步] 云端 entries 数量:', (cloudData.entries||[]).length);
-          console.log('=== [云端同步] 云端 todos 数量:', (cloudData.todos||[]).length);
-          console.log('=== [云端同步] 云端 todos 内容:', JSON.stringify(cloudData.todos||[]));
-        }
-      
-      // 如果本地有数据，先尝试保存到云端
-      const localData = {
-        entries: entries || [],
-        dailyReviews: dailyReviews || {},
-        weeklyReviews: weeklyReviews || {},
-        aiSummaries: aiSummaries || {},
-        aiInsights: aiInsights || {},
-        weeklyInsights: weeklyInsights || [],
-        mindMaps: mindMaps || {},
-        todos: todos || [],
-        userRole: userRole || '',
-        userGoals: userGoals || [],
-        apiCalls: {
-          date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
-          count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
-        }
-      };
-      
-      // 如果本地有数据但云端没有，直接保存到云端
-      if (!cloudData && (localData.entries.length > 0 || localData.todos.length > 0)) {
-        console.log('[同步] 本地有数据，云端没有，保存到云端');
-        await saveCloudData(localData);
-        loadEntries();
-        updateDateDisplay();
-        renderTodoBanner();  // 重新渲染待办
-        return;
-      }
-      
-      // 如果云端有数据，直接用云端覆盖本地（自动同步）
-      if (cloudData) {
-        console.log('[同步] 自动同步云端数据到本地');
-        entries = cloudData.entries || [];
-        dailyReviews = cloudData.dailyReviews || {};
-        weeklyReviews = cloudData.weeklyReviews || {};
-        aiSummaries = cloudData.aiSummaries || {};
-        aiInsights = cloudData.aiInsights || {};
-        weeklyInsights = cloudData.weeklyInsights || {};
-        mindMaps = cloudData.mindMaps || {};
-        todos = cloudData.todos || [];
-        console.log('=== [云端同步] ✓ 已恢复 todos 到内存, 数量:', todos.length);
-        console.log('=== [云端同步] todos 内容:', JSON.stringify(todos.map(t => ({id:t.id, text:t.text.substring(0,20), date:t.date}))));
-        // 恢复个人背景（角色+目标）
-        console.log('[同步] 云端 userRole=', cloudData.userRole, 'userGoals=', JSON.stringify(cloudData.userGoals));
-        if (cloudData.userRole) {
-          userRole = cloudData.userRole;
-          localStorage.setItem('daywise_user_role', userRole);
-          console.log('[同步] ✓ 恢复角色:', userRole);
-        } else {
-          console.log('[同步] ✗ 云端无角色数据');
-        }
-        if (cloudData.userGoals && cloudData.userGoals.length > 0) {
-          userGoals = cloudData.userGoals;
-          localStorage.setItem('daywise_user_goals', JSON.stringify(userGoals));
-          console.log('[同步] ✓ 恢复目标数量:', userGoals.length, '内容:', JSON.stringify(userGoals));
-        } else {
-          console.log('[同步] ✗ 云端无目标数据或为空');
-        }
-        
-        // 如果云端没有脑图数据，尝试从 localStorage 恢复
-        if (Object.keys(mindMaps).length === 0) {
-          try {
-            const savedMindMaps = localStorage.getItem('daywise_mind_maps');
-            if (savedMindMaps) {
-              mindMaps = JSON.parse(savedMindMaps);
-            }
-          } catch (e) {}
-        }
-        
-        // 恢复 API 调用次数
-        const today = new Date().toDateString();
-        if (cloudData.apiCalls) {
-          const cloudApiDate = cloudData.apiCalls.date || today;
-          const cloudApiCount = cloudData.apiCalls.count || 0;
-          
-          // 如果云端日期是今天，用云端的次数；否则重置
-          if (cloudApiDate === today) {
-            localStorage.setItem('daywise_api_date', today);
-            localStorage.setItem('daywise_api_calls', cloudApiCount.toString());
-            console.log('[同步] API调用次数:', cloudApiCount);
-          } else {
-            localStorage.setItem('daywise_api_date', today);
-            localStorage.setItem('daywise_api_calls', '0');
-          }
-        }
-        
-        // 用恢复后的变量重新构建数据再保存（确保不覆盖云端已有的角色/目标）
-        const syncedData = {
-          entries: entries || [],
-          dailyReviews: dailyReviews || {},
-          weeklyReviews: weeklyReviews || {},
-          aiSummaries: aiSummaries || {},
-          aiInsights: aiInsights || {},
-          weeklyInsights: weeklyInsights || [],
-          mindMaps: mindMaps || {},
-          todos: todos || [],
-          userRole: userRole || '',
-          userGoals: userGoals || [],
-          apiCalls: {
-            date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
-            count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
-          }
-        };
-        
-        // 保存合并后的完整数据到云端（包含从云端恢复的角色和目标）
-        await saveCloudData(syncedData);
-        
-        // 保存到 localStorage
-        localStorage.setItem('daywise_entries', JSON.stringify(entries));
-        localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews));
-        localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews));
-        localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
-        localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
-        localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
-        localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
-        localStorage.setItem('daywise_todos', JSON.stringify(todos));  // 待办也写回本地
-        console.log('=== [云端同步] ✓ todos 已写入 localStorage');
-        
-        // 保存个人背景（角色+目标）到本地
-        if (userRole) localStorage.setItem('daywise_user_role', userRole);
-        if (userGoals) localStorage.setItem('daywise_user_goals', JSON.stringify(userGoals));
-        
-        // 重新加载UI
-        loadEntries();
-        updateDateDisplay();
-        renderTodoBanner();  // 重新渲染待办横幅
-        console.log('=== [云端同步] ✓ renderTodoBanner 已调用 ===');
-        
-        // 刷新个人背景UI（角色+目标）
-        const roleSelectPage = document.getElementById('userRoleInputPage');
-        const customRoleInputPage = document.getElementById('customRoleInputPage');
-        if (roleSelectPage) {
-          roleSelectPage.value = userRole || '';
-          if (userRole && !['学生', '职场人', '自由职业者', '创业者', '创作者', '全职爸妈', '退休人士'].includes(userRole)) {
-            roleSelectPage.value = '其他';
-            if (customRoleInputPage) { customRoleInputPage.value = userRole; customRoleInputPage.style.display = 'block'; }
-          } else if (customRoleInputPage) {
-            customRoleInputPage.style.display = 'none';
-          }
-        }
-        // 渲染目标列表
-        renderGoalsEditorPage();
-      }
-      } catch(e) {
-        console.error('=== [云端同步] ✗ 失败:', e.message || e);
-        console.error('=== [云端同步] ✗ 完整错误:', e);
-      }
+      loadSubscriptionFromCloud();
+      console.log('[本地模式] 数据已从 localStorage 加载');
     }
     
     function updateLoginUI(isLoggedIn) {
@@ -3712,28 +3722,6 @@
         msgEl.style.color = '#86efac';
         updateGlobalLoginUI(true);
         
-        // 延迟同步数据
-        setTimeout(async () => {
-          // 从云端加载数据
-          const cloudData = await getCloudData();
-          if (cloudData) {
-            // 云端有数据，同步到本地
-            if (confirm('检测到云端有数据，是否同步到本地？\n（本地数据将被云端数据覆盖）')) {
-              entries = cloudData.entries || [];
-              dailyReviews = cloudData.dailyReviews || {};
-              weeklyReviews = cloudData.weeklyReviews || {};
-              aiSummaries = cloudData.aiSummaries || {};
-              aiInsights = cloudData.aiInsights || {};
-              weeklyInsights = cloudData.weeklyInsights || {};
-              saveData();
-              loadEntries();
-              alert('数据同步成功！');
-            }
-          } else {
-            // 云端没有数据，上传本地数据
-            await handleManualSync();
-          }
-        }, 500);
       } else {
         msgEl.textContent = result.message || '登录失败，请重试';
         msgEl.style.color = '#fca5a5';
@@ -3747,44 +3735,56 @@
       alert('已退出登录');
     }
     
-    async function handleManualSync() {
-      const btn = document.getElementById('manualSyncBtn');
-      if (!currentUser) {
-        alert('请先登录');
-        return;
-      }
-      
-      btn.disabled = true;
-      btn.textContent = '同步中...';
-      
-      const data = {
-        entries: entries,
-        dailyReviews: dailyReviews,
-        weeklyReviews: weeklyReviews,
-        aiSummaries: aiSummaries,
-        aiInsights: aiInsights,
-        weeklyInsights: weeklyInsights
+    // ====== 数据导出/导入（纯本地存储版本） ======
+    function exportAllData() {
+      var data = {
+        version: '1.0-local',
+        exportDate: new Date().toISOString(),
+        entries: entries, dailyReviews: dailyReviews, weeklyReviews: weeklyReviews,
+        aiSummaries: aiSummaries, aiInsights: aiInsights, weeklyInsights: weeklyInsights,
+        mindMaps: mindMaps, todos: todos, userRole: userRole, userGoals: userGoals,
+        subscription: subscriptionInfo || null
       };
-      
-      const success = await saveCloudData(data);
-      
-      btn.disabled = false;
-      btn.textContent = '🔄 手动同步数据';
-      
-      if (success) {
-        alert('✅ 数据同步成功！');
-      } else {
-        alert('⚠️ 同步失败，请检查网络后重试');
-      }
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'noteme_backup_' + new Date().toISOString().slice(0,10) + '.json';
+      a.click(); URL.revokeObjectURL(url);
+      alert('\u2705 数据导出成功！\n\n请妥善保管此备份文件。');
+    }
+
+    function importAllData(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var data = JSON.parse(e.target.result);
+          if (!data.version && !data.entries) { alert('\u274c 无效的备份文件'); return; }
+          if (!confirm('即将导入数据（当前数据将被覆盖），是否继续？\n- 记录: ' + (data.entries||[]).length + ' 条\n- 待办: ' + (data.todos||[]).length + ' 条')) return;
+          if (data.entries) { entries = data.entries; localStorage.setItem('daywise_entries', JSON.stringify(entries)); }
+          if (data.dailyReviews) { dailyReviews = data.dailyReviews; localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews)); }
+          if (data.weeklyReviews) { weeklyReviews = data.weeklyReviews; localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews)); }
+          if (data.aiSummaries) { aiSummaries = data.aiSummaries; localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries)); }
+          if (data.aiInsights) { aiInsights = data.aiInsights; localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights)); }
+          if (data.weeklyInsights) { weeklyInsights = data.weeklyInsights; localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights)); }
+          if (data.mindMaps) { mindMaps = data.mindMaps; localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps)); }
+          if (data.todos) { todos = data.todos; localStorage.setItem('daywise_todos', JSON.stringify(todos)); }
+          if (data.userRole) { userRole = data.userRole; localStorage.setItem('daywise_user_role', userRole); }
+          if (data.userGoals) { userGoals = data.userGoals; localStorage.setItem('daywise_user_goals', JSON.stringify(userGoals)); }
+          if (data.subscription) { subscriptionInfo = data.subscription; localStorage.setItem('daywise_subscription', JSON.stringify(subscriptionInfo)); checkPremium(); updateMemberBadge(); updateMemberCard(); }
+          alert('\u2705 数据导入成功！'); location.reload();
+        } catch(err) { alert('导入失败: ' + err.message); }
+      };
+      reader.readAsText(file);
     }
     
     // 检查是否达到限制
     function checkApiLimit() {
+      updateDailyLimit();
       const count = getTodayApiCalls();
       if (count >= dailyLimit) {
-        return { limited: true, count: count, limit: dailyLimit };
+        return { limited: true, count: count, limit: dailyLimit, isPremium: isPremium };
       }
-      return { limited: false, count: count, limit: dailyLimit };
+      return { limited: false, count: count, limit: dailyLimit, isPremium: isPremium };
     }
     
     // 周选择器状态 - 默认选择上一周
@@ -4943,10 +4943,7 @@
         if (state && state?.userInfo?.uid) {
           authState = state;
           currentUser = state.userInfo;
-          console.log('CloudBase session 已恢复:', currentUser.uid);
-          updateLoginUI(true);
-          // session恢复后，自动从云端同步数据到本地
-          loadCloudDataOnLogin();
+          console.log('CloudBase session 已恢复:', currentUser.uid); updateLoginUI(true);
         }
       } catch(e) {
         console.warn('后台 session 恢复暂不可用:', e.message);
@@ -4979,6 +4976,12 @@
           }
         });
       });
+      
+      // 初始化会员状态
+      updateDailyLimit();
+      updateMemberBadge();
+      loadSubscriptionFromCloud();  // 从 localStorage 恢复会员信息
+      updateMemberCard();
       
       // 初始化周选择器
       renderWeekSelector();
@@ -5048,21 +5051,7 @@
       alert('设置已保存！');
       
       // 如果已登录，同步个人背景到云端
-      if (currentUser && !isSyncing) {
-        const data = {
-          entries: entries,
-          dailyReviews: dailyReviews,
-          weeklyReviews: weeklyReviews,
-          aiSummaries: aiSummaries,
-          aiInsights: aiInsights,
-          weeklyInsights: weeklyInsights,
-          mindMaps: mindMaps,
-          todos: todos,
-          userRole: userRole,
-          userGoals: userGoals,
-        };
-        saveCloudData(data);
-      }
+      
     }
 
     // 目标管理函数
@@ -5191,6 +5180,9 @@
       document.getElementById('apiKeyInput').value = apiKey;
       document.getElementById('apiEndpointInput').value = apiEndpoint;
       document.getElementById('apiModelInput').value = apiModel;
+
+      // 更新会员卡片
+      updateMemberCard();
 
       // 加载角色设置
       const roleSelect = document.getElementById('userRoleInput');
@@ -6083,31 +6075,7 @@
         console.error('保存数据失败:', e);
       }
       
-      // 如果已登录，自动同步到云端（防抖）
-      if (currentUser && !isSyncing) {
-        console.log('[saveData] 触发云端同步, todos数量:', todos.length, 'todos内容:', JSON.stringify(todos.map(t=>({id:t.id,text:t.text.substring(0,15),date:t.date}))));
-        const data = {
-          entries: entries,
-          dailyReviews: dailyReviews,
-          weeklyReviews: weeklyReviews,
-          aiSummaries: aiSummaries,
-          aiInsights: aiInsights,
-          weeklyInsights: weeklyInsights,
-          mindMaps: mindMaps,
-          todos: todos,
-          // 个人背景（角色+目标）云端同步
-          userRole: userRole,
-          userGoals: userGoals,
-          apiCalls: {
-            date: localStorage.getItem('daywise_api_date') || new Date().toDateString(),
-            count: parseInt(localStorage.getItem('daywise_api_calls') || '0')
-          }
-        };
-        clearTimeout(window.syncTimer);
-        window.syncTimer = setTimeout(() => {
-          saveCloudData(data);
-        }, 2000); // 2秒防抖
-      }
+
     }
     
     // 页面关闭前自动保存
@@ -8301,20 +8269,6 @@ ${entryTexts || '无记录'}
           // 保存到全局状态
           mindMaps[dateKey] = mindMapData;
           localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
-          // 同步到 CloudBase
-          if (currentUser) {
-            const dataToSave = {
-              entries: entries || [],
-              dailyReviews: dailyReviews || {},
-              weeklyReviews: weeklyReviews || {},
-              aiSummaries: aiSummaries || {},
-              aiInsights: aiInsights || {},
-              weeklyInsights: weeklyInsights || [],
-              mindMaps: mindMaps || {}
-            };
-            await saveCloudData(dataToSave);
-            console.log('[同步] 脑图已同步到云端');
-          }
         } else {
           // 如果解析失败，显示原始文本
           content.innerHTML = formatSummaryContent(response);
@@ -8631,15 +8585,13 @@ ${userBackground}
 - keywords：本周最核心的中文关键词，数组格式，2-4字词语，最多5个`;
     }
 
-    function callAIApi(prompt, onSuccess, onError) {
-      // 检查每日调用限制
-      const limitInfo = checkApiLimit();
-      if (limitInfo.limited) {
-        if (onError) {
-          onError(`今日AI调用次数已达上限（${limitInfo.limit}次），请明天再来～\n\n💡 每次记录+总结+脑图算1次调用`);
-        }
+    function callAIApi(prompt, onSuccess, onError, featureName) {
+      if (!checkAIAccess(featureName || 'AI功能')) {
+        if (onError) onError('请升级会员以继续使用');
         return;
       }
+      
+      var limitInfo = checkApiLimit();
       
       console.log('API调用信息:', { endpoint: apiEndpoint, model: apiModel, key: apiKey ? apiKey.substring(0, 10) + '...' : 'empty', todayCalls: limitInfo.count + 1, limit: limitInfo.limit });
       
