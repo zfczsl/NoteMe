@@ -2880,23 +2880,13 @@
       }
     }
     
-    // 获取云端数据
     // 获取云端数据（本地模式 - 不使用云端）
     async function getCloudData() {
       console.log('[本地模式] 跳过云端读取');
       return null;
     }
-      
-        console.log('[同步] 云端没有数据');
-        return null;
-      } catch (e) {
-        console.error('[同步] 获取云端数据失败:', e);
-        console.error('错误详情:', JSON.stringify(e));
-        // 静默失败，不弹窗打扰用户
-        return null;
-      }
-    }
     
+    // ========== 待办事项功能 ==========
     // 保存数据到云端
     // 保存数据到云端（本地模式 - 不使用）
     async function saveCloudData(data) {
