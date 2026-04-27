@@ -9,27 +9,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* 简约灵动配色 - 薄荷清新 */
-      --primary: #34d399;      /* 薄荷绿 */
-      --primary-light: #a7f3d0;
-      --primary-dark: #059669;
-      --accent: #f472b6;        /* 柔和粉色点缀 */
-      --bg: #fafafa;
-      --bg-card: #ffffff;
-      --bg-secondary: #f0fdf4;
-      --bg-gradient: linear-gradient(135deg, #ecfdf5 0%, #fdf2f8 100%);
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --text-muted: #9ca3af;
-      --border: #f3f4f6;
-      --border-light: #fafafa;
-      --success: #10b981;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow: 0 4px 12px rgba(0,0,0,0.05);
-      --shadow-lg: 0 8px 24px rgba(0,0,0,0.06);
-      --radius: 16px;
-      --radius-lg: 24px;
-      --radius-sm: 10px;
+      /* 粉蓝弥散柔光配色 */
+      --primary: #a87cc4;
+      --primary-light: #e0d0f0;
+      --primary-dark: #7a5699;
+      --accent: #FFB8D8;
+      --bg: #fdf8fb;
+      --bg-card: rgba(255,255,255,0.42);
+      --bg-secondary: rgba(240,232,248,0.5);
+      --bg-gradient: linear-gradient(135deg, #fdf0f7 0%, #f0f4ff 100%);
+      --text-primary: #2d2230;
+      --text-secondary: #555;
+      --text-muted: #999;
+      --border: rgba(192,170,210,0.2);
+      --border-light: rgba(192,170,210,0.1);
+      --success: #7ecba1;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow: 0 8px 32px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.06);
+      --glass: rgba(255,255,255,0.42);
+      --glass-border: rgba(255,255,255,0.7);
+      --glass-glow: rgba(255,255,255,0.85);
+      --radius: 24px;
+      --radius-lg: 28px;
+      --radius-sm: 14px;
+      /* 粉蓝渐变 */
+      --gradient-pink-blue: linear-gradient(90deg, #FFB8D8, #87CFFF);
+      --gradient-pink-blue-135: linear-gradient(135deg, #ffadd2, #7fc8ff);
     }
 
     * {
@@ -40,17 +46,70 @@
 
     body {
       font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
+      background: #fdf8fb;
       color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
       padding-bottom: 80px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    /* Header - 简约无边界设计 */
+
+
+    /* 弥散背景（粉蓝柔光） */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.6;
+    }
+
+    /* 1. 右上粉色弥散 */
+    .bg-orb-1 {
+      width: 60vw; height: 60vw;
+      top: -20%; right: -15%;
+      background: radial-gradient(circle, #ffd6e7, #ffc0e0, transparent 75%);
+    }
+
+    /* 2. 左侧蓝色弥散 */
+    .bg-orb-2 {
+      width: 55vw; height: 55vw;
+      top: 15%; left: -20%;
+      background: radial-gradient(circle, #c8e6ff, #9fd0ff, transparent 75%);
+    }
+
+    /* 3. 右下浅蓝弥散 */
+    .bg-orb-3 {
+      width: 50vw; height: 50vw;
+      bottom: -15%; right: 10%;
+      background: radial-gradient(circle, #e0f0ff, #c6e0ff, transparent 75%);
+      opacity: 0.5;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bg-orb { animation: none; }
+    }
+
+    /* Header - 白雾玻璃浮动 */
     .header {
-      background: transparent;
-      padding: 1.5rem 2rem 0;
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.7);
+      padding: 1.25rem 2rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .header-content {
@@ -70,15 +129,15 @@
     .logo-icon {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 12px;
+      background: linear-gradient(135deg, #ffadd2, #7fc8ff);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: 700;
       font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+      box-shadow: 0 4px 14px rgba(160,130,210,0.25);
     }
 
     .logo-text {
@@ -104,7 +163,7 @@
       gap: 0.75rem;
     }
 
-    /* Buttons - 灵动轻盈 */
+    /* Buttons - 柔和muted */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -120,25 +179,31 @@
     }
 
     .btn-primary {
-      background: var(--primary);
+      background: linear-gradient(135deg, #ffadd2, #7fc8ff);
       color: white;
-      box-shadow: 0 2px 8px rgba(52, 211, 153, 0.25);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(52, 211, 153, 0.35);
+      background: linear-gradient(135deg, #ff95c8, #6bb8f5);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .btn-secondary {
-      background: var(--bg-secondary);
+      background: var(--glass);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .btn-secondary:hover {
-      background: var(--primary-light);
-      color: var(--primary-dark);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(22px);
+      border-color: var(--glass-glow);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .btn-ghost {
@@ -163,7 +228,7 @@
       padding: 1.5rem;
     }
 
-    /* Date Navigation - 灵动简约 */
+    /* Date Navigation - 白雾玻璃浮卡 */
     .date-nav {
       display: flex;
       align-items: center;
@@ -171,8 +236,12 @@
       gap: 1.5rem;
       margin-bottom: 1.5rem;
       padding: 1.5rem;
-      background: var(--bg-gradient);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .date-nav-btn {
@@ -182,16 +251,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.75);
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
     .date-nav-btn:hover {
-      background: var(--primary);
+      background: linear-gradient(135deg, #ffadd2, #7fc8ff);
       color: white;
       transform: scale(1.05);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .current-date {
@@ -204,7 +277,7 @@
       position: relative;
     }
 
-    /* 今天日期容器加光晕 */
+    /* 今天日期容器加光晕（粉蓝主题适配） */
     .date-nav.is-today::before {
       content: '';
       position: absolute;
@@ -214,7 +287,7 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,173,210,0.3) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -281,17 +354,21 @@
     .quick-action-card {
       flex: 1;
       min-width: 160px;
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1rem;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .quick-action-card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-3px);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
     }
 
     .quick-action-card .icon {
@@ -310,15 +387,15 @@
     }
 
     .quick-action-card .icon.orange {
-      background: linear-gradient(135deg, #fed7aa, #fb923c);
+      background: linear-gradient(135deg, #ffd6e7, #ffb8d8);
     }
 
     .quick-action-card .icon.green {
-      background: linear-gradient(135deg, #a7f3d0, #34d399);
+      background: linear-gradient(135deg, #c8e6ff, #9fd0ff);
     }
 
     .quick-action-card .icon.blue {
-      background: linear-gradient(135deg, #bfdbfe, #60a5fa);
+      background: linear-gradient(135deg, #e0d0f0, #c0b0e8);
     }
 
     .quick-action-card h3 {
@@ -333,13 +410,16 @@
       color: var(--text-muted);
     }
 
-    /* Entry Section - 轻盈输入 */
+    /* Entry Section - 玻璃拟态输入卡 */
     .entry-section {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius-lg);
       padding: 1.5rem;
       margin-bottom: 1.5rem;
-      box-shadow: var(--shadow);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .entry-header {
@@ -371,13 +451,14 @@
       font-family: inherit;
       resize: vertical;
       transition: all 0.2s;
-      background: var(--bg);
+      background: rgba(255,250,253,0.6);
       line-height: 1.7;
     }
 
     .entry-textarea:focus {
       outline: none;
-      box-shadow: 0 0 0 2px var(--primary-light);
+      box-shadow: 0 0 0 2px rgba(255,173,210,0.3);
+      background: rgba(255,255,255,0.8);
     }
 
     .entry-textarea::placeholder {
@@ -434,16 +515,20 @@
     }
 
     .entry-card {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1.25rem;
       margin-bottom: 0.75rem;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .entry-card:hover {
-      box-shadow: var(--shadow);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
       transform: translateY(-2px);
     }
 
@@ -506,7 +591,10 @@
     }
 
     .modal {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.8);
       border-radius: var(--radius-lg);
       width: 100%;
       max-width: 640px;
@@ -514,6 +602,7 @@
       overflow: hidden;
       transform: translateY(20px);
       transition: transform 0.3s ease;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.06);
     }
 
     .modal-overlay.active .modal {
@@ -616,13 +705,16 @@
       resize: vertical;
     }
 
-    /* AI Summary - 灵动AI卡片 */
+    /* AI Summary - 柔和AI卡片 */
     .ai-summary {
-      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      background: rgba(255,248,252,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius-lg);
       padding: 1.5rem;
       margin-top: 1rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .ai-summary-header {
@@ -841,17 +933,21 @@
     }
 
     .stat-card {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1rem;
       text-align: center;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
     }
 
     .stat-card .value {
@@ -873,11 +969,14 @@
     }
 
     .chart-container {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1rem;
       margin-bottom: 1rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .chart-title {
@@ -1146,23 +1245,26 @@
 
     /* 待办横幅样式 */
     .todo-banner {
-      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 0.875rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid #fcd34d;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
       transition: all 0.2s;
     }
     .todo-banner-all-done {
-      background: linear-gradient(135deg, #d1fae5, #a7f3d0) !important;
-      border-color: #10b981 !important;
+      background: rgba(210,240,220,0.5) !important;
+      border-color: rgba(130,190,160,0.4) !important;
     }
     .todo-banner:hover {
+      background: rgba(255,255,255,0.55);
       transform: translateY(-1px);
-      box-shadow: var(--shadow);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
     }
     .todo-banner-left {
       display: flex;
@@ -1174,26 +1276,28 @@
     }
     .todo-banner-text {
       font-size: 0.9rem;
-      color: #92400e;
+      color: var(--primary-dark);
     }
     .todo-banner-text strong {
-      color: #b45309;
+      color: var(--primary-dark);
       font-weight: 700;
     }
     .todo-banner-arrow {
       font-size: 0.75rem;
-      color: #b45309;
+      color: var(--primary-dark);
       transition: transform 0.2s;
     }
     
     /* 待办列表样式 */
     .todo-list {
-      background: white;
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 0.75rem;
       margin-top: 0.5rem;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
     .todo-date-group {
       margin-bottom: 0.5rem;
@@ -1365,11 +1469,14 @@
     
     /* AI Display Section - 灵动AI */
     .ai-display-section {
-      background: linear-gradient(135deg, #ecfdf5, #fdf2f8);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius-lg);
       padding: 1.25rem;
       margin-bottom: 2rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .ai-display-section .section-header {
@@ -1423,20 +1530,21 @@
       color: var(--text-muted);
     }
 
-    /* Bottom Navigation - 灵动导航 */
+    /* Bottom Navigation - 白雾玻璃导航 */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-top: 1px solid rgba(255,255,255,0.7);
       display: flex;
       justify-content: space-around;
       padding: 0.75rem 0;
       z-index: 1000;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.04);
     }
 
     .nav-item {
@@ -1794,13 +1902,21 @@
   </script>
 </head>
 <body>
-  
+
+  <!-- 弥散光晕背景 -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+  </div>
+
   <!-- 全局登录弹窗 -->
   <div id="globalLoginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; backdrop-filter: blur(4px);">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; background: white; border-radius: 24px; padding: 2rem; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
       <!-- Logo -->
       <div style="text-align: center; margin-bottom: 1.5rem;">
-        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 16px; margin-bottom: 1rem;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: linear-gradient(135deg, #ffadd2, #7fc8ff); border-radius: 16px; margin-bottom: 1rem;">
           <span style="font-size: 28px; color: white; font-weight: bold;">记</span>
         </div>
         <h2 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 0.5rem;">欢迎使用 记我</h2>
@@ -1822,7 +1938,7 @@
           <span style="font-size: 0.9rem; color: #374151;">数据云端备份</span>
         </div>
         <div style="display: flex; align-items: center;">
-          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 8px; margin-right: 0.75rem;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #ffadd2, #7fc8ff); border-radius: 8px; margin-right: 0.75rem;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </span>
           <span style="font-size: 0.9rem; color: #374151;">多设备共享</span>
@@ -1830,7 +1946,7 @@
       </div>
       
       <!-- 手机号登录表单 -->
-      <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 16px; padding: 1.25rem; color: white;">
+      <div style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: 16px; padding: 1.25rem; color: white;">
         <div style="font-size: 0.9rem; margin-bottom: 0.75rem; font-weight: 500;">📱 手机号快捷登录</div>
         <input type="tel" id="globalLoginPhone" placeholder="请输入手机号" maxlength="11"
           style="width: 100%; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; margin-bottom: 0.75rem; background: rgba(255,255,255,0.95); color: #333;">
@@ -1843,7 +1959,7 @@
           </button>
         </div>
         <button onclick="handleGlobalLogin()" 
-          style="width: 100%; padding: 0.95rem; background: white; color: #6366f1; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+          style="width: 100%; padding: 0.95rem; background: white; color: #7a5699; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;">
           登录 / 注册
         </button>
         <div id="globalLoginMsg" style="font-size: 0.8rem; margin-top: 0.75rem; text-align: center; min-height: 1.2rem; opacity: 0.9;"></div>
@@ -1859,7 +1975,7 @@
   <div id="appLockOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; cursor: wait;">
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);"></div>
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-      <div style="width: 48px; height: 48px; border: 4px solid #e5e7eb; border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem;"></div>
+      <div style="width: 48px; height: 48px; border: 4px solid #e5e7eb; border-top-color: #ffadd2; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem;"></div>
       <p style="font-size: 1rem; color: #6b7280; font-weight: 500;">请先登录以继续使用</p>
     </div>
     <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
@@ -2065,7 +2181,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           历史记录
         </div>
-        <button id="exportHistoryBtn" onclick="exportHistoryData()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(99,102,241,0.3);">
+        <button id="exportHistoryBtn" onclick="exportHistoryData()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #ffadd2, #7fc8ff); color: white; border: none; border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(255,173,210,0.3);">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           导出
         </button>
@@ -2084,7 +2200,7 @@
       <div style="padding: 0 1rem;">
         
         <!-- 账号与同步 -->
-        <div id="accountSection" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: white;">
+        <div id="accountSection" style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: white;">
           <!-- 未登录状态 -->
           <div id="loginPanel">
             <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">
@@ -2102,12 +2218,12 @@
                 <input type="text" id="loginCode" placeholder="验证码" maxlength="6"
                   style="flex: 1; padding: 0.75rem; border: none; border-radius: 8px; font-size: 0.9rem; background: rgba(255,255,255,0.95); color: #333;">
                 <button id="sendCodeBtn" onclick="handleSendCode()" 
-                  style="padding: 0 1rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
+                  style="padding: 0 1rem; background: rgba(255,255,255,0.25); color: white; border: none; border-radius: 8px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
                   获取验证码
                 </button>
               </div>
               <button onclick="handleLogin()" 
-                style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; background: white; color: #6366f1; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; background: white; color: #7a5699; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                 登录 / 注册
               </button>
               <div id="loginMsg" style="font-size: 0.75rem; margin-top: 0.5rem; text-align: center; min-height: 1rem;"></div>
@@ -2202,7 +2318,7 @@
         
         <!-- 导出数据 -->
         <div style="margin-top: 1.5rem;">
-          <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+          <div style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: var(--radius); padding: 1rem; color: white;">
             <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">📥 导出数据</div>
             
             <!-- 导出模式选择 -->
@@ -2235,7 +2351,7 @@
             </div>
             
             <!-- 操作按钮 -->
-            <button onclick="downloadExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #6366f1; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer;">
+            <button onclick="downloadExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #7a5699; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer;">
               📥 导出 Markdown 文件
             </button>
           </div>
@@ -2449,8 +2565,8 @@
           <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">💾 数据管理</div>
           <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">所有数据存储在浏览器本地，建议定期导出备份。</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-            <button onclick="exportAllData()" style="flex:1;min-width:120px;padding:0.75rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;">📤 导出全部数据</button>
-            <label style="flex:1;min-width:120px;padding:0.75rem;background:white;color:#6366f1;border:2px dashed #c7d2fe;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;">
+            <button onclick="exportAllData()" style="flex:1;min-width:120px;padding:0.75rem;background:linear-gradient(135deg,#ffadd2,#7fc8ff);color:white;border:none;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;">📤 导出全部数据</button>
+            <label style="flex:1;min-width:120px;padding:0.75rem;background:white;color:#7a5699;border:2px dashed #c7d2fe;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;">
               📥 导入数据
               <input type="file" accept=".json" onchange="if(this.files[0])importAllData(this.files[0])" style="display:none;">
             </label>
@@ -3405,7 +3521,7 @@
 
       modal = document.createElement('div');
       modal.id = 'activationModal';
-      modal.innerHTML = '<div class="modal-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)closeModal(\'activationModal\')"><div style="background:white;border-radius:16px;padding:2rem;max-width:360px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">🎫</div><h3 style="margin:0 0 0.5rem;font-size:1.2rem;color:#1f2937">激活会员</h3><p style="margin:0;color:#6b7280;font-size:0.85rem">请输入购买获得的激活码</p></div><input type="text" id="activationCodeInput" placeholder="请输入激活码（如：XXXX-XXXX）" maxlength="30" style="width:100%;padding:0.9rem 1rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;text-align:center;letter-spacing:1px;margin-bottom:1rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'#6366f1\'" onblur="this.style.borderColor=\'#e5e7eb\'" onkeydown="if(event.key===\'Enter\')doActivate()"><div id="activationMsg" style="font-size:0.85rem;text-align:center;margin-bottom:1rem;min-height:1.2rem"></div><button onclick="doActivate()" id="activateBtn" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">确认激活</button><button onclick="closeModal(\'activationModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">取消</button><p style="text-align:center;margin-top:1rem;font-size:0.78rem;color:#9ca3af">还没有激活码？<br/>联系客服获取 →</p></div></div>';
+      modal.innerHTML = '<div class="modal-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)closeModal(\'activationModal\')"><div style="background:white;border-radius:16px;padding:2rem;max-width:360px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#ffadd2,#7fc8ff);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">🎫</div><h3 style="margin:0 0 0.5rem;font-size:1.2rem;color:#1f2937">激活会员</h3><p style="margin:0;color:#6b7280;font-size:0.85rem">请输入购买获得的激活码</p></div><input type="text" id="activationCodeInput" placeholder="请输入激活码（如：XXXX-XXXX）" maxlength="30" style="width:100%;padding:0.9rem 1rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;text-align:center;letter-spacing:1px;margin-bottom:1rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'#6366f1\'" onblur="this.style.borderColor=\'#e5e7eb\'" onkeydown="if(event.key===\'Enter\')doActivate()"><div id="activationMsg" style="font-size:0.85rem;text-align:center;margin-bottom:1rem;min-height:1.2rem"></div><button onclick="doActivate()" id="activateBtn" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">确认激活</button><button onclick="closeModal(\'activationModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">取消</button><p style="text-align:center;margin-top:1rem;font-size:0.78rem;color:#9ca3af">还没有激活码？<br/>联系客服获取 →</p></div></div>';
       document.body.appendChild(modal);
     }
 
@@ -3419,7 +3535,7 @@
       btn.disabled = true;
       btn.textContent = '验证中...';
       msgEl.textContent = '';
-      msgEl.style.color = '#6366f1';
+      msgEl.style.color = '#7a5699';
 
       try {
         var success = await activateWithCode(code);
