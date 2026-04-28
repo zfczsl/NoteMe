@@ -15,9 +15,9 @@
       --primary-dark: #8a6aaa;
       --accent: #FFB8D8;
       --bg: #ffffff;
-      --bg-card: rgba(255,255,255,0.45);
-      --bg-secondary: rgba(245,240,250,0.4);
-      --bg-gradient: linear-gradient(135deg, #fff8fb 0%, #f8faff 100%);
+      --bg-card: rgba(255,255,255,0.55);
+      --bg-secondary: rgba(248,245,252,0.25);
+      --bg-gradient: linear-gradient(135deg, #fffdfa 0%, #fbfeff 100%);
       --text-primary: #2d2230;
       --text-secondary: #555;
       --text-muted: #999;
@@ -27,8 +27,8 @@
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
       --shadow: 0 8px 32px rgba(0,0,0,0.04);
       --shadow-lg: 0 12px 40px rgba(0,0,0,0.06);
-      --glass: rgba(255,255,255,0.42);
-      --glass-border: rgba(255,255,255,0.7);
+      --glass: rgba(255,255,255,0.52);
+      --glass-border: rgba(255,255,255,0.8);
       --glass-glow: rgba(255,255,255,0.85);
       --radius: 24px;
       --radius-lg: 28px;
@@ -68,30 +68,30 @@
     .bg-orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.35;
+      filter: blur(110px);
+      opacity: 0.18;
     }
 
     /* 1. 右上粉色弥散 */
     .bg-orb-1 {
-      width: 50vw; height: 50vw;
-      top: -18%; right: -12%;
-      background: radial-gradient(circle, #ffd6e7, #ffc0e0, transparent 75%);
+      width: 45vw; height: 45vw;
+      top: -20%; right: -15%;
+      background: radial-gradient(circle, #ffe8f0, #ffd6e8, transparent 70%);
     }
 
     /* 2. 左侧蓝色弥散 */
     .bg-orb-2 {
-      width: 45vw; height: 45vw;
-      top: 18%; left: -16%;
-      background: radial-gradient(circle, #c8e6ff, #9fd0ff, transparent 75%);
+      width: 40vw; height: 40vw;
+      top: 20%; left: -18%;
+      background: radial-gradient(circle, #e8f4ff, #d6ecff, transparent 70%);
     }
 
     /* 3. 右下浅蓝弥散 */
     .bg-orb-3 {
-      width: 40vw; height: 40vw;
-      bottom: -12%; right: 8%;
-      background: radial-gradient(circle, #e0f0ff, #c6e0ff, transparent 75%);
-      opacity: 0.25;
+      width: 35vw; height: 35vw;
+      bottom: -15%; right: 5%;
+      background: radial-gradient(circle, #f0f6ff, #e4f0ff, transparent 70%);
+      opacity: 0.12;
     }
 
     @media (prefers-reduced-motion: reduce) {
