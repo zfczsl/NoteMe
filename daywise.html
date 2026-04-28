@@ -10,19 +10,19 @@
   <style>
     :root {
       /* 粉蓝弥散柔光配色 */
-      --primary: #a87cc4;
-      --primary-light: #e0d0f0;
-      --primary-dark: #7a5699;
+      --primary: #b89ad4;
+      --primary-light: #f0e8f8;
+      --primary-dark: #8a6aaa;
       --accent: #FFB8D8;
-      --bg: #fdf8fb;
-      --bg-card: rgba(255,255,255,0.42);
-      --bg-secondary: rgba(240,232,248,0.5);
-      --bg-gradient: linear-gradient(135deg, #fdf0f7 0%, #f0f4ff 100%);
+      --bg: #ffffff;
+      --bg-card: rgba(255,255,255,0.45);
+      --bg-secondary: rgba(245,240,250,0.4);
+      --bg-gradient: linear-gradient(135deg, #fff8fb 0%, #f8faff 100%);
       --text-primary: #2d2230;
       --text-secondary: #555;
       --text-muted: #999;
-      --border: rgba(192,170,210,0.2);
-      --border-light: rgba(192,170,210,0.1);
+      --border: rgba(192,170,210,0.15);
+      --border-light: rgba(192,170,210,0.08);
       --success: #7ecba1;
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
       --shadow: 0 8px 32px rgba(0,0,0,0.04);
@@ -46,7 +46,7 @@
 
     body {
       font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #fdf8fb;
+      background: #fefbfe;
       color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
@@ -69,29 +69,29 @@
       position: absolute;
       border-radius: 50%;
       filter: blur(90px);
-      opacity: 0.6;
+      opacity: 0.35;
     }
 
     /* 1. 右上粉色弥散 */
     .bg-orb-1 {
-      width: 60vw; height: 60vw;
-      top: -20%; right: -15%;
+      width: 50vw; height: 50vw;
+      top: -18%; right: -12%;
       background: radial-gradient(circle, #ffd6e7, #ffc0e0, transparent 75%);
     }
 
     /* 2. 左侧蓝色弥散 */
     .bg-orb-2 {
-      width: 55vw; height: 55vw;
-      top: 15%; left: -20%;
+      width: 45vw; height: 45vw;
+      top: 18%; left: -16%;
       background: radial-gradient(circle, #c8e6ff, #9fd0ff, transparent 75%);
     }
 
     /* 3. 右下浅蓝弥散 */
     .bg-orb-3 {
-      width: 50vw; height: 50vw;
-      bottom: -15%; right: 10%;
+      width: 40vw; height: 40vw;
+      bottom: -12%; right: 8%;
       background: radial-gradient(circle, #e0f0ff, #c6e0ff, transparent 75%);
-      opacity: 0.5;
+      opacity: 0.25;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -100,16 +100,16 @@
 
     /* Header - 白雾玻璃浮动 */
     .header {
-      background: rgba(255,255,255,0.42);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-bottom: 1px solid rgba(255,255,255,0.7);
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border: none;
+      border-bottom: none;
       padding: 1.25rem 2rem 1rem;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+      box-shadow: none;
     }
 
     .header-content {
@@ -129,7 +129,7 @@
     .logo-icon {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, #ffadd2, #7fc8ff);
+      background: linear-gradient(135deg, #ffb8d8, #8ec5fc);
       border-radius: 14px;
       display: flex;
       align-items: center;
@@ -299,46 +299,48 @@
 
     .current-date .day {
       font-size: 3rem;
-      font-weight: 700;
-      color: var(--primary);
+      font-weight: 400;
+      color: #1a1a1a;
       line-height: 1;
       letter-spacing: -0.02em;
     }
 
-    /* 今天日期高亮 */
+    /* 今天日期：加粗 + 橙色 */
     .current-date .day.is-today {
-      position: relative;
-      display: inline-block;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-weight: 900;
+      color: #f59e0b;
+      background: none;
+      -webkit-background-clip: unset;
+      -webkit-text-fill-color: unset;
+      background-clip: unset;
     }
 
     /* "今天"标签由 JS innerHTML 渲染，不再用伪元素 */
 
     .current-date .date-full.is-today {
-      color: #d97706;
-      font-weight: 500;
+      color: #f59e0b;
+      font-weight: 400;
     }
 
-    /* 未来日期灰色 */
+    /* 未来日期：普通黑色，稍浅 */
     .current-date .day.is-future {
-      color: #9ca3af;
+      color: #1a1a1a;
+      font-weight: 400;
     }
 
     .current-date .date-full.is-future {
-      color: #9ca3af;
+      color: #333;
     }
 
-    /* 过去日期（默认样式，保持原色即可） */
+    /* 过去日期：普通黑色 */
     .current-date .day.is-past {
-      color: var(--primary);
+      color: #1a1a1a;
+      font-weight: 400;
     }
 
     .current-date .date-full {
       font-size: 0.9rem;
-      color: var(--text-secondary);
+      color: #333;
       margin-top: 0.25rem;
       font-weight: 400;
     }
@@ -1567,7 +1569,7 @@
     }
 
     .nav-item.active {
-      color: var(--primary);
+      color: #7aa8d4;
     }
 
     .nav-item.active svg {
@@ -6224,23 +6226,23 @@
         'isToday=', isToday, 'isFuture=', isFuture, 'dateText=', dateText);
 
       if (isToday) {
-        // 今天：金色渐变数字 + "今天"标签
-        dayEl.innerHTML = `${day}<span style="display:block;font-size:0.7rem;font-weight:600;-webkit-text-fill-color:#d97706;margin-top:2px;">今天</span>`;
-        dayEl.style.cssText = 'background:linear-gradient(135deg,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:3rem;font-weight:700;display:inline-block;line-height:1;text-align:center;';
+        // 今天：大数字加粗橙色 + "今天"小标签橙色
+        dayEl.innerHTML = `${day}<span style="display:block;font-size:0.75rem;font-weight:400;color:#f59e0b;-webkit-text-fill-color:#f59e0b;margin-top:4px;">今天</span>`;
+        dayEl.style.cssText = 'color:#f59e0b;font-size:3rem;font-weight:900;display:inline-block;line-height:1;text-align:center;';
         fullEl.textContent = dateText;
-        fullEl.style.cssText = 'color:#d97706 !important;font-weight:600;';
+        fullEl.style.cssText = 'color:#f59e0b;font-weight:400;';
       } else if (isFuture) {
-        // 未来：灰色
+        // 未来：普通黑色不加粗
         dayEl.textContent = String(day);
-        dayEl.style.cssText = 'font-size:3rem;font-weight:700;color:#9ca3af;display:inline-block;line-height:1;';
+        dayEl.style.cssText = 'font-size:3rem;font-weight:400;color:#1a1a1a;display:inline-block;line-height:1;';
         fullEl.textContent = dateText;
-        fullEl.style.cssText = 'color:#9ca3af !important;';
+        fullEl.style.cssText = 'color:#333;';
       } else {
-        // 过去：默认蓝色
+        // 过去：普通黑色不加粗
         dayEl.textContent = String(day);
-        dayEl.style.cssText = 'font-size:3rem;font-weight:700;color:var(--primary);display:inline-block;line-height:1;';
+        dayEl.style.cssText = 'font-size:3rem;font-weight:400;color:#1a1a1a;display:inline-block;line-height:1;';
         fullEl.textContent = dateText;
-        fullEl.style.cssText = 'color:#64748b !important;';
+        fullEl.style.cssText = 'color:#333;';
       }
     }
 

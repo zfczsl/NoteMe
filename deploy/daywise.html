@@ -9,27 +9,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* 简约灵动配色 - 薄荷清新 */
-      --primary: #34d399;      /* 薄荷绿 */
-      --primary-light: #a7f3d0;
-      --primary-dark: #059669;
-      --accent: #f472b6;        /* 柔和粉色点缀 */
-      --bg: #fafafa;
-      --bg-card: #ffffff;
-      --bg-secondary: #f0fdf4;
-      --bg-gradient: linear-gradient(135deg, #ecfdf5 0%, #fdf2f8 100%);
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --text-muted: #9ca3af;
-      --border: #f3f4f6;
-      --border-light: #fafafa;
-      --success: #10b981;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow: 0 4px 12px rgba(0,0,0,0.05);
-      --shadow-lg: 0 8px 24px rgba(0,0,0,0.06);
-      --radius: 16px;
-      --radius-lg: 24px;
-      --radius-sm: 10px;
+      /* 粉蓝弥散柔光配色 */
+      --primary: #b89ad4;
+      --primary-light: #f0e8f8;
+      --primary-dark: #8a6aaa;
+      --accent: #FFB8D8;
+      --bg: #ffffff;
+      --bg-card: rgba(255,255,255,0.45);
+      --bg-secondary: rgba(245,240,250,0.4);
+      --bg-gradient: linear-gradient(135deg, #fff8fb 0%, #f8faff 100%);
+      --text-primary: #2d2230;
+      --text-secondary: #555;
+      --text-muted: #999;
+      --border: rgba(192,170,210,0.15);
+      --border-light: rgba(192,170,210,0.08);
+      --success: #7ecba1;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow: 0 8px 32px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.06);
+      --glass: rgba(255,255,255,0.42);
+      --glass-border: rgba(255,255,255,0.7);
+      --glass-glow: rgba(255,255,255,0.85);
+      --radius: 24px;
+      --radius-lg: 28px;
+      --radius-sm: 14px;
+      /* 粉蓝渐变 */
+      --gradient-pink-blue: linear-gradient(90deg, #FFB8D8, #87CFFF);
+      --gradient-pink-blue-135: linear-gradient(135deg, #ffadd2, #7fc8ff);
     }
 
     * {
@@ -40,17 +46,70 @@
 
     body {
       font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
+      background: #fefbfe;
       color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
       padding-bottom: 80px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    /* Header - 简约无边界设计 */
+
+
+    /* 弥散背景（粉蓝柔光） */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.35;
+    }
+
+    /* 1. 右上粉色弥散 */
+    .bg-orb-1 {
+      width: 50vw; height: 50vw;
+      top: -18%; right: -12%;
+      background: radial-gradient(circle, #ffd6e7, #ffc0e0, transparent 75%);
+    }
+
+    /* 2. 左侧蓝色弥散 */
+    .bg-orb-2 {
+      width: 45vw; height: 45vw;
+      top: 18%; left: -16%;
+      background: radial-gradient(circle, #c8e6ff, #9fd0ff, transparent 75%);
+    }
+
+    /* 3. 右下浅蓝弥散 */
+    .bg-orb-3 {
+      width: 40vw; height: 40vw;
+      bottom: -12%; right: 8%;
+      background: radial-gradient(circle, #e0f0ff, #c6e0ff, transparent 75%);
+      opacity: 0.25;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bg-orb { animation: none; }
+    }
+
+    /* Header - 白雾玻璃浮动 */
     .header {
       background: transparent;
-      padding: 1.5rem 2rem 0;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border: none;
+      border-bottom: none;
+      padding: 1.25rem 2rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: none;
     }
 
     .header-content {
@@ -70,15 +129,15 @@
     .logo-icon {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 12px;
+      background: linear-gradient(135deg, #ffb8d8, #8ec5fc);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: 700;
       font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+      box-shadow: 0 4px 14px rgba(160,130,210,0.25);
     }
 
     .logo-text {
@@ -104,7 +163,7 @@
       gap: 0.75rem;
     }
 
-    /* Buttons - 灵动轻盈 */
+    /* Buttons - 柔和muted */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -120,25 +179,31 @@
     }
 
     .btn-primary {
-      background: var(--primary);
+      background: linear-gradient(135deg, #ffadd2, #7fc8ff);
       color: white;
-      box-shadow: 0 2px 8px rgba(52, 211, 153, 0.25);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(52, 211, 153, 0.35);
+      background: linear-gradient(135deg, #ff95c8, #6bb8f5);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .btn-secondary {
-      background: var(--bg-secondary);
+      background: var(--glass);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .btn-secondary:hover {
-      background: var(--primary-light);
-      color: var(--primary-dark);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(22px);
+      border-color: var(--glass-glow);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .btn-ghost {
@@ -163,7 +228,7 @@
       padding: 1.5rem;
     }
 
-    /* Date Navigation - 灵动简约 */
+    /* Date Navigation - 白雾玻璃浮卡 */
     .date-nav {
       display: flex;
       align-items: center;
@@ -171,8 +236,12 @@
       gap: 1.5rem;
       margin-bottom: 1.5rem;
       padding: 1.5rem;
-      background: var(--bg-gradient);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .date-nav-btn {
@@ -182,33 +251,96 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.75);
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
     .date-nav-btn:hover {
-      background: var(--primary);
+      background: linear-gradient(135deg, #ffadd2, #7fc8ff);
       color: white;
       transform: scale(1.05);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
     }
 
     .current-date {
       text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    /* Date Navigation 容器（用于光晕定位） */
+    .date-nav {
+      position: relative;
+    }
+
+    /* 今天日期容器加光晕（粉蓝主题适配） */
+    .date-nav.is-today::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,173,210,0.3) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .current-date {
+      position: relative;
+      z-index: 1;
     }
 
     .current-date .day {
       font-size: 3rem;
-      font-weight: 700;
-      color: var(--primary);
+      font-weight: 400;
+      color: #1a1a1a;
       line-height: 1;
       letter-spacing: -0.02em;
     }
 
+    /* 今天日期：加粗 + 橙色 */
+    .current-date .day.is-today {
+      font-weight: 900;
+      color: #f59e0b;
+      background: none;
+      -webkit-background-clip: unset;
+      -webkit-text-fill-color: unset;
+      background-clip: unset;
+    }
+
+    /* "今天"标签由 JS innerHTML 渲染，不再用伪元素 */
+
+    .current-date .date-full.is-today {
+      color: #f59e0b;
+      font-weight: 400;
+    }
+
+    /* 未来日期：普通黑色，稍浅 */
+    .current-date .day.is-future {
+      color: #1a1a1a;
+      font-weight: 400;
+    }
+
+    .current-date .date-full.is-future {
+      color: #333;
+    }
+
+    /* 过去日期：普通黑色 */
+    .current-date .day.is-past {
+      color: #1a1a1a;
+      font-weight: 400;
+    }
+
     .current-date .date-full {
       font-size: 0.9rem;
-      color: var(--text-secondary);
+      color: #333;
       margin-top: 0.25rem;
       font-weight: 400;
     }
@@ -224,17 +356,21 @@
     .quick-action-card {
       flex: 1;
       min-width: 160px;
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1rem;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .quick-action-card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-3px);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
     }
 
     .quick-action-card .icon {
@@ -253,15 +389,15 @@
     }
 
     .quick-action-card .icon.orange {
-      background: linear-gradient(135deg, #fed7aa, #fb923c);
+      background: linear-gradient(135deg, #ffd6e7, #ffb8d8);
     }
 
     .quick-action-card .icon.green {
-      background: linear-gradient(135deg, #a7f3d0, #34d399);
+      background: linear-gradient(135deg, #c8e6ff, #9fd0ff);
     }
 
     .quick-action-card .icon.blue {
-      background: linear-gradient(135deg, #bfdbfe, #60a5fa);
+      background: linear-gradient(135deg, #e0d0f0, #c0b0e8);
     }
 
     .quick-action-card h3 {
@@ -276,13 +412,16 @@
       color: var(--text-muted);
     }
 
-    /* Entry Section - 轻盈输入 */
+    /* Entry Section - 玻璃拟态输入卡 */
     .entry-section {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius-lg);
       padding: 1.5rem;
       margin-bottom: 1.5rem;
-      box-shadow: var(--shadow);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .entry-header {
@@ -314,13 +453,14 @@
       font-family: inherit;
       resize: vertical;
       transition: all 0.2s;
-      background: var(--bg);
+      background: rgba(255,250,253,0.6);
       line-height: 1.7;
     }
 
     .entry-textarea:focus {
       outline: none;
-      box-shadow: 0 0 0 2px var(--primary-light);
+      box-shadow: 0 0 0 2px rgba(255,173,210,0.3);
+      background: rgba(255,255,255,0.8);
     }
 
     .entry-textarea::placeholder {
@@ -377,16 +517,20 @@
     }
 
     .entry-card {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1.25rem;
       margin-bottom: 0.75rem;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .entry-card:hover {
-      box-shadow: var(--shadow);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
       transform: translateY(-2px);
     }
 
@@ -449,7 +593,10 @@
     }
 
     .modal {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.8);
       border-radius: var(--radius-lg);
       width: 100%;
       max-width: 640px;
@@ -457,6 +604,7 @@
       overflow: hidden;
       transform: translateY(20px);
       transition: transform 0.3s ease;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.06);
     }
 
     .modal-overlay.active .modal {
@@ -559,13 +707,16 @@
       resize: vertical;
     }
 
-    /* AI Summary - 灵动AI卡片 */
+    /* AI Summary - 柔和AI卡片 */
     .ai-summary {
-      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      background: rgba(255,248,252,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius-lg);
       padding: 1.5rem;
       margin-top: 1rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .ai-summary-header {
@@ -784,17 +935,21 @@
     }
 
     .stat-card {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1rem;
       text-align: center;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
     }
 
     .stat-card .value {
@@ -816,11 +971,14 @@
     }
 
     .chart-container {
-      background: var(--bg-card);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius);
       padding: 1rem;
       margin-bottom: 1rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .chart-title {
@@ -1087,13 +1245,240 @@
       margin: 1.5rem 0;
     }
 
+    /* 待办横幅样式 */
+    .todo-banner {
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius);
+      padding: 0.875rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .todo-banner-all-done {
+      background: rgba(210,240,220,0.5) !important;
+      border-color: rgba(130,190,160,0.4) !important;
+    }
+    .todo-banner:hover {
+      background: rgba(255,255,255,0.55);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+    }
+    .todo-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .todo-icon {
+      font-size: 1.25rem;
+    }
+    .todo-banner-text {
+      font-size: 0.9rem;
+      color: var(--primary-dark);
+    }
+    .todo-banner-text strong {
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+    .todo-banner-arrow {
+      font-size: 0.75rem;
+      color: var(--primary-dark);
+      transition: transform 0.2s;
+    }
+    
+    /* 待办列表样式 */
+    .todo-list {
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+    }
+    .todo-date-group {
+      margin-bottom: 0.5rem;
+    }
+    .todo-date-group:last-child {
+      margin-bottom: 0;
+    }
+    .todo-date-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      padding-left: 0.25rem;
+    }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.5rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .todo-item:hover {
+      background: var(--bg-secondary);
+    }
+    .todo-item-checked {
+      background: #f0fdf4 !important;
+    }
+    .todo-checkbox {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .todo-checkbox input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .todo-checkbox .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 22px;
+      height: 22px;
+      border: 2px solid #10b981;
+      border-radius: 6px;
+      background: white;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .todo-checkbox input:checked + .checkmark {
+      background: #10b981;
+      border-color: #10b981;
+      animation: checkPop 0.25s ease;
+    }
+    @keyframes checkPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .todo-checkbox .checkmark::after {
+      content: '';
+      display: none;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2.5px 2.5px 0;
+      transform: rotate(45deg);
+      margin-top: -2px;
+    }
+    .todo-checkbox input:checked + .checkmark::after {
+      display: block;
+    }
+    .todo-text {
+      flex: 1;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      line-height: 1.4;
+      transition: all 0.2s;
+    }
+    .todo-item-checked .todo-text {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+    .todo-time {
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-right: 0.25rem;
+    }
+    .todo-delete {
+      width: 20px;
+      height: 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+    .todo-item:hover .todo-delete {
+      opacity: 1;
+    }
+    .todo-delete:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+    
+    /* 待办弹窗日期选项 */
+    .todo-date-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+    .todo-date-option {
+      cursor: pointer;
+    }
+    .todo-date-option input {
+      display: none;
+    }
+    .todo-date-option-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    .todo-date-option input:checked + .todo-date-option-content {
+      background: var(--bg-secondary);
+      border-color: var(--primary);
+    }
+    .todo-date-icon {
+      font-size: 1.25rem;
+    }
+    .todo-date-text {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    /* 记录卡片中的待办按钮 */
+    .entry-todo-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary-light);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .entry-todo-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
     /* AI Display Section - 灵动AI */
     .ai-display-section {
-      background: linear-gradient(135deg, #ecfdf5, #fdf2f8);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.7);
       border-radius: var(--radius-lg);
       padding: 1.25rem;
       margin-bottom: 2rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
     }
 
     .ai-display-section .section-header {
@@ -1147,20 +1532,21 @@
       color: var(--text-muted);
     }
 
-    /* Bottom Navigation - 灵动导航 */
+    /* Bottom Navigation - 白雾玻璃导航 */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.42);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-top: 1px solid rgba(255,255,255,0.7);
       display: flex;
       justify-content: space-around;
       padding: 0.75rem 0;
       z-index: 1000;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.04);
     }
 
     .nav-item {
@@ -1183,7 +1569,7 @@
     }
 
     .nav-item.active {
-      color: var(--primary);
+      color: #7aa8d4;
     }
 
     .nav-item.active svg {
@@ -1216,14 +1602,394 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NoteMe">
+  
+  <!-- PWA Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(e => console.log('SW not available'));
+    }
+  </script>
+  
+  <!-- 桌面图标引导弹窗 -->
+  <script>
+    // 检测设备类型
+    function getDeviceType() {
+      const ua = navigator.userAgent.toLowerCase();
+      if (/iphone|ipad|ipod/.test(ua)) return 'ios';
+      if (/android/.test(ua)) return 'android';
+      return 'desktop';
+    }
+    
+    // 检测是否已添加到主屏幕
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const deviceType = getDeviceType();
+    
+    // 如果还没添加过主屏幕，显示引导
+    if (!isStandalone && !localStorage.getItem('pwaGuideDismissed') && deviceType !== 'desktop') {
+      document.addEventListener('DOMContentLoaded', function() {
+        // 创建引导弹窗
+        const guide = document.createElement('div');
+        guide.id = 'pwaGuide';
+        guide.innerHTML = `
+          <div class="pwa-guide-overlay"></div>
+          <div class="pwa-guide-modal">
+            <div class="pwa-guide-header">
+              <span class="pwa-guide-icon">📱</span>
+              <h3>体验 App 模式</h3>
+              <p>添加到桌面，使用更便捷</p>
+            </div>
+            <div class="pwa-guide-content" id="pwaGuideContent">
+              <!-- 根据设备显示不同教程 -->
+            </div>
+            <button class="pwa-guide-btn" onclick="closePwaGuide()">我知道了</button>
+          </div>
+        `;
+        document.body.appendChild(guide);
+        
+        // 根据设备显示教程
+        const content = document.getElementById('pwaGuideContent');
+        if (deviceType === 'ios') {
+          content.innerHTML = `
+            <div class="pwa-guide-steps">
+              <div class="pwa-step">
+                <span class="step-num">1</span>
+                <span>点击Safari底部<span class="highlight">分享按钮</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">2</span>
+                <span>向下滚动，点击<span class="highlight">添加到主屏幕</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">3</span>
+                <span>点击右上角<span class="highlight">添加</span>完成</span>
+              </div>
+            </div>
+            <div class="pwa-guide-demo ios-demo">
+              <div class="demo-phone">
+                <div class="demo-screen">
+                  <div class="demo-action-bar">
+                    <div class="demo-share-btn">↗</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          content.innerHTML = `
+            <div class="pwa-guide-steps">
+              <div class="pwa-step">
+                <span class="step-num">1</span>
+                <span>点击浏览器菜单<span class="highlight">⋮</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">2</span>
+                <span>选择<span class="highlight">添加到主屏幕</span></span>
+              </div>
+              <div class="pwa-step">
+                <span class="step-num">3</span>
+                <span>点击<span class="highlight">添加</span>完成</span>
+              </div>
+            </div>
+            <div class="pwa-guide-demo android-demo">
+              <div class="demo-phone">
+                <div class="demo-screen">
+                  <div class="demo-menu-btn">⋮</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+      
+      // 关闭引导
+      function closePwaGuide() {
+        const guide = document.getElementById('pwaGuide');
+        if (guide) {
+          guide.style.opacity = '0';
+          guide.style.transform = 'scale(0.95)';
+          setTimeout(() => guide.remove(), 200);
+        }
+        localStorage.setItem('pwaGuideDismissed', 'true');
+      }
+    }
+  </script>
+  
+  <style>
+    /* 引导弹窗样式 */
+    #pwaGuide {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pwaFadeIn 0.3s ease;
+    }
+    @keyframes pwaFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .pwa-guide-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+    }
+    .pwa-guide-modal {
+      position: relative;
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      animation: pwaSlideUp 0.3s ease;
+    }
+    @keyframes pwaSlideUp {
+      from { transform: translateY(20px) scale(0.95); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .pwa-guide-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .pwa-guide-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .pwa-guide-header h3 {
+      font-size: 1.25rem;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+    .pwa-guide-header p {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+    .pwa-guide-content {
+      margin-bottom: 1.5rem;
+    }
+    .pwa-guide-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .pwa-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+    .step-num {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #34d399, #059669);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .highlight {
+      color: #059669;
+      font-weight: 600;
+    }
+    .pwa-guide-demo {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .demo-phone {
+      width: 80px;
+      height: 130px;
+      background: #1f2937;
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .demo-screen {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ecfdf5, #fdf2f8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .demo-share-btn {
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .demo-menu-btn {
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .pwa-guide-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(135deg, #34d399, #059669);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .pwa-guide-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(52, 211, 153, 0.4);
+    }
+  </style>
+  
+  <!-- CloudBase 完整 SDK（含手机号登录）：本地文件优先，官方 CDN 备用 -->
+  <script>
+    (function() {
+      var urls = [
+        'cloudbase.full.js',                                                             // 本地文件（最稳定）
+        'https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js'        // 官方 CDN 备用
+      ];
+      var idx = 0;
+      function loadNext() {
+        if (idx >= urls.length) {
+          console.error('[CloudBase] SDK 加载失败，登录/云同步功能将不可用');
+          window._cloudbaseSdkFailed = true;
+          return;
+        }
+        var s = document.createElement('script');
+        s.src = urls[idx++];
+        s.onerror = function() {
+          console.warn('[CloudBase] 加载失败，尝试备用源...');
+          loadNext();
+        };
+        s.onload = function() {
+          console.log('[CloudBase] SDK 加载成功：' + s.src);
+        };
+        document.head.appendChild(s);
+      }
+      loadNext();
+    })();
+  </script>
 </head>
 <body>
+
+  <!-- 弥散光晕背景 -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+  </div>
+
+  <!-- 全局登录弹窗 -->
+  <div id="globalLoginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; backdrop-filter: blur(4px);">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; background: white; border-radius: 24px; padding: 2rem; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
+      <!-- Logo -->
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: linear-gradient(135deg, #ffadd2, #7fc8ff); border-radius: 16px; margin-bottom: 1rem;">
+          <span style="font-size: 28px; color: white; font-weight: bold;">记</span>
+        </div>
+        <h2 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 0.5rem;">欢迎使用 记我</h2>
+        <p style="font-size: 0.9rem; color: #6b7280;">登录后享受以下功能</p>
+      </div>
+      
+      <!-- 好处列表 -->
+      <div style="background: #f9fafb; border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #10b981, #34d399); border-radius: 8px; margin-right: 0.75rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <span style="font-size: 0.9rem; color: #374151;">手机电脑同步</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 8px; margin-right: 0.75rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <span style="font-size: 0.9rem; color: #374151;">数据云端备份</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, #ffadd2, #7fc8ff); border-radius: 8px; margin-right: 0.75rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <span style="font-size: 0.9rem; color: #374151;">多设备共享</span>
+        </div>
+      </div>
+      
+      <!-- 手机号登录表单 -->
+      <div style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: 16px; padding: 1.25rem; color: white;">
+        <div style="font-size: 0.9rem; margin-bottom: 0.75rem; font-weight: 500;">📱 手机号快捷登录</div>
+        <input type="tel" id="globalLoginPhone" placeholder="请输入手机号" maxlength="11"
+          style="width: 100%; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; margin-bottom: 0.75rem; background: rgba(255,255,255,0.95); color: #333;">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <input type="text" id="globalLoginCode" placeholder="验证码" maxlength="6"
+            style="flex:1; min-width:0; padding: 0.85rem; border: none; border-radius: 10px; font-size: 0.95rem; background: rgba(255,255,255,0.95); color: #333;">
+          <button id="globalSendCodeBtn" onclick="handleGlobalSendCode()" 
+            style="flex-shrink:0; padding: 0 1rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
+            获取验证码
+          </button>
+        </div>
+        <button onclick="handleGlobalLogin()" 
+          style="width: 100%; padding: 0.95rem; background: white; color: #7a5699; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+          登录 / 注册
+        </button>
+        <div id="globalLoginMsg" style="font-size: 0.8rem; margin-top: 0.75rem; text-align: center; min-height: 1.2rem; opacity: 0.9;"></div>
+      </div>
+      
+      <p style="font-size: 0.8rem; color: #9ca3af; text-align: center; margin-top: 1.25rem;">
+        首次使用将自动注册账号 · 数据安全加密存储
+      </p>
+    </div>
+  </div>
+  
+  <!-- 未登录时锁定整个界面（遮罩层） -->
+  <div id="appLockOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; cursor: wait;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);"></div>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+      <div style="width: 48px; height: 48px; border: 4px solid #e5e7eb; border-top-color: #ffadd2; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem;"></div>
+      <p style="font-size: 1rem; color: #6b7280; font-weight: 500;">请先登录以继续使用</p>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+  </div>
+  
   <!-- Header -->
   <header class="header">
     <div class="header-content">
       <div class="logo">
         <div class="logo-icon">记</div>
         <div class="logo-text">记我<span></span><span class="en">Noteme</span></div>
+        <span id="memberBadge" style="display:none;margin-left:auto;"></span>
       </div>
     </div>
   </header>
@@ -1246,6 +2012,9 @@
         </button>
       </div>
 
+      <!-- 待办横幅 -->
+      <div id="todoBannerContainer" style="margin-bottom: 1rem;"></div>
+
       <!-- Entry Section -->
       <div class="entry-section">
         <textarea 
@@ -1254,6 +2023,7 @@
           placeholder="像给自己发消息一样，随手把想法、做的事情丢进来..."
         ></textarea>
         <div class="entry-footer">
+          <span id="dailyCharCounter" style="font-size: 0.75rem; color: var(--text-muted);"></span>
           <span class="entry-tips">按 Enter 提交，Shift+Enter 换行 · 结构化复盘格式：今日做了什么 → 有什么收获/反思 → 遇到什么困难 → 明天计划</span>
           <button class="btn btn-primary" onclick="saveEntry()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -1408,11 +2178,15 @@
 
     <!-- Page: 历史 -->
     <div id="page-history" class="page">
-      <div class="section-header" style="padding: 1rem;">
+      <div class="section-header" style="padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
         <div class="section-title">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           历史记录
         </div>
+        <button id="exportHistoryBtn" onclick="exportHistoryData()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #ffadd2, #7fc8ff); color: white; border: none; border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(255,173,210,0.3);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          导出
+        </button>
       </div>
       <div id="historyContent"></div>
     </div>
@@ -1426,6 +2200,66 @@
         </div>
       </div>
       <div style="padding: 0 1rem;">
+        
+        <!-- 账号与同步 -->
+        <div id="accountSection" style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: white;">
+          <!-- 未登录状态 -->
+          <div id="loginPanel">
+            <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">
+              ☁️ 账号与云同步
+            </div>
+            <div style="font-size: 0.8rem; opacity: 0.85; margin-bottom: 1rem;">
+              登录后可在手机和电脑之间自动同步数据
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 1rem;">
+              <div style="font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 500;">📱 手机号快捷登录</div>
+              <input type="tel" id="loginPhone" placeholder="请输入手机号" maxlength="11"
+                style="width: 100%; padding: 0.75rem; border: none; border-radius: 8px; font-size: 0.9rem; margin-bottom: 0.75rem; background: rgba(255,255,255,0.95); color: #333;">
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="loginCode" placeholder="验证码" maxlength="6"
+                  style="flex: 1; padding: 0.75rem; border: none; border-radius: 8px; font-size: 0.9rem; background: rgba(255,255,255,0.95); color: #333;">
+                <button id="sendCodeBtn" onclick="handleSendCode()" 
+                  style="padding: 0 1rem; background: rgba(255,255,255,0.25); color: white; border: none; border-radius: 8px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
+                  获取验证码
+                </button>
+              </div>
+              <button onclick="handleLogin()" 
+                style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; background: white; color: #7a5699; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                登录 / 注册
+              </button>
+              <div id="loginMsg" style="font-size: 0.75rem; margin-top: 0.5rem; text-align: center; min-height: 1rem;"></div>
+            </div>
+          </div>
+          
+          <!-- 已登录状态 -->
+          <div id="loggedInPanel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div style="font-size: 0.95rem; font-weight: 600;">
+                ☁️ 云同步已开启
+              </div>
+              <div id="syncStatus" style="font-size: 0.75rem; opacity: 0.85;">
+                <span style="display: inline-block; width: 8px; height: 8px; background: #4ade80; border-radius: 50%; margin-right: 4px;"></span>
+                已连接
+              </div>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.85rem; font-weight: 500;" id="userPhoneDisplay">📱 已登录</div>
+                <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 2px;">数据已自动同步到云端</div>
+              </div>
+              <button onclick="handleLogout()" 
+                style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                退出登录
+              </button>
+            </div>
+            <button onclick="handleManualSync()" id="manualSyncBtn"
+              style="width: 100%; margin-top: 0.75rem; padding: 0.7rem; background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
+              🔄 手动同步数据
+            </button>
+          </div>
+        </div>
+        
         <!-- 角色与目标设置 -->
         <div style="background: linear-gradient(135deg, var(--primary) 0%, #10b981 100%); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: white;">
           <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">
@@ -1469,9 +2303,185 @@
             🔧 AI 配置已内置，无需手动设置
           </div>
         </div>
+        
+        <!-- 今日调用统计 -->
+        <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div style="font-size: 0.85rem; font-weight: 500;">📊 今日AI调用</div>
+            <div id="apiCallCount" style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">0 / 10 次</div>
+          </div>
+          <div style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
+            <div id="apiCallProgress" style="height: 100%; background: var(--primary); border-radius: 3px; width: 0%; transition: width 0.3s;"></div>
+          </div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">
+            每天 00:00 重置，每次记录/总结/脑图算1次
+          </div>
+        </div>
+        
+        <!-- 导出数据 -->
+        <div style="margin-top: 1.5rem;">
+          <div style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+            <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">📥 导出数据</div>
+            
+            <!-- 导出模式选择 -->
+            <style>
+              .export-mode { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+              .export-mode label {
+                flex: 1; min-width: 100px;
+                background: rgba(255,255,255,0.15);
+                border: 2px solid transparent;
+                border-radius: 10px; padding: 0.5rem 0.4rem;
+                text-align: center; cursor: pointer; transition: all 0.2s;
+                font-size: 0.78rem; line-height: 1.35;
+              }
+              .export-mode label:hover { background: rgba(255,255,255,0.25); }
+              .export-mode input:checked + span { color: #fbbf24; font-weight: 700; }
+            </style>
+            <div class="export-mode">
+              <label><input type="radio" name="exportMode" value="dateRange" checked><span>按日期范围</span></label>
+              <label><input type="radio" name="exportMode" value="starred"><span>按星标</span></label>
+              <label><input type="radio" name="exportMode" value="aiAnalysis"><span>导出AI分析</span></label>
+            </div>
+            
+            <!-- 日期范围（默认显示） -->
+            <div id="exportDateRange" style="margin-bottom: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="date" id="exportStartDate" style="flex:1;padding:0.5rem;border-radius:8px;border:none;font-size:0.82rem;background:rgba(255,255,255,0.9);">
+                <span style="font-size:0.85rem;">→</span>
+                <input type="date" id="exportEndDate" style="flex:1;padding:0.5rem;border-radius:8px;border:none;font-size:0.82rem;background:rgba(255,255,255,0.9);">
+              </div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <button onclick="downloadExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #7a5699; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer;">
+              📥 导出 Markdown 文件
+            </button>
+          </div>
+        </div>
+        
+        <!-- 反馈与支持 -->
+        <div style="margin-top: 1.5rem;">
+          <div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+            <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem;">
+              ☕ 支持一下
+            </div>
+            <div style="font-size: 0.75rem; opacity: 0.9; margin-bottom: 1rem;">
+              使用 AI 功能需要消耗 API Token，运营成本不低。如果觉得好用，欢迎支持一下！
+            </div>
+            <button onclick="showDonateQR()" style="width: 100%; padding: 0.6rem 1rem; background: white; color: #f59e0b; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+              💰 展示收款码
+            </button>
+          </div>
+          
+          <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); text-align: center;">
+            <div style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.5rem;">📮 反馈建议</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              欢迎提交使用意见或 Bug 反馈
+            </div>
+            <a href="mailto:495924055@qq.com" style="display: inline-block; padding: 0.5rem 1rem; background: var(--primary); color: white; border-radius: var(--radius); font-size: 0.8rem; text-decoration: none;">
+              发送邮件反馈
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </main>
+  
+  <!-- 待办设置弹窗 -->
+  <div class="modal-overlay" id="todoModal">
+    <div class="modal" style="max-width: 360px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          设为待办
+        </div>
+        <button class="modal-close" onclick="closeTodoModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="background: var(--bg-secondary); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">待办内容</div>
+          <div id="todoModalContent" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-primary);"></div>
+        </div>
+        
+        <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.75rem; color: var(--text-primary);">选择时间</div>
+        
+        <div class="todo-date-options">
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="today" checked>
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📅</span>
+              <span class="todo-date-text" id="todoTodayLabel">今天</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="tomorrow">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📆</span>
+              <span class="todo-date-text" id="todoTomorrowLabel">明天</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="week">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📌</span>
+              <span class="todo-date-text">本周五</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="custom">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📅</span>
+              <span class="todo-date-text">自定义</span>
+            </span>
+          </label>
+        </div>
+        
+        <div id="customDateContainer" style="margin-top: 0.75rem; display: none;">
+          <input type="date" id="todoCustomDate" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeTodoModal()">取消</button>
+        <button class="btn btn-primary" onclick="confirmAddTodo()">确认添加</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 收款码弹窗 -->
+  <div class="modal-overlay" id="donateModal">
+    <div class="modal" style="max-width: 320px;">
+      <div class="modal-header">
+        <div class="modal-title">☕ 感谢支持</div>
+        <button class="modal-close" onclick="closeModal('donateModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">扫码付款任意金额，您的支持是我更新的动力！</p>
+        <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+          <div>
+            <div style="font-size: 0.8rem; font-weight: 500; margin-bottom: 0.5rem;">微信支付</div>
+            <img src="assets/wechat-pay.png" alt="微信支付" style="width: 150px; height: auto; border-radius: 8px; border: 1px solid var(--border);">
+          </div>
+          <div>
+            <div style="font-size: 0.8rem; font-weight: 500; margin-bottom: 0.5rem;">支付宝</div>
+            <img src="assets/alipay.png" alt="支付宝" style="width: 150px; height: auto; border-radius: 8px; border: 1px solid var(--border);">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function showDonateQR() {
+      document.getElementById('donateModal').classList.add('active');
+    }
+  </script>
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
@@ -1534,16 +2544,39 @@
           </button>
         </div>
         
+        <!-- 会员状态卡片 -->
+        <div id="memberCard" style="margin-top: 1rem; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 1rem; border: 1px solid #fcd34d;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <span style="font-weight:600;color:#92400e;font-size:0.9rem;" id="memberStatusText">免费版</span>
+            <span id="memberBadgeSmall" style="font-size:0.75rem;"></span>
+          </div>
+          <div style="font-size:0.82rem;color:#a16207;line-height:1.6;" id="memberDetailText">
+            AI 调用：<strong>2次/天</strong><br/>
+            <button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#92400e;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500;">🔓 输入激活码升级</button>
+          </div>
+        </div>
+
         <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); margin-top: 1.5rem;">
-          <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">💡 为什么要设置目标？</div>
           <div style="font-size: 0.85rem; color: var(--text-secondary);">
             设置你的角色和目标后，AI分析会更加有针对性。它会帮助你判断：今天的行动是否在帮助我接近目标？有哪些事情让我偏离了方向？
           </div>
         </div>
 
+        <!-- 数据管理（本地存储版本） -->
         <div style="border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem;">
-          <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); text-align: center;">
-            <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">⚙️ API 配置</div>
+          <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">💾 数据管理</div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">所有数据存储在浏览器本地，建议定期导出备份。</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button onclick="exportAllData()" style="flex:1;min-width:120px;padding:0.75rem;background:linear-gradient(135deg,#ffadd2,#7fc8ff);color:white;border:none;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;">📤 导出全部数据</button>
+            <label style="flex:1;min-width:120px;padding:0.75rem;background:white;color:#7a5699;border:2px dashed #c7d2fe;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;">
+              📥 导入数据
+              <input type="file" accept=".json" onchange="if(this.files[0])importAllData(this.files[0])" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); margin-top: 1.5rem;">
+          <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">⚙️ API 配置</div>
             <div style="font-size: 0.85rem; color: var(--text-secondary);">
               AI 配置已内置到程序中，无需手动配置
             </div>
@@ -1554,6 +2587,32 @@
           <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">提示</div>
           <div style="font-size: 0.85rem; color: var(--text-secondary);">
             配置好 API 后，点击"AI 提炼"功能即可获得智能分析总结。每次调用会消耗 API 配额。
+          </div>
+        </div>
+        
+        <!-- 反馈与支持 -->
+        <div style="border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem;">
+          <div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+            <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem;">
+              ☕ 支持一下
+            </div>
+            <div style="font-size: 0.8rem; opacity: 0.9; margin-bottom: 1rem;">
+              使用 AI 功能需要消耗 API Token，运营成本不低。如果觉得好用，欢迎支持一下！
+            </div>
+            <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+              <img src="assets/wechat-pay.png" alt="微信支付" style="width: 120px; height: auto; border-radius: 8px; background: white; padding: 4px;">
+              <img src="assets/alipay.png" alt="支付宝" style="width: 120px; height: auto; border-radius: 8px; background: white; padding: 4px;">
+            </div>
+          </div>
+          
+          <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); text-align: center;">
+            <div style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.5rem;">📮 反馈建议</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              欢迎提交使用意见或 Bug 反馈
+            </div>
+            <a href="mailto:495924055@qq.com" style="display: inline-block; padding: 0.5rem 1rem; background: var(--primary); color: white; border-radius: var(--radius); font-size: 0.85rem; text-decoration: none;">
+              发送邮件反馈
+            </a>
           </div>
         </div>
       </div>
@@ -1734,8 +2793,578 @@
     </div>
   </div>
 
-  <script>
-    // State
+</div>
+</div>
+
+<script>
+    // ========== 腾讯云 CloudBase 配置 ==========
+    const CLOUD_ENV_ID = 'noteme-4g46b2fz98b36db3'; // 替换为你的环境ID
+    const TcbApiBase = `https://${CLOUD_ENV_ID}.ap-shanghai.tcb-api.tencentcloudapi.com`;
+    let app = null;
+    let authObj = null;
+    let authState = null; // 登录状态
+    let isSyncing = false; // 防止重复同步
+    let cloudbaseReady = false; // SDK 是否已加载
+    
+    // 动态加载脚本
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('SDK加载失败'));
+        document.head.appendChild(script);
+      });
+    }
+    
+    // 检查是否在 GitHub Pages 环境
+    function isGitHubPages() {
+      return window.location.hostname.includes('github.io');
+    }
+    
+    // 初始化 CloudBase
+    async function initCloudBase() {
+      try {
+        // GitHub Pages 环境不使用 CloudBase
+        if (isGitHubPages()) {
+          console.log('GitHub Pages 环境，跳过 CloudBase 初始化');
+          updateLoginUI(false);
+          return false;
+        }
+        
+        // SDK 尚未加载完成时，等待最多 5s
+        if (typeof cloudbase === 'undefined') {
+          await new Promise((resolve) => {
+            let waited = 0;
+            const timer = setInterval(() => {
+              waited += 200;
+              if (typeof cloudbase !== 'undefined') { clearInterval(timer); resolve(); }
+              else if (waited >= 5000) { clearInterval(timer); resolve(); }
+            }, 200);
+          });
+        }
+        // 等待后仍未加载，静默降级（不影响主界面）
+        if (typeof cloudbase === 'undefined') {
+          console.warn('CloudBase SDK 未能加载，云同步/登录功能暂不可用');
+          updateLoginUI(false);
+          return false;
+        }
+        
+        if (window._cloudbaseInited && app) {
+          return true;
+        }
+        window._cloudbaseInited = true;
+
+        app = cloudbase.init({
+          env: CLOUD_ENV_ID,
+          region: 'ap-shanghai'
+        });
+        
+        // 初始化 auth 实例
+        authObj = app.auth();
+        
+        console.log('CloudBase 初始化成功');
+        
+        // 检查登录状态（仅检查，不自动登录）
+        authState = await app.auth().getLoginState();
+        console.log('getLoginState 返回:', authState);
+        
+        if (authState) {
+          // 已登录 - 兼容 userInfo 可能为 undefined 的情况
+          currentUser = authState.userInfo || authState.user || authState;
+          console.log('已登录用户:', currentUser);
+          console.log('已登录用户 uid:', currentUser?.uid);
+          
+          // 只有确实有 uid 时才算真正登录
+          if (currentUser?.uid) {
+            updateLoginUI(true); updateGlobalLoginUI(true);
+          } else {
+            console.log('登录状态存在但无有效用户信息，不自动登录');
+            updateLoginUI(false);
+          }
+        } else {
+          // 未登录，不自动匿名登录，让用户选择登录方式
+          console.log('未检测到登录状态');
+          updateLoginUI(false);
+        }
+        return true;
+      } catch (e) {
+        console.error('CloudBase 初始化失败:', e);
+        updateLoginUI(false);
+        return false;
+      }
+    }
+    
+    // 保存验证信息，发送与登录之间共享
+    let verificationInfo = null;
+    let currentPhone = null;
+    
+    // 发送手机验证码 (v2 SDK: getVerification)
+    async function sendPhoneCode(phone) {
+      if (!app) await initCloudBase();
+      try {
+        const phoneWithCode = phone.startsWith('+') ? phone : '+86 ' + phone;
+        console.log('发送验证码到:', phoneWithCode);
+        
+        // v2 SDK 方法：getVerification
+        verificationInfo = await app.auth().getVerification({
+          phone_number: phoneWithCode
+        });
+        currentPhone = phoneWithCode;
+        
+        console.log('验证码发送成功，verificationInfo:', verificationInfo);
+        return { success: true, message: '验证码已发送' };
+      } catch (e) {
+        console.error('发送验证码失败:', e);
+        return { success: false, message: e.message || '发送失败' };
+      }
+    }
+    
+    // 手机号登录 (v2 SDK: signInWithSms)
+    async function phoneLogin(phone, code) {
+      if (!verificationInfo) {
+        return { success: false, message: '请先获取验证码' };
+      }
+      
+      try {
+        console.log('登录手机号:', phone, '验证码:', code);
+        
+        const phoneWithCode = phone.startsWith('+') ? phone : '+86 ' + phone;
+        
+        // v2 SDK 方法：signInWithSms
+        const loginState = await app.auth().signInWithSms({
+          verificationInfo,
+          verificationCode: code,
+          phoneNum: phoneWithCode
+        });
+        
+        console.log('登录成功:', loginState);
+        
+        // 刷新 authState
+        authState = await app.auth().getLoginState();
+        currentUser = authState?.userInfo || authState?.user || null;
+        
+        // 打印完整用户信息用于调试
+        console.log('[调试] 完整 currentUser:', currentUser);
+        console.log('[调试] currentUser keys:', currentUser ? Object.keys(currentUser) : 'null');
+        
+        // 保存手机号到 currentUser，用于同步标识
+        if (phone && currentUser) {
+          currentUser.phoneNumber = phone;
+        }
+        
+        console.log('登录后 currentUser:', currentUser);
+        console.log('登录后用户标识:', currentUser?.phoneNumber || currentUser?.uid);
+        
+        // 更新 UI
+        if (currentUser?.phoneNumber || currentUser?.uid) {
+          updateLoginUI(true);
+          updateGlobalLoginUI(true);
+        }
+        
+        verificationInfo = null;
+        currentPhone = null;
+        return { success: true };
+      } catch (e) {
+        console.error('登录失败:', e);
+        return { success: false, message: e.message || '登录失败' };
+      }
+    }
+    
+    // 退出登录
+    async function logout() {
+      try {
+        if (!app) await initCloudBase();
+        if (!authObj) authObj = app.auth();
+        
+        await authObj.signOut();
+        currentUser = null;
+        authState = null;
+        
+        // 清理登录状态
+        localStorage.removeItem('daywise_logged_in');
+        localStorage.removeItem('daywise_anonymous');
+        
+        updateLoginUI(false);
+        updateGlobalLoginUI(false);
+        
+        // 显示登录弹窗
+        document.getElementById('globalLoginModal').style.display = 'flex';
+        
+        return { success: true };
+      } catch (e) {
+        console.error('退出失败:', e);
+        return { success: false, message: e.message || '退出失败' };
+      }
+    }
+    
+    // 获取云端数据（本地模式 - 不使用云端）
+    async function getCloudData() {
+      console.log('[本地模式] 跳过云端读取');
+      return null;
+    }
+    
+    // ========== 待办事项功能 ==========
+    // 保存数据到云端
+    // 保存数据到云端（本地模式 - 不使用）
+    async function saveCloudData(data) {
+      console.log('[本地模式] 跳过云端保存');
+      return true;
+    }
+    
+    // ========== 待办事项功能 ==========
+    
+    // 获取日期字符串（使用本地时间，避免 UTC 导致日期偏移）
+    function getDateStr(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    
+    // 获取今天日期字符串
+    function getTodayStr() {
+      return getDateStr(new Date());
+    }
+    
+    // 获取明天日期字符串
+    function getTomorrowStr() {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return getDateStr(tomorrow);
+    }
+    
+    // 格式化日期显示
+    function formatTodoDate(dateStr) {
+      const today = getTodayStr();
+      const tomorrow = getTomorrowStr();
+      const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      
+      if (dateStr === today) return '今天';
+      if (dateStr === tomorrow) return '明天';
+      
+      const date = new Date(dateStr);
+      return `${date.getMonth() + 1}月${date.getDate()}日 ${weekDays[date.getDay()]}`;
+    }
+    
+    // 从 localStorage 加载待办
+    function loadTodos() {
+      try {
+        const saved = localStorage.getItem('daywise_todos');
+        if (saved) {
+          todos = JSON.parse(saved);
+        }
+      } catch (e) {
+        todos = [];
+      }
+    }
+    
+    // 保存待办到 localStorage
+    function saveTodos() {
+      localStorage.setItem('daywise_todos', JSON.stringify(todos));
+    }
+    
+    // 立即同步待办到云端（添加/删除/切换完成后调用）
+    // 复用已有的 saveData 函数，确保和记录(entries)使用完全相同的同步逻辑
+    // 待办同步（本地模式 - 无需云端同步）
+    function syncTodosToCloud() {}
+    
+    // 添加待办
+    function addTodo(text, dateStr, sourceEntryId = null, timeHint = '') {
+      const todo = {
+        id: Date.now().toString(),
+        text: text,
+        date: dateStr,
+        completed: false,
+        sourceEntry: sourceEntryId,
+        timeHint: timeHint,
+        createdAt: new Date().toISOString(),
+        createdDate: getTodayStr() // 记录创建日期（用于显示来源）
+      };
+      todos.push(todo);
+      saveTodos();
+      renderTodoBanner();
+      // 立即同步到云端（不依赖 beforeunload）
+      syncTodosToCloud();
+      return todo;
+    }
+    
+    // 删除待办
+    function deleteTodo(id) {
+      todos = todos.filter(t => t.id !== id);
+      saveTodos();
+      renderTodoBanner();
+      renderTodoList();
+      syncTodosToCloud(); // 同步到云端
+    }
+    
+    // 切换待办完成状态
+    function toggleTodo(id) {
+      const todo = todos.find(t => t.id === id);
+      if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        renderTodoBanner();
+        renderTodoList();
+        syncTodosToCloud(); // 同步到云端
+      }
+    }
+    
+    // 获取当前页面日期对应的待办数量（只取当前页面日期本身，不分今日明日）
+    // 获取当前页面日期的待办总数（含已完成和未完成）
+    function getCurrentPageTodoCount() {
+      const dateStr = getCurrentPageDateStr();
+      return todos.filter(t => t.date === dateStr).length;
+    }
+    
+    // 获取当前页面日期的未完成待办数
+    function getUncompletedTodoCount() {
+      const dateStr = getCurrentPageDateStr();
+      return todos.filter(t => t.date === dateStr && !t.completed).length;
+    }
+    
+    // 获取当前页面日期的字符串（如 "2026-04-14"）
+    function getCurrentPageDateStr() {
+      const y = currentDate.getFullYear();
+      const m = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const d = String(currentDate.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    
+    // 获取当前页面日期的显示标签（始终显示"今日"，因为当前页日期即视为今日）
+    function getTodoDateLabel(dateStr) {
+      return '今日';
+    }
+
+    // 渲染待办横幅（只显示当前页面日期的待办，一行）
+    function renderTodoBanner() {
+      const container = document.getElementById('todoBannerContainer');
+      if (!container) return;
+      
+      const totalCount = getCurrentPageTodoCount();
+      const uncompletedCount = getUncompletedTodoCount();
+      const dateStr = getCurrentPageDateStr();
+      const label = getTodoDateLabel(dateStr);
+      
+      console.log('[横幅调试] 页面日期:', dateStr, '待办总数:', totalCount, '未完成:', uncompletedCount);
+      
+      if (totalCount === 0) {
+        container.innerHTML = '';
+        return;
+      }
+      
+      // 根据完成状态决定横幅样式和文字
+      let statusText, statusClass;
+      if (uncompletedCount === 0) {
+        // 全部完成了
+        statusText = `✅ 全部完成`;
+        statusClass = 'todo-banner-all-done';
+      } else {
+        statusText = `${label}待办 <strong>${totalCount}</strong>项`;
+        statusClass = '';
+      }
+      
+      container.innerHTML = `
+        <div class="todo-banner ${statusClass}" onclick="toggleTodoList()" style="cursor: pointer;">
+          <div class="todo-banner-left">
+            <span class="todo-icon">📋</span>
+            <span class="todo-banner-text">
+              ${statusText}
+            </span>
+            ${uncompletedCount > 0 ? `<span style="font-size:0.7rem;color:#9ca3af;margin-left:4px;">(${dateStr})</span>` : ''}
+            ${uncompletedCount > 0 && uncompletedCount < totalCount ? `<span style="font-size:0.7rem;color:#10b981;margin-left:4px;">(剩${uncompletedCount}项)</span>` : ''}
+          </div>
+          <span class="todo-banner-arrow" id="todoBannerArrow">▼</span>
+        </div>
+        <div class="todo-list" id="todoListContainer" style="display: none;"></div>
+      `;
+      
+      renderTodoList();
+    }
+    
+    // 切换待办列表显示
+    function toggleTodoList() {
+      const listContainer = document.getElementById('todoListContainer');
+      const arrow = document.getElementById('todoBannerArrow');
+      if (listContainer.style.display === 'none') {
+        listContainer.style.display = 'block';
+        arrow.textContent = '▲';
+      } else {
+        listContainer.style.display = 'none';
+        arrow.textContent = '▼';
+      }
+    }
+    
+    // 渲染待办列表（只显示当前页面日期的待办，无多余标签）
+    function renderTodoList() {
+      const container = document.getElementById('todoListContainer');
+      if (!container) return;
+      
+      const dateStr = getCurrentPageDateStr();
+      const pageTodos = todos.filter(t => t.date === dateStr).sort((a, b) => a.completed - b.completed);
+      
+      console.log('[列表调试] 过滤条件 date ===', dateStr);
+      console.log('[列表调试] 全部待办:', todos.map(t => ({text: t.text.substring(0,15), date: t.date})));
+      console.log('[列表调试] 匹配待办数:', pageTodos.length);
+      
+      if (pageTodos.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+      
+      container.innerHTML = pageTodos.map(t => renderTodoItem(t)).join('');
+    }
+    
+    // 渲染单个待办项
+    function renderTodoItem(todo) {
+      const checkedClass = todo.completed ? 'todo-item-checked' : '';
+      
+      // 判断是否需要显示来源日期标注（目标日期和创建日期不同，如"明天"的待办）
+      let sourceNote = '';
+      if (todo.createdDate && todo.createdDate !== todo.date) {
+        const d = new Date(todo.createdDate);
+        sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（设置自${d.getMonth() + 1}月${d.getDate()}日）</span>`;
+      }
+      
+      return `
+        <div class="todo-item ${checkedClass}">
+          <label class="todo-checkbox" onclick="event.stopPropagation(); toggleTodo('${todo.id}')">
+            <input type="checkbox" ${todo.completed ? 'checked' : ''}>
+            <span class="checkmark"></span>
+          </label>
+          <span class="todo-text">
+            ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${todo.text}${sourceNote}
+          </span>
+          <button class="todo-delete" onclick="event.stopPropagation(); deleteTodo('${todo.id}')">✕</button>
+        </div>
+      `;
+    }
+    
+    // 打开设置待办弹窗
+    let pendingTodoEntryId = null;
+    let pendingTodoText = '';
+    
+    function openTodoModal(entryId, entryText) {
+      pendingTodoEntryId = entryId;
+      pendingTodoText = entryText;
+      
+      const modal = document.getElementById('todoModal');
+      const contentEl = document.getElementById('todoModalContent');
+      if (contentEl) {
+        contentEl.textContent = entryText.length > 100 ? entryText.substring(0, 100) + '...' : entryText;
+      }
+      
+      if (modal) {
+        modal.classList.add('active');
+      }
+      
+      // 重置日期选择，默认选中"今天"
+      const radios = document.querySelectorAll('input[name="todoDate"]');
+      radios.forEach(r => r.checked = false);
+      const todayRadio = document.querySelector('input[name="todoDate"][value="today"]');
+      if (todayRadio) todayRadio.checked = true;
+      
+      const customDateContainer = document.getElementById('customDateContainer');
+      if (customDateContainer) customDateContainer.style.display = 'none';
+    }
+    
+    // 关闭待办弹窗
+    function closeTodoModal() {
+      const modal = document.getElementById('todoModal');
+      if (modal) {
+        modal.classList.remove('active');
+      }
+      pendingTodoEntryId = null;
+      pendingTodoText = '';
+    }
+    
+    // 确认添加待办
+    function confirmAddTodo() {
+      const selected = document.querySelector('input[name="todoDate"]:checked');
+      if (!selected) {
+        alert('请选择待办日期');
+        return;
+      }
+      
+      let dateStr;
+      const value = selected.value;
+      
+      // 调试：输出关键日期信息
+      const nowReal = new Date();
+      console.log('=== 待办调试 ===');
+      console.log('系统真实时间:', nowReal.toString());
+      console.log('系统本地日期:', getDateStr(nowReal));
+      console.log('页面currentDate:', currentDate.toString());
+      console.log('页面日期( getCurrentPageDateStr ):', getCurrentPageDateStr());
+      
+      if (value === 'today') {
+        dateStr = getCurrentPageDateStr(); // 今天 = 页面当前显示的日期
+        console.log('选择[今天] → 存入日期:', dateStr);
+      } else if (value === 'tomorrow') {
+        const tomorrowDate = new Date(currentDate);
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        dateStr = getDateStr(tomorrowDate); // 明天 = 页面日期的下一天
+      } else if (value === 'week') {
+        // 本周
+        const today = new Date();
+        const friday = new Date(today);
+        const dayOfWeek = today.getDay();
+        const daysUntilFriday = dayOfWeek <= 5 ? 5 - dayOfWeek : 7 - dayOfWeek + 5;
+        friday.setDate(today.getDate() + daysUntilFriday);
+        dateStr = getDateStr(friday);
+      } else if (value === 'custom') {
+        const customDate = document.getElementById('todoCustomDate').value;
+        if (!customDate) {
+          alert('请选择日期');
+          return;
+        }
+        dateStr = customDate;
+      }
+      
+      // 提取时间提示
+      let timeHint = '';
+      const timeMatch = pendingTodoText.match(/(\d{1,2}[点时:]?\d{0,2})/);
+      if (timeMatch) {
+        timeHint = timeMatch[1].replace(/[：:]/g, ':').replace(/时/g, ':');
+        if (timeHint.endsWith(':')) timeHint = timeHint.slice(0, -1);
+        if (timeHint.startsWith(':')) timeHint = timeHint.slice(1);
+      }
+      
+      addTodo(pendingTodoText, dateStr, pendingTodoEntryId, timeHint);
+      closeTodoModal();
+      
+      // 显示成功提示
+      alert('✅ 已添加待办到 ' + formatTodoDate(dateStr));
+    }
+    
+    // AI 自动识别待办（从日记内容中提取）
+    function extractTodosFromEntry(text) {
+      const todoKeywords = ['待办', 'todo', '要做', '必须', '待完成', '还没', '应该要', '计划', '要去做', '记得'];
+      const dateKeywords = {
+        '今天': 'today',
+        '今日': 'today',
+        '明天': 'tomorrow',
+        '明日': 'tomorrow',
+        '周五': 'week',
+        '星期五': 'week',
+        '周六': 'week',
+        '星期六': 'week'
+      };
+      
+      // 简单的关键词检测，实际使用 AI 会更准确
+      let hasTodoIntent = false;
+      for (const kw of todoKeywords) {
+        if (text.includes(kw)) {
+          hasTodoIntent = true;
+          break;
+        }
+      }
+      
+      return hasTodoIntent;
+    }
+    
+    // ========== State ==========
+    let currentUser = null;
     let currentDate = new Date();
     let entries = [];
     let dailyReviews = {};
@@ -1743,11 +3372,525 @@
     let aiSummaries = {};  // AI分析结果缓存
     let aiInsights = {};   // AI结构化洞察数据
     let weeklyInsights = {}; // 周洞察数据
+    let mindMaps = {};      // 脑图数据（按日期存储）
+    let todos = [];        // 待办事项列表
     let aiTab = 'daily';
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
     let apiModel = 'deepseek-chat';
+    let dailyLimit = 10; // 每日调用次数限制（动态调整）
     let historyFilterStarred = false; // 历史页面筛选：只看星标
+    let isPremium = false; // 是否为付费会员
+    let subscriptionInfo = null; // 订阅详情 {plan, status, expireAt, activatedBy}
+    const FREE_DAILY_LIMIT = 2; // 免费用户每日AI调用次数
+    const PREMIUM_DAILY_LIMIT = 15; // 付费会员每日AI调用次数
+    
+    // 获取今日调用次数
+    function getTodayApiCalls() {
+      const today = new Date().toDateString();
+      const savedDate = localStorage.getItem('daywise_api_date');
+      const savedCount = parseInt(localStorage.getItem('daywise_api_calls') || '0');
+      
+      if (savedDate !== today) {
+        // 新的一天，重置计数
+        localStorage.setItem('daywise_api_date', today);
+        localStorage.setItem('daywise_api_calls', '0');
+        return 0;
+      }
+      return savedCount;
+    }
+    
+    // 增加调用次数
+    function incrementApiCalls() {
+      const today = new Date().toDateString();
+      localStorage.setItem('daywise_api_date', today);
+      const count = parseInt(localStorage.getItem('daywise_api_calls') || '0');
+      localStorage.setItem('daywise_api_calls', (count + 1).toString());
+    }
+    
+    // ========== 会员系统 ==========
+
+    // 检测用户是否为有效付费会员
+    function checkPremium() {
+      if (!subscriptionInfo) return false;
+      if (subscriptionInfo.plan === 'free' || !subscriptionInfo.plan) return false;
+      if (subscriptionInfo.status !== 'active') return false;
+      if (subscriptionInfo.expireAt) {
+        var expireTime = new Date(subscriptionInfo.expireAt).getTime();
+        if (Date.now() > expireTime) {
+          console.log('[会员] 已过期:', subscriptionInfo.expireAt);
+          subscriptionInfo.status = 'expired';
+          isPremium = false;
+          return false;
+        }
+      }
+      isPremium = true;
+      return true;
+    }
+
+    // 从云端数据中加载会员状态（登录后调用）
+    // 加载会员状态（从 localStorage）
+    function loadSubscriptionFromCloud() {
+      try {
+        var s = localStorage.getItem('daywise_subscription');
+        subscriptionInfo = s ? JSON.parse(s) : { plan: 'free', status: 'active' };
+      } catch(e) { subscriptionInfo = { plan: 'free', status: 'active' }; }
+      checkPremium(); updateDailyLimit(); updateMemberBadge(); updateMemberCard();
+    }
+    
+    // 根据会员状态更新每日AI调用限制
+    function updateDailyLimit() {
+      dailyLimit = isPremium ? PREMIUM_DAILY_LIMIT : FREE_DAILY_LIMIT;
+      console.log('[会员] AI每日限额:', dailyLimit, isPremium ? '(付费会员)' : '(免费用户)');
+    }
+
+    // 使用激活码开通会员
+    async function activateWithCode(code) {
+      if (!code || !code.trim()) {
+        alert('请输入激活码');
+        return false;
+      }
+      code = code.trim().toUpperCase();
+
+      if (code.length < 8) {
+        alert('激活码格式不正确，请检查后重试');
+        return false;
+      }
+
+      // TODO: 后续对接发卡平台API或云函数验证
+      var validCodes = [
+        'NOTEME-MONTH-2026',
+        'NOTEME-YEAR-2026',
+        'TEST-PREMIUM-001',
+        'TEST-PREMIUM-002'
+      ];
+
+      if (validCodes.indexOf(code) === -1) {
+        alert('激活码无效，请核对后重试\n\n如需购买请联系客服获取激活码');
+        return false;
+      }
+
+      var plan = 'monthly';
+      var expireDays = 30;
+      if (code.indexOf('YEAR') >= 0) {
+        plan = 'yearly';
+        expireDays = 365;
+      }
+
+      var now = new Date();
+      var expireAt = new Date(now.getTime() + expireDays * 24 * 60 * 60 * 1000);
+
+      subscriptionInfo = {
+        plan: plan,
+        status: 'active',
+        expireAt: expireAt.toISOString(),
+        activatedAt: now.toISOString(),
+        activatedBy: 'code:' + code
+      };
+
+      isPremium = true;
+      updateDailyLimit();
+      updateMemberBadge();
+      updateMemberCard();
+      await saveSubscriptionToCloud();
+
+      var planName = plan === 'monthly' ? '月度会员' : '年度会员';
+      alert('开通成功！\n套餐：' + planName + '\n有效期至：' + expireAt.getFullYear() + '年' + (expireAt.getMonth()+1) + '月' + expireAt.getDate() + '日\n\n每日AI调用已提升至 ' + PREMIUM_DAILY_LIMIT + ' 次！');
+
+      closeModal('activationModal');
+      return true;
+    }
+
+    async function saveSubscriptionToCloud() { if(!subscriptionInfo) return; try{ localStorage.setItem('daywise_subscription', JSON.stringify(subscriptionInfo)); }catch(e){} }
+
+    function showUpgradePrompt(featureName) {
+      featureName = featureName || 'AI 功能';
+      var modal = document.getElementById('upgradePromptModal');
+      if (modal) { modal.style.display = 'flex'; return; }
+      
+      var overlay = document.createElement('div');
+      overlay.id = 'upgradePromptModal';
+      overlay.innerHTML = '<div class="modal-overlay" onclick="closeModal(\'upgradePromptModal\')" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center"><div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.3s ease"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#f59e0b,#ef4444);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">👑</div><h3 style="margin:0 0 0.5rem;font-size:1.25rem;color:#1f2937">解锁全部功能</h3><p style="margin:0;color:#6b7280;font-size:0.9rem">今日免费AI次数已用完</p></div><div style="background:#fef3c7;border-radius:12px;padding:1rem;margin-bottom:1.5rem"><div style="font-weight:600;color:#92400e;margin-bottom:0.75rem;font-size:0.95rem">💎 付费会员 ¥19.9/月</div><div style="font-size:0.85rem;color:#a16207;line-height:1.8">✅ AI调用提升至 <strong>15次/天</strong><br/>✅ 无限记录 & 待办管理<br/>✅ 云端多端同步<br/>✅ 优先体验新功能</div></div><button onclick="openActivationModal()" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">立即开通</button><button onclick="closeModal(\'upgradePromptModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">稍后再说</button></div></div><style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}</style>';
+      document.body.appendChild(overlay);
+    }
+
+    function openActivationModal() {
+      var upgradeModal = document.getElementById('upgradePromptModal');
+      if (upgradeModal) upgradeModal.style.display = 'none';
+
+      var modal = document.getElementById('activationModal');
+      if (modal) { modal.style.display = 'flex'; return; }
+
+      modal = document.createElement('div');
+      modal.id = 'activationModal';
+      modal.innerHTML = '<div class="modal-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)closeModal(\'activationModal\')"><div style="background:white;border-radius:16px;padding:2rem;max-width:360px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#ffadd2,#7fc8ff);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">🎫</div><h3 style="margin:0 0 0.5rem;font-size:1.2rem;color:#1f2937">激活会员</h3><p style="margin:0;color:#6b7280;font-size:0.85rem">请输入购买获得的激活码</p></div><input type="text" id="activationCodeInput" placeholder="请输入激活码（如：XXXX-XXXX）" maxlength="30" style="width:100%;padding:0.9rem 1rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;text-align:center;letter-spacing:1px;margin-bottom:1rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'#6366f1\'" onblur="this.style.borderColor=\'#e5e7eb\'" onkeydown="if(event.key===\'Enter\')doActivate()"><div id="activationMsg" style="font-size:0.85rem;text-align:center;margin-bottom:1rem;min-height:1.2rem"></div><button onclick="doActivate()" id="activateBtn" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">确认激活</button><button onclick="closeModal(\'activationModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">取消</button><p style="text-align:center;margin-top:1rem;font-size:0.78rem;color:#9ca3af">还没有激活码？<br/>联系客服获取 →</p></div></div>';
+      document.body.appendChild(modal);
+    }
+
+    async function doActivate() {
+      var input = document.getElementById('activationCodeInput');
+      var msgEl = document.getElementById('activationMsg');
+      var btn = document.getElementById('activateBtn');
+      if (!input) return;
+
+      var code = input.value.trim();
+      btn.disabled = true;
+      btn.textContent = '验证中...';
+      msgEl.textContent = '';
+      msgEl.style.color = '#7a5699';
+
+      try {
+        var success = await activateWithCode(code);
+        if (success) {
+          msgEl.style.color = '#10b981';
+          msgEl.textContent = '✅ 激活成功！';
+        } else {
+          msgEl.style.color = '#ef4444';
+          btn.disabled = false;
+          btn.textContent = '确认激活';
+        }
+      } catch(e) {
+        msgEl.style.color = '#ef4444';
+        msgEl.textContent = '⚠️ ' + (e.message || '激活失败，请重试');
+        btn.disabled = false;
+        btn.textContent = '确认激活';
+      }
+    }
+
+    function updateMemberBadge() {
+      var badge = document.getElementById('memberBadge');
+      if (!badge) return;
+
+      if (isPremium && subscriptionInfo && subscriptionInfo.status === 'active') {
+        var exp = subscriptionInfo.expireAt ? new Date(subscriptionInfo.expireAt) : null;
+        var expStr = exp ? ((exp.getMonth()+1) + '/' + exp.getDate() + '到期') : '';
+        badge.innerHTML = '<span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:600">👑 会员 ' + expStr + '</span>';
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function updateMemberCard() {
+      var card = document.getElementById('memberCard');
+      var statusText = document.getElementById('memberStatusText');
+      var detailText = document.getElementById('memberDetailText');
+      var badgeSmall = document.getElementById('memberBadgeSmall');
+      if (!card || !statusText || !detailText) return;
+
+      if (isPremium && subscriptionInfo && subscriptionInfo.status === 'active') {
+        card.style.background = 'linear-gradient(135deg, #d1fae5, #a7f3d0)';
+        card.style.borderColor = '#10b981';
+        statusText.textContent = subscriptionInfo.plan === 'yearly' ? '🏆 年度会员' : '👑 月度会员';
+        statusText.style.color = '#065f46';
+
+        var exp = subscriptionInfo.expireAt ? new Date(subscriptionInfo.expireAt) : null;
+        var expStr = exp ? (exp.getFullYear() + '-' + ('0'+(exp.getMonth()+1)).slice(-2) + '-' + ('0'+exp.getDate()).slice(-2) + ' 到期') : '';
+        detailText.innerHTML = 'AI 调用：<strong>15次/天</strong><br/>有效期：' + expStr + '<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#065f46;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔄 续费/换码</button>';
+        if (badgeSmall) badgeSmall.innerHTML = '<span style="background:#10b981;color:white;padding:1px 6px;border-radius:10px;font-size:0.7rem">生效中</span>';
+      } else {
+        card.style.background = 'linear-gradient(135deg, #fef3c7, #fde68a)';
+        card.style.borderColor = '#fcd34d';
+        statusText.textContent = '免费版';
+        statusText.style.color = '#92400e';
+        var count = getTodayApiCalls();
+        detailText.innerHTML = 'AI 调用：<strong>2次/天</strong> (今日已用' + count + '/2)<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#92400e;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔓 输入激活码升级</button>';
+        if (badgeSmall) badgeSmall.innerHTML = '';
+      }
+    }
+
+    function checkAIAccess(featureName) {
+      var limitInfo = checkApiLimit();
+      if (limitInfo.limited) {
+        showUpgradePrompt(featureName);
+        return false;
+      }
+      return true;
+    }
+    
+    // ========== 登录相关函数 ==========
+    let codeCooldown = 0; // 验证码冷却倒计时
+    let loginSkipped = false; // 用户是否跳过登录
+    
+    // 更新全局登录弹窗
+    function updateGlobalLoginUI(isLoggedIn) {
+      const modal = document.getElementById('globalLoginModal');
+      if (isLoggedIn) {
+        modal.style.display = 'none';
+        loginSkipped = false;
+        localStorage.setItem('daywise_logged_in', 'true');
+      }
+    }
+    
+    // 全局发送验证码
+    async function handleGlobalSendCode() {
+      const phone = document.getElementById('globalLoginPhone').value.trim();
+      const msgEl = document.getElementById('globalLoginMsg');
+      const btn = document.getElementById('globalSendCodeBtn');
+      
+      if (!phone || phone.length !== 11) {
+        msgEl.textContent = '请输入正确的11位手机号';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      if (codeCooldown > 0) {
+        msgEl.textContent = `请 ${codeCooldown} 秒后再试`;
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.textContent = '发送中...';
+      
+      const result = await sendPhoneCode(phone);
+      
+      if (result.success) {
+        msgEl.textContent = '✅ 验证码已发送';
+        msgEl.style.color = '#86efac';
+        codeCooldown = 60;
+        
+        const timer = setInterval(() => {
+          codeCooldown--;
+          btn.textContent = codeCooldown > 0 ? `${codeCooldown}s后重发` : '获取验证码';
+          if (codeCooldown <= 0) {
+            clearInterval(timer);
+            btn.disabled = false;
+          }
+        }, 1000);
+      } else {
+        msgEl.textContent = result.message || '发送失败';
+        msgEl.style.color = '#fca5a5';
+        btn.disabled = false;
+        btn.textContent = '获取验证码';
+      }
+    }
+    
+    // 全局登录
+    async function handleGlobalLogin() {
+      const phone = document.getElementById('globalLoginPhone').value.trim();
+      const code = document.getElementById('globalLoginCode').value.trim();
+      const msgEl = document.getElementById('globalLoginMsg');
+      
+      if (!phone || phone.length !== 11) {
+        msgEl.textContent = '请输入正确的11位手机号';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      if (!code || code.length !== 6) {
+        msgEl.textContent = '请输入6位验证码';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      msgEl.textContent = '登录中...';
+      msgEl.style.color = '#86efac';
+      
+      const result = await phoneLogin(phone, code);
+      
+      if (result.success) {
+        msgEl.textContent = '✅ 登录成功';
+        
+        // 标记为已登录（记录时间戳用于15天保持登录）
+        localStorage.setItem('daywise_logged_in', 'true');
+        localStorage.setItem('daywise_login_time', Date.now().toString());
+        
+        // 延迟关闭弹窗 + 解锁应用
+        setTimeout(() => {
+          document.getElementById('globalLoginModal').style.display = 'none';
+          appUnlockAndLoad();
+        }, 500);
+      } else {
+        msgEl.textContent = result.message || '登录失败';
+        msgEl.style.color = '#fca5a5';
+      }
+    }
+    
+    // 跳过登录（已废弃，强制要求手机号登录）
+    function skipGlobalLogin() {
+      const msgEl = document.getElementById('globalLoginMsg');
+      if (msgEl) {
+        msgEl.textContent = '⚠️ 请完成手机号登录后继续使用';
+        msgEl.style.color = '#fca5a5';
+      }
+    }
+    
+    // 匿名登录（已废弃，保留函数避免报错）
+    async function quickStart() {
+      skipGlobalLogin();
+    }
+    
+    // 登录后从云端加载数据（自动同步，无需确认）
+    // 登录后加载数据（本地模式：从 localStorage 恢复会员状态）
+    async function loadCloudDataOnLogin() {
+      loadSubscriptionFromCloud();
+      console.log('[本地模式] 数据已从 localStorage 加载');
+    }
+    
+    function updateLoginUI(isLoggedIn) {
+      console.log('updateLoginUI called, isLoggedIn:', isLoggedIn, 'currentUser:', currentUser);
+      
+      const loginPanel = document.getElementById('loginPanel');
+      const loggedInPanel = document.getElementById('loggedInPanel');
+      const userPhoneDisplay = document.getElementById('userPhoneDisplay');
+      const userAvatar = document.getElementById('userAvatar');
+      const userName = document.getElementById('userName');
+      
+      if (isLoggedIn && currentUser) {
+        loginPanel.style.display = 'none';
+        loggedInPanel.style.display = 'block';
+        
+        // 显示用户信息
+        const phone = currentUser.phoneNumber || currentUser.phone_number || currentUser.name || '';
+        const name = currentUser.name || currentUser.nickname || currentUser.uid?.slice(0,8) || '';
+        
+        userPhoneDisplay.textContent = '📱 ' + phone;
+        if (userAvatar) userAvatar.textContent = phone ? phone.charAt(0).toUpperCase() : 'U';
+        if (userName) userName.textContent = name || phone;
+        
+        console.log('UI updated: 显示已登录, phone:', phone, 'name:', name);
+      } else {
+        loginPanel.style.display = 'block';
+        loggedInPanel.style.display = 'none';
+        console.log('UI updated: 显示未登录');
+      }
+    }
+    
+    async function handleSendCode() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const msgEl = document.getElementById('loginMsg');
+      const btn = document.getElementById('sendCodeBtn');
+      
+      if (!phone || phone.length !== 11) {
+        msgEl.textContent = '请输入正确的11位手机号';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      if (codeCooldown > 0) {
+        msgEl.textContent = `请 ${codeCooldown} 秒后再试`;
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.textContent = '发送中...';
+      
+      const result = await sendPhoneCode(phone);
+      
+      if (result.success) {
+        msgEl.textContent = '✅ 验证码已发送';
+        msgEl.style.color = '#86efac';
+        codeCooldown = 60;
+        
+        const timer = setInterval(() => {
+          codeCooldown--;
+          btn.textContent = codeCooldown > 0 ? `${codeCooldown}s后重发` : '获取验证码';
+          if (codeCooldown <= 0) {
+            clearInterval(timer);
+            btn.disabled = false;
+          }
+        }, 1000);
+      } else {
+        msgEl.textContent = result.message || '发送失败';
+        msgEl.style.color = '#fca5a5';
+        btn.disabled = false;
+        btn.textContent = '获取验证码';
+      }
+    }
+    
+    async function handleLogin() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const code = document.getElementById('loginCode').value.trim();
+      const msgEl = document.getElementById('loginMsg');
+      
+      if (!phone || phone.length !== 11) {
+        msgEl.textContent = '请输入正确的11位手机号';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      if (!code || code.length !== 6) {
+        msgEl.textContent = '请输入6位验证码';
+        msgEl.style.color = '#fca5a5';
+        return;
+      }
+      
+      msgEl.textContent = '登录中...';
+      msgEl.style.color = '#86efac';
+      
+      const result = await phoneLogin(phone, code);
+      
+      if (result.success) {
+        msgEl.textContent = '✅ 登录成功';
+        msgEl.style.color = '#86efac';
+        updateGlobalLoginUI(true);
+        
+      } else {
+        msgEl.textContent = result.message || '登录失败，请重试';
+        msgEl.style.color = '#fca5a5';
+      }
+    }
+    
+    async function handleLogout() {
+      if (!confirm('确定要退出登录吗？退出后本地数据保留，重新登录可继续同步。')) return;
+      
+      await logout();
+      alert('已退出登录');
+    }
+    
+    // ====== 数据导出/导入（纯本地存储版本） ======
+    function exportAllData() {
+      var data = {
+        version: '1.0-local',
+        exportDate: new Date().toISOString(),
+        entries: entries, dailyReviews: dailyReviews, weeklyReviews: weeklyReviews,
+        aiSummaries: aiSummaries, aiInsights: aiInsights, weeklyInsights: weeklyInsights,
+        mindMaps: mindMaps, todos: todos, userRole: userRole, userGoals: userGoals,
+        subscription: subscriptionInfo || null
+      };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'noteme_backup_' + new Date().toISOString().slice(0,10) + '.json';
+      a.click(); URL.revokeObjectURL(url);
+      alert('\u2705 数据导出成功！\n\n请妥善保管此备份文件。');
+    }
+
+    function importAllData(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var data = JSON.parse(e.target.result);
+          if (!data.version && !data.entries) { alert('\u274c 无效的备份文件'); return; }
+          if (!confirm('即将导入数据（当前数据将被覆盖），是否继续？\n- 记录: ' + (data.entries||[]).length + ' 条\n- 待办: ' + (data.todos||[]).length + ' 条')) return;
+          if (data.entries) { entries = data.entries; localStorage.setItem('daywise_entries', JSON.stringify(entries)); }
+          if (data.dailyReviews) { dailyReviews = data.dailyReviews; localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews)); }
+          if (data.weeklyReviews) { weeklyReviews = data.weeklyReviews; localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews)); }
+          if (data.aiSummaries) { aiSummaries = data.aiSummaries; localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries)); }
+          if (data.aiInsights) { aiInsights = data.aiInsights; localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights)); }
+          if (data.weeklyInsights) { weeklyInsights = data.weeklyInsights; localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights)); }
+          if (data.mindMaps) { mindMaps = data.mindMaps; localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps)); }
+          if (data.todos) { todos = data.todos; localStorage.setItem('daywise_todos', JSON.stringify(todos)); }
+          if (data.userRole) { userRole = data.userRole; localStorage.setItem('daywise_user_role', userRole); }
+          if (data.userGoals) { userGoals = data.userGoals; localStorage.setItem('daywise_user_goals', JSON.stringify(userGoals)); }
+          if (data.subscription) { subscriptionInfo = data.subscription; localStorage.setItem('daywise_subscription', JSON.stringify(subscriptionInfo)); checkPremium(); updateMemberBadge(); updateMemberCard(); }
+          alert('\u2705 数据导入成功！'); location.reload();
+        } catch(err) { alert('导入失败: ' + err.message); }
+      };
+      reader.readAsText(file);
+    }
+    
+    // 检查是否达到限制
+    function checkApiLimit() {
+      updateDailyLimit();
+      const count = getTodayApiCalls();
+      if (count >= dailyLimit) {
+        return { limited: true, count: count, limit: dailyLimit, isPremium: isPremium };
+      }
+      return { limited: false, count: count, limit: dailyLimit, isPremium: isPremium };
+    }
     
     // 周选择器状态 - 默认选择上一周
     let selectedWeekOffset = 0; // 0表示本周，-1上一周，-2上上周，以此类推
@@ -2855,28 +4998,110 @@
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 初始化 CloudBase 并检查登录状态
+      await initCloudBase();
+      
+      // ===== 登录状态检查（核心逻辑） =====
+      // 规则：
+      //   - 全新用户(从未登录) → 弹出登录
+      //   - 已登录且在15天内 → 直接进入（信任 localStorage）
+      //   - 已登录但超过15天 → 弹出重新登录
+      //   CloudBase session 恢复在后台进行，不阻塞用户使用
+      
+      const LOGIN_VALID_DAYS = 15; // 登录保持天数
+      const loginStatus = localStorage.getItem('daywise_logged_in');
+      const loginTime = parseInt(localStorage.getItem('daywise_login_time') || '0');
+      const now = Date.now();
+      const isLoginExpired = (now - loginTime) > LOGIN_VALID_DAYS * 24 * 60 * 60 * 1000;
+      
+      // 全新用户 / 登录过期 → 必须登录
+      if (loginStatus !== 'true' || isLoginExpired || !loginTime) {
+        if (isLoginExpired || (!loginTime && loginStatus === 'true')) {
+          localStorage.removeItem('daywise_logged_in');
+          localStorage.removeItem('daywise_login_time');
+        }
+        document.getElementById('appLockOverlay').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('globalLoginModal').style.display = 'flex';
+        }, 300);
+        
+        // 后台尝试恢复 CloudBase session（不阻塞）
+        if (loginStatus === 'true' && app) {
+          trySilentSessionRecover();
+        }
+        return;
+      }
+      
+      // 已登录且未过期 → 直接进入！
+      appUnlockAndLoad();
+      
+      // 后台尝试恢复/保持 CloudBase session
+      trySilentSessionRecover();
+    });
+
+    // 后台静默恢复 CloudBase session（不阻塞用户操作）
+    async function trySilentSessionRecover() {
+      if (!app) return;
+      try {
+        const state = await app.auth().getLoginState();
+        if (state && state?.userInfo?.uid) {
+          authState = state;
+          currentUser = state.userInfo;
+          console.log('CloudBase session 已恢复:', currentUser.uid); updateLoginUI(true);
+        }
+      } catch(e) {
+        console.warn('后台 session 恢复暂不可用:', e.message);
+      }
+    }
+
+    // 登录成功后：解锁界面 + 加载所有数据
+    function appUnlockAndLoad() {
+      // 隐藏锁定遮罩和登录弹窗
+      document.getElementById('appLockOverlay').style.display = 'none';
+      document.getElementById('globalLoginModal').style.display = 'none';
+      
+      // 加载所有数据
       loadData();
       loadSettings();
+      loadTodos();
+      renderTodoBanner();
       updateDateDisplay();
       loadEntries();
+      updateDailyCharCounter();
       loadAiDisplay();
-      loadRecordMindMap(); // 加载当前日期的脑图
+      loadRecordMindMap();
       
-      // 初始化周选择器（默认本周）
+      // 待办弹窗日期选择事件
+      document.querySelectorAll('input[name="todoDate"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          const customContainer = document.getElementById('customDateContainer');
+          if (customContainer) {
+            customContainer.style.display = this.value === 'custom' ? 'block' : 'none';
+          }
+        });
+      });
+      
+      // 初始化会员状态
+      updateDailyLimit();
+      updateMemberBadge();
+      loadSubscriptionFromCloud();  // 从 localStorage 恢复会员信息
+      updateMemberCard();
+      
+      // 初始化周选择器
       renderWeekSelector();
       loadWeekData();
       
       // 检测 localStorage 状态
       if (!storageAvailable) {
         setTimeout(() => {
-          alert('⚠️ 警告：localStorage 不可用，您的数据将不会保存！\n\n建议使用以下方式打开页面：\n1. 启动本地服务器后访问 http://localhost:8080\n2. 或使用 Chrome/Edge 浏览器（推荐）\n\n启动服务器命令：\nD:\\Anaconda\\python.exe -m http.server 8080\n然后访问 http://localhost:8080/daywise.html');
+          alert('⚠️ 警告：localStorage 不可用，您的数据将不会保存！');
         }, 100);
       }
       
       // 每周日自动检查并生成周报
       checkAndAutoWeeklyReview();
-    });
+    }
 
     // Settings Management
     let userRole = '';
@@ -2929,6 +5154,9 @@
       
       closeModal('settingsModal');
       alert('设置已保存！');
+      
+      // 如果已登录，同步个人背景到云端
+      
     }
 
     // 目标管理函数
@@ -2951,6 +5179,7 @@
 
     function renderGoalsEditorPage() {
       const container = document.getElementById('goalsContainerPage');
+      console.log('[目标渲染] renderGoalsEditorPage 调用, userGoals=', JSON.stringify(userGoals), '容器存在?', !!container);
       if (!container) return;
 
       if (userGoals.length === 0) {
@@ -3056,6 +5285,9 @@
       document.getElementById('apiKeyInput').value = apiKey;
       document.getElementById('apiEndpointInput').value = apiEndpoint;
       document.getElementById('apiModelInput').value = apiModel;
+
+      // 更新会员卡片
+      updateMemberCard();
 
       // 加载角色设置
       const roleSelect = document.getElementById('userRoleInput');
@@ -3926,20 +6158,29 @@
       aiSummaries = JSON.parse(localStorage.getItem('daywise_ai_summaries') || '{}');
       aiInsights = JSON.parse(localStorage.getItem('daywise_ai_insights') || '{}');
       weeklyInsights = JSON.parse(localStorage.getItem('daywise_weekly_insights') || '{}');
+      mindMaps = JSON.parse(localStorage.getItem('daywise_mind_maps') || '{}');
+      // 加载个人背景（角色+目标）
+      userRole = localStorage.getItem('daywise_user_role') || '';
+      try { userGoals = JSON.parse(localStorage.getItem('daywise_user_goals') || '[]'); } catch(e) { userGoals = []; }
+      // todos 已在 loadTodos() 中单独加载
     }
-
+    
     function saveData() {
       if (!storageAvailable) return;
       try {
         localStorage.setItem('daywise_entries', JSON.stringify(entries));
         localStorage.setItem('daywise_daily_reviews', JSON.stringify(dailyReviews));
         localStorage.setItem('daywise_weekly_reviews', JSON.stringify(weeklyReviews));
+        localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         localStorage.setItem('daywise_ai_summaries', JSON.stringify(aiSummaries));
         localStorage.setItem('daywise_ai_insights', JSON.stringify(aiInsights));
         localStorage.setItem('daywise_weekly_insights', JSON.stringify(weeklyInsights));
+        localStorage.setItem('daywise_todos', JSON.stringify(todos));
       } catch (e) {
         console.error('保存数据失败:', e);
       }
+      
+
     }
     
     // 页面关闭前自动保存
@@ -3965,26 +6206,75 @@
       const year = currentDate.getFullYear();
       const weekday = weekdays[currentDate.getDay()];
 
-      document.getElementById('currentDay').textContent = day;
-      document.getElementById('currentDateFull').textContent = `${year}年${month}月${day}日 ${weekday}`;
+      const now = new Date();
+      const todayKey = getDateStr(now);
+      const pageKey = getCurrentPageDateStr();
+      
+      const isToday = (pageKey === todayKey);
+      const pageDate = new Date(pageKey);
+      const todayDateObj = new Date(todayKey);
+      const isFuture = (pageDate > todayDateObj);
+
+      const dayEl = document.getElementById('currentDay');
+      const fullEl = document.getElementById('currentDateFull');
+      if (!dayEl || !fullEl) return;
+
+      // 完整日期文本（不含"·今天"，跟随页面日期变化）
+      const dateText = `${year}年${month}月${day}日 ${weekday}`;
+
+      console.log('[日期] 页面日期=', pageKey, '真实今天=', todayKey, 
+        'isToday=', isToday, 'isFuture=', isFuture, 'dateText=', dateText);
+
+      if (isToday) {
+        // 今天：大数字加粗橙色 + "今天"小标签橙色
+        dayEl.innerHTML = `${day}<span style="display:block;font-size:0.75rem;font-weight:400;color:#f59e0b;-webkit-text-fill-color:#f59e0b;margin-top:4px;">今天</span>`;
+        dayEl.style.cssText = 'color:#f59e0b;font-size:3rem;font-weight:900;display:inline-block;line-height:1;text-align:center;';
+        fullEl.textContent = dateText;
+        fullEl.style.cssText = 'color:#f59e0b;font-weight:400;';
+      } else if (isFuture) {
+        // 未来：普通黑色不加粗
+        dayEl.textContent = String(day);
+        dayEl.style.cssText = 'font-size:3rem;font-weight:400;color:#1a1a1a;display:inline-block;line-height:1;';
+        fullEl.textContent = dateText;
+        fullEl.style.cssText = 'color:#333;';
+      } else {
+        // 过去：普通黑色不加粗
+        dayEl.textContent = String(day);
+        dayEl.style.cssText = 'font-size:3rem;font-weight:400;color:#1a1a1a;display:inline-block;line-height:1;';
+        fullEl.textContent = dateText;
+        fullEl.style.cssText = 'color:#333;';
+      }
     }
 
     function changeDate(delta) {
       currentDate.setDate(currentDate.getDate() + delta);
+      console.log('[日期调试] 切换后 currentDate =', currentDate.toDateString(), 'getCurrentPageDateStr()=', getCurrentPageDateStr());
       updateDateDisplay();
       loadEntries();
       loadAiDisplay();
       loadRecordMindMap(); // 加载对应日期的脑图
+      renderTodoBanner(); // 更新待办横幅（切换日期后重新渲染）
     }
     
-    // 加载对应日期的脑图，如果没有则自动生成
+    // 加载对应日期的脑图
     function loadRecordMindMap() {
       const content = document.getElementById('recordMindMapContent');
       const btn = document.getElementById('recordMindMapBtn');
       if (!content) return;
       
+      // 先立即清空，防止显示上一个日期的内容
+      content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+      if (btn) btn.innerHTML = '生成脑图';
+      
       const dateKey = getDateKey(currentDate);
-      const savedMindMap = localStorage.getItem('mindmap_' + dateKey);
+      
+      // 优先从全局 mindMaps 对象读取（云端同步的数据）
+      let savedMindMap = mindMaps[dateKey] ? JSON.stringify(mindMaps[dateKey]) : null;
+      
+      // 其次从旧格式的 localStorage 读取
+      if (!savedMindMap) {
+        savedMindMap = localStorage.getItem('mindmap_' + dateKey);
+      }
       
       if (savedMindMap) {
         try {
@@ -3992,11 +6282,14 @@
           content.innerHTML = renderMindMap(mindMapData);
           if (btn) btn.innerHTML = '重新生成';
         } catch (e) {
-          autoGenerateMindMap(content, btn);
+          // 解析失败，显示占位
+          content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+          if (btn) btn.innerHTML = '生成脑图';
         }
       } else {
-        // 没有保存的脑图，检查当天是否有记录，有则自动生成
-        autoGenerateMindMap(content, btn);
+        // 没有保存的脑图，等待用户手动点击按钮
+        content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+        if (btn) btn.innerHTML = '生成脑图';
       }
     }
     
@@ -4075,11 +6368,22 @@
       }
       // 如果切换到设置页面，加载设置值
       if (pageName === 'settings') {
-        document.getElementById('apiKeyInputBottom').value = apiKey;
-        document.getElementById('apiEndpointInputBottom').value = apiEndpoint;
-        document.getElementById('apiModelInputBottom').value = apiModel;
+        const apiKeyInputBottom = document.getElementById('apiKeyInputBottom');
+        const apiEndpointInputBottom = document.getElementById('apiEndpointInputBottom');
+        const apiModelInputBottom = document.getElementById('apiModelInputBottom');
+        if (apiKeyInputBottom) apiKeyInputBottom.value = apiKey;
+        if (apiEndpointInputBottom) apiEndpointInputBottom.value = apiEndpoint;
+        if (apiModelInputBottom) apiModelInputBottom.value = apiModel;
 
-        // 加载角色设置
+        // 更新今日调用次数显示
+        const limitInfo = checkApiLimit();
+        const countEl = document.getElementById('apiCallCount');
+        const progressEl = document.getElementById('apiCallProgress');
+        if (countEl) countEl.textContent = `${limitInfo.count} / ${limitInfo.limit} 次`;
+        if (progressEl) progressEl.style.width = `${(limitInfo.count / limitInfo.limit) * 100}%`;
+
+        // 加载角色设置（每次进入设置页面都重新渲染，确保同步数据生效）
+      console.log('[设置页] 切换到设置页面, 当前 userRole=', userRole, 'userGoals=', JSON.stringify(userGoals));
         const roleSelectPage = document.getElementById('userRoleInputPage');
         const customRoleInputPage = document.getElementById('customRoleInputPage');
         if (roleSelectPage) {
@@ -4221,6 +6525,56 @@
       loadHistoryContent();
     }
 
+    // 导出历史数据（下载 .txt 文件）
+    function exportHistoryData() {
+      if (!entries || entries.length === 0) {
+        alert('暂无数据可导出');
+        return;
+      }
+
+      // 按日期排序（从早到晚）
+      const sortedEntries = [...entries].sort((a, b) => a.dateKey.localeCompare(b.dateKey));
+
+      // 生成文本内容
+      let text = '📝 NoteMe 历史记录导出\n';
+      text += '导出时间：' + new Date().toLocaleString('zh-CN') + '\n';
+      text += '共 ' + sortedEntries.length + ' 条记录\n';
+      text += '═'.repeat(40) + '\n\n';
+
+      // 按日期分组
+      const grouped = {};
+      sortedEntries.forEach(entry => {
+        if (!grouped[entry.dateKey]) {
+          grouped[entry.dateKey] = [];
+        }
+        grouped[entry.dateKey].push(entry);
+      });
+
+      Object.keys(grouped).sort().forEach(dateKey => {
+        text += '📅 ' + formatDateKey(dateKey) + '\n';
+        text += '─'.repeat(30) + '\n';
+        grouped[dateKey].forEach(entry => {
+          const starMark = entry.starred ? ' ⭐' : '';
+          text += '[' + entry.time + ']' + starMark + ' ' + entry.content + '\n';
+        });
+        text += '\n';
+      });
+
+      text += '─'.repeat(40) + '\n';
+      text += '由 NoteMe 应用导出';
+
+      // 创建下载
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'NoteMe_历史记录_' + new Date().toISOString().slice(0, 10) + '.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
     function saveSettingsBottom() {
       // 保存角色
       const roleSelectPage = document.getElementById('userRoleInputPage');
@@ -4241,7 +6595,12 @@
       localStorage.setItem('daywise_api_endpoint', apiEndpoint);
       localStorage.setItem('daywise_api_model', apiModel);
 
+      console.log('[保存设置] userRole=', userRole, 'userGoals=', JSON.stringify(userGoals));
+      
       alert('设置已保存！');
+
+      // 同步到云端（通过 saveData 触发）
+      saveData();
     }
 
     // AI Display - 首页版本
@@ -4341,6 +6700,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
                 高光
               </button>
+              <button class="btn btn-ghost" onclick="openTodoModal('${entry.id}', \`${entry.content.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="设为待办" style="color: #059669;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                待办
+              </button>
               <button class="btn btn-ghost" onclick="polishEntry('${entry.id}')" id="polishBtn_${entry.id}" title="AI 润色">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 润色
@@ -4359,6 +6722,7 @@
       });
       
       listEl.innerHTML = html;
+      updateDailyCharCounter();
     }
     
     function hasReviewContent(review) {
@@ -4371,11 +6735,49 @@
              review.improve?.trim() || review.goals?.trim() || review.encourage?.trim();
     }
 
+    // ========== 每日输入字数限制 ==========
+    const DAILY_CHAR_LIMIT = 5000;  // 每日最多输入 5000 字
+
+    // 获取今日已输入的总字数
+    function getTodayCharCount() {
+      const todayKey = getDateKey(currentDate);
+      return entries
+        .filter(e => e.dateKey === todayKey)
+        .reduce((sum, e) => sum + (e.content || '').length, 0);
+    }
+
+    // 更新字数计数器显示
+    function updateDailyCharCounter() {
+      const el = document.getElementById('dailyCharCounter');
+      if (!el) return;
+      const used = getTodayCharCount();
+      const remaining = Math.max(0, DAILY_CHAR_LIMIT - used);
+      const pct = Math.min(100, Math.round(used / DAILY_CHAR_LIMIT * 100));
+      
+      if (used >= DAILY_CHAR_LIMIT) {
+        el.innerHTML = `<span style="color:#ef4444;font-weight:600;">⚠️ 今日已用 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字（已达上限）</span>`;
+      } else if (pct >= 80) {
+        el.innerHTML = `<span style="color:#f59e0b;">今日已输入 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字，剩余 ${remaining.toLocaleString()}</span>`;
+      } else {
+        el.innerHTML = `今日已输入 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字`;
+      }
+    }
+
     function saveEntry() {
       const input = document.getElementById('entryInput');
       const content = input.value.trim();
       
       if (!content) {
+        return;
+      }
+
+      // 检查每日字数限制
+      const todayUsed = getTodayCharCount();
+      const newChars = content.length;
+      
+      if (todayUsed + newChars > DAILY_CHAR_LIMIT) {
+        const remaining = Math.max(0, DAILY_CHAR_LIMIT - todayUsed);
+        alert(`⚠️ 今日输入已达上限！\n\n已用：${todayUsed.toLocaleString()} / ${DAILY_CHAR_LIMIT.toLocaleString()} 字\n剩余可输：${remaining} 字\n当前内容：${newChars} 字\n\n建议：明天再记录，或精简一下内容~`);
         return;
       }
 
@@ -4395,6 +6797,7 @@
       saveData();
       input.value = '';
       loadEntries();
+      updateDailyCharCounter();
     }
 
     function editEntry(id) {
@@ -4554,6 +6957,292 @@ ${entry.content}`;
         saveEntry();
       }
     });
+
+    // ========== 导出功能 ==========
+
+    // 获取选中的导出模式
+    function getSelectedExportMode() {
+      const selected = document.querySelector('input[name="exportMode"]:checked');
+      return selected ? selected.value : 'dateRange';
+    }
+
+    // 按日期范围生成 Markdown
+    function generateDateRangeMarkdown() {
+      const startEl = document.getElementById('exportStartDate');
+      const endEl = document.getElementById('exportEndDate');
+      
+      let startDate, endDate;
+      if (startEl && startEl.value) {
+        startDate = new Date(startEl.value + 'T00:00:00');
+      } else {
+        // 默认：最早记录日期到今天
+        const dates = entries.map(e => new Date(e.dateKey));
+        startDate = dates.length > 0 ? new Date(Math.min(...dates)) : new Date();
+      }
+      if (endEl && endEl.value) {
+        endDate = new Date(endEl.value + 'T23:59:59');
+      } else {
+        endDate = new Date();
+      }
+      
+      const startStr = formatDateCN(startDate);
+      const endStr = formatDateCN(endDate);
+      
+      let md = `# 📝 NoteMe 记录导出\n`;
+      md += `\n> 导出时间：${formatDateTimeCN(new Date())}\n`;
+      md += `> 时间范围：${startStr} ~ ${endStr}\n`;
+      md += `> 导出方式：按日期范围\n\n`;
+      md += `---\n\n`;
+      
+      const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+      const allDates = [];
+      const d = new Date(startDate);
+      while (d <= endDate) {
+        allDates.push(new Date(d));
+        d.setDate(d.getDate() + 1);
+      }
+      
+      let totalEntries = 0;
+      let totalStarred = 0;
+      let totalTodos = 0;
+      
+      for (const date of allDates) {
+        const dateKey = getDateKey(date);
+        const dayEntries = entries.filter(e => e.dateKey === dateKey)
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const dayTodos = todos.filter(t => t.date === dateKey && !t.completed);
+        const review = dailyReviews[dateKey];
+        const insight = aiInsights[dateKey];
+        const summary = aiSummaries[dateKey];
+        
+        if (dayEntries.length === 0 && (!review || !hasReviewContent(review)) && 
+            dayTodos.length === 0 && !insight && !summary) continue;
+        
+        totalEntries += dayEntries.length;
+        totalStarred += dayEntries.filter(e => e.starred).length;
+        totalTodos += dayTodos.length;
+        
+        const weekday = dayNames[date.getDay()];
+        md += `## 📅 ${formatDateCN(date)} ${weekday}\n\n`;
+        
+        // 记录
+        if (dayEntries.length > 0) {
+          md += `### 📝 记录（${dayEntries.length}条）\n\n`;
+          for (const e of dayEntries) {
+            const time = e.createdAt ? new Date(e.createdAt).toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}) : '';
+            const starIcon = e.starred ? '⭐ ' : '';
+            md += `**${time}** ${starIcon}${escapeMd(e.content)}\n\n`;
+          }
+        }
+        
+        // 待办
+        if (dayTodos.length > 0) {
+          md += `### 📋 待办（${dayTodos.length}项）\n\n`;
+          for (const t of dayTodos) {
+            const sourceNote = t.createdDate && t.createdDate !== t.date ? `（设置自${new Date(t.createdDate).getMonth()+1}月${new Date(t.createdDate).getDate()}日）` : '';
+            md += `- [ ] ${escapeMd(t.text)}${sourceNote}\n`;
+          }
+          md += '\n';
+        }
+        
+        // AI 分析
+        if (summary || insight) {
+          md += `### 🤖 AI分析\n\n`;
+          if (insight?.energyLevel) {
+            const stars = '★'.repeat(Math.min(5, Math.ceil(insight.energyLevel / 2)));
+            const empty = '☆'.repeat(5 - stars.length);
+            md += `- **能量水平**: ${stars}${empty} ${insight.energyLevel}/10\n`;
+          }
+          if (insight?.keywords && insight.keywords.length > 0) {
+            md += `- **关键词**: ${insight.keywords.map(k => escapeMd(k)).join('、')}\n`;
+          }
+          if (insight?.insights && insight.insights.length > 0) {
+            md += `- **关键洞察**:\n`;
+            for (let i = 0; i < insight.insights.length; i++) {
+              md += `  ${i + 1}. ${escapeMd(insight.insights[i])}\n`;
+            }
+          }
+          if (summary) {
+            md += `\n> ${escapeMd(summary)}\n`;
+          }
+          md += '\n';
+        }
+        
+        md += `---\n\n`;
+      }
+      
+      md = md.replace(/---\n\n$/, '');
+      md += `\n\n> **统计**: 共 **${totalEntries}** 条记录，**${totalStarred}** 条星标，**${totalTodos}** 项待办\n`;
+      
+      return { content: md, filename: `NoteMe_${startStr.replace(/[-:]/g,'')}_${endStr.replace(/[-:]/g,'')}_日期.md` };
+    }
+
+    // 按星标生成 Markdown
+    function generateStarredMarkdown() {
+      const starredEntries = entries.filter(e => e.starred).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      let md = `# ⭐ NoteMe 星标精选\n`;
+      md += `\n> 导出时间：${formatDateTimeCN(new Date())}\n`;
+      md += `> 导出方式：按星标\n`;
+      md += `> 共 ${starredEntries.length} 条星标记录\n\n`;
+      md += `---\n\n`;
+      
+      if (starredEntries.length === 0) {
+        md += `暂无星标记录。在记录条目上点击 ⭐ 即可标记星标。\n`;
+      } else {
+        const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+        let currentDateKey = null;
+        
+        for (const e of starredEntries) {
+          if (e.dateKey !== currentDateKey) {
+            currentDateKey = e.dateKey;
+            const d = new Date(e.dateKey.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+            const weekday = dayNames[d.getDay()];
+            md += `## ⭐ ${formatDateCN(d)} ${weekday}\n\n`;
+          }
+          
+          const time = e.createdAt ? new Date(e.createdAt).toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}) : '';
+          md += `**${time}** ⭐ ${escapeMd(e.content)}\n\n`;
+        }
+      }
+      
+      return { content: md, filename: `NoteMe_星标精选.md` };
+    }
+
+    // AI 分析汇总
+    function generateAIAnalysisMarkdown() {
+      let md = `# 🤖 NoteMe AI 分析汇总\n`;
+      md += `\n> 导出时间：${formatDateTimeCN(new Date())}\n`;
+      md += `> 导出方式：AI分析\n\n`;
+      md += `---\n\n`;
+      
+      const sortedDates = Object.keys(aiInsights).concat(Object.keys(aiSummaries))
+        .filter((v, i, arr) => arr.indexOf(v) === i).sort().reverse();
+      
+      if (sortedDates.length === 0) {
+        md += `暂无 AI 分析数据。使用"每日AI复盘"或"每周AI洞察"功能后即可导出。\n`;
+        return { content: md, filename: `NoteMe_AI分析汇总.md` };
+      }
+      
+      const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
+      
+      for (const dateKey of sortedDates) {
+        const d = dateKey.includes('-') ? new Date(dateKey + 'T00:00:00') :
+          new Date(dateKey.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+        const weekday = dayNames[d.getDay()];
+        const insight = aiInsights[dateKey];
+        const summary = aiSummaries[dateKey];
+        const mindMap = mindMaps[dateKey];
+        
+        if (!insight && !summary && !mindMap) continue;
+        
+        md += `## 🤖 ${formatDateCN(d)} ${weekday}\n\n`;
+        
+        if (summary) {
+          md += `### 📊 每日摘要\n\n`;
+          md += `${escapeMd(summary)}\n\n`;
+        }
+        
+        if (insight) {
+          if (insight.energyLevel) {
+            const stars = '★'.repeat(Math.min(5, Math.ceil(insight.energyLevel / 2)));
+            const empty = '☆'.repeat(5 - stars.length);
+            md += `- **能量水平**: ${stars}${empty} ${insight.energyLevel}/10\n`;
+          }
+          if (insight.moodLabel) {
+            md += `- **情绪状态**: ${escapeMd(insight.moodLabel)}\n`;
+          }
+          if (insight.keywords && insight.keywords.length > 0) {
+            md += `- **关键词**: ${insight.keywords.map(k => escapeMd(k)).join('、')}\n`;
+          }
+          if (insight.insights && insight.insights.length > 0) {
+            md += `\n### 💡 关键洞察\n\n`;
+            for (let i = 0; i < Math.min(insight.insights.length, 5); i++) {
+              md += `${i + 1}. **${escapeMd(insight.insights[i])}**\n\n`;
+            }
+          }
+          if (insight.positiveAspects && insight.positiveAspects.length > 0) {
+            md += `✅ **积极面**：${insight.positiveAspects.map(a => escapeMd(a)).join('、')}\n\n`;
+          }
+          if (insight.suggestions && insight.suggestions.length > 0) {
+            md += `💡 **建议**：${insight.suggestions.map(s => escapeMd(s)).join('；')}\n\n`;
+          }
+        }
+        
+        if (mindMap && mindMap.branches) {
+          md += `### 🧠 思维导图\n\n`;
+          md += `- **中心主题**: ${escapeMd(mindMap.centerText || mindMap.centerTopic || '未命名')} ${mindMap.centerEmoji || ''}\n`;
+          for (const branch of mindMap.branches) {
+            md += `  - ${branch.emoji || '📌'} **${escapeMd(branch.title)}**: `;
+            md += `${branch.points ? branch.points.map(p => escapeMd(p)).join(' | ') : ''}\n`;
+          }
+          md += '\n';
+        }
+        
+        md += `---\n\n`;
+      }
+      
+      return { content: md, filename: `NoteMe_AI分析汇总.md` };
+    }
+
+    // 根据选中模式生成 Markdown
+    function generateExportMarkdown() {
+      const mode = getSelectedExportMode();
+      switch (mode) {
+        case 'dateRange': return generateDateRangeMarkdown();
+        case 'starred': return generateStarredMarkdown();
+        case 'aiAnalysis': return generateAIAnalysisMarkdown();
+        default: return generateDateRangeMarkdown();
+      }
+    }
+
+    // 下载 .md 文件
+    function downloadExport() {
+      const result = generateExportMarkdown();
+      if (!result || !result.content) { alert('没有可导出的数据'); return; }
+      
+      const blob = new Blob([result.content], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = result.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // 工具函数：格式化中文日期
+    function formatDateCN(d) {
+      return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+    }
+
+    // 工具函数：格式化中文日期+时间
+    function formatDateTimeCN(d) {
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    // 工具函数：转义 Markdown 特殊字符
+    function escapeMd(text) {
+      if (!text) return '';
+      return text.replace(/[\\`*_{}[\]#+\-!.|()~<>&]/g, '\\$&').replace(/\n/g, ' ');
+    }
+
+    // 初始化导出默认日期
+    function initExportDates() {
+      const startEl = document.getElementById('exportStartDate');
+      const endEl = document.getElementById('exportEndDate');
+      if (!startEl || !endEl) return;
+      
+      // 默认开始日期：30天前
+      const today = new Date();
+      const thirtyDaysAgo = new Date(today);
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      startEl.value = thirtyDaysAgo.toISOString().split('T')[0];
+      endEl.value = today.toISOString().split('T')[0];
+    }
+
+    // 页面加载时初始化导出日期
+    initExportDates();
 
     // Modal Management
     function openModal(id) {
@@ -5310,6 +7999,25 @@ ${entry.content}`;
       const [year, month, day] = dateKey.split('-');
       const entryTexts = dayEntries.map(e => `[${e.time}] ${e.content}`).join('\n');
 
+      // 获取当天的待办数据
+      const dayTodos = todos.filter(t => t.date === dateKey);
+      let todoSection = '';
+      if (dayTodos.length > 0) {
+        const completedTodos = dayTodos.filter(t => t.completed);
+        const uncompletedTodos = dayTodos.filter(t => !t.completed);
+        todoSection = `\n\n【今日待办】共${dayTodos.length}项，已完成${completedTodos.length}项，未完成${uncompletedTodos.length}项`;
+        if (completedTodos.length > 0) {
+          todoSection += '\n✅ 已完成：\n' + completedTodos.map(t => `- ${t.text}`).join('\n');
+        }
+        if (uncompletedTodos.length > 0) {
+          todoSection += '\n⬜ 未完成：\n' + uncompletedTodos.map(t => `- ${t.text}`).join('\n');
+        }
+        const completionRate = Math.round((completedTodos.length / dayTodos.length) * 100);
+        todoSection += `\n（完成率：${completionRate}%）`;
+      } else {
+        todoSection = '\n\n【今日待办】无';
+      }
+
       // 构建用户背景信息
       let userBackground = '';
       if (userRole) {
@@ -5332,6 +8040,8 @@ ${userBackground}
 【今日记录】
 ${entryTexts || '无记录'}
 
+\r
+
 【复盘信息】${review ? `
 - 今日成就：${review.achievement || '未填写'}
 - 遇到的挑战：${review.challenge || '未填写'}
@@ -5343,8 +8053,9 @@ ${entryTexts || '无记录'}
 1. 今日整体表现概述
 2. 主要成就和亮点
 3. 【重点】今日做的事情是否帮助接近目标？哪些行动是有效的，哪些可能让你偏离了方向？
-4. 需要改进的地方（如有）
-5. 具体的行动建议（最好能与目标相关）
+4. 今日待办完成情况分析：完成的待办反映了什么？未完成的待办原因是什么？是否需要调整计划或优先级？
+5. 需要改进的地方（如有）
+6. 具体的行动建议（最好能与目标相关）
 6. 一句鼓励的话语
 
 请用温暖、鼓励的语气回答，格式清晰，使用 emoji 增强可读性。在分析中适当联系你的目标背景，让建议更有针对性。
@@ -5362,7 +8073,8 @@ ${entryTexts || '无记录'}
   "alignmentSuggestion": "今天大部分时间都花在目标上，建议继续保持...",
   "categories": {"工作": 3, "学习": 1, "生活": 2, "社交": 0, "健康": 0, "其他": 0},
   "categorizedEntries": {"工作": ["记录内容1", "记录内容2"], "学习": ["记录内容3"], "生活": [], "社交": [], "健康": [], "其他": []},
-  "highlight": "今天最有价值的事情是..."
+  "highlight": "今天最有价值的事情是...",
+  "todoStats": {"total": 5, "completed": 3, "uncompleted": 2, "completionRate": 60}
 }
 \`\`\`
 字段说明：
@@ -5375,7 +8087,8 @@ ${entryTexts || '无记录'}
 - alignmentSuggestion：对齐度建议（一句话）
 - categories：今日事件类型统计，对象格式如 {"工作":3,"学习":1,"生活":2,"社交":0,"健康":0,"其他":0}，所有数值加起来应等于今日记录数
 - categorizedEntries：**重要**- 今日每条记录对应的类型分类，对象格式如 {"工作":["记录1","记录2"],"学习":["记录3"],"生活":[]...}，请将每条记录归类到对应类别，未分类的归入"其他"
-- highlight：今日最有价值/最值得记录的高光时刻（一句话，30字以内）`;
+- highlight：今日最有价值/最值得记录的高光时刻（一句话，30字以内）
+- todoStats：今日待办统计{"total":总数量,"completed":已完成,"uncompleted":未完成,"completionRate":完成率(0-100)}`;
     }
 
     // 生成每周 AI 复盘
@@ -5648,7 +8361,7 @@ ${entryTexts || '无记录'}
       
       const prompt = buildMindMapPrompt(todayEntries, todayReview);
       
-      callAIApi(prompt, (response) => {
+      callAIApi(prompt, async (response) => {
         // 解析 JSON 数据
         const mindMapData = parseMindMapJSON(response);
         const dateKey = getDateKey(currentDate);
@@ -5658,6 +8371,9 @@ ${entryTexts || '无记录'}
           content.innerHTML = renderMindMap(mindMapData);
           // 保存到 localStorage
           localStorage.setItem('mindmap_' + dateKey, JSON.stringify(mindMapData));
+          // 保存到全局状态
+          mindMaps[dateKey] = mindMapData;
+          localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         } else {
           // 如果解析失败，显示原始文本
           content.innerHTML = formatSummaryContent(response);
@@ -5666,7 +8382,7 @@ ${entryTexts || '无记录'}
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       }, (error) => {
-        content.innerHTML = `<span style="color: #ef4444;">❌ 生成失败: ${error}</span>`;
+        content.innerHTML = '<span style="color: #ef4444;">❌ 生成失败，请重试</span>';
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       });
@@ -5814,18 +8530,15 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
             const sx = bx + subBranchRadius * Math.cos(subAngle);
             const sy = by + subBranchRadius * Math.sin(subAngle);
             
-            // 子节点圆点 + 悬停显示完整文字
-            svgContent += `<circle cx="${sx}" cy="${sy}" r="6" fill="white" stroke="${colors.main}" stroke-width="2">
-              <title>${escapeHtml(item)}</title>
-            </circle>`;
+            // 子节点圆点 + 点击显示完整文字
+            const itemId = 'mindmap-item-' + idx + '-' + itemIdx;
+            svgContent += `<g class="mindmap-item" data-item="${escapeHtml(item)}" data-id="${itemId}" style="cursor: pointer;">
+              <circle cx="${sx}" cy="${sy}" r="8" fill="white" stroke="${colors.main}" stroke-width="2" opacity="0.9"/>
+            </g>`;
             
-            // 显示缩写文字，悬停显示完整文字
-            const textX = sx + (sx > bx ? 15 : -15);
-            const shortText = item.length > 4 ? item.substring(0, 4) + '…' : item;
-            svgContent += `<text x="${textX}" y="${sy}" text-anchor="${sx > bx ? 'start' : 'end'}" dominant-baseline="middle" fill="${colors.text}" font-size="10" style="cursor: default;">
-              <title>${escapeHtml(item)}</title>
-              ${escapeHtml(shortText)}
-            </text>`;
+            // 显示完整文字（不截断）
+            const textX = sx + (sx > bx ? 18 : -18);
+            svgContent += `<text x="${textX}" y="${sy}" text-anchor="${sx > bx ? 'start' : 'end'}" dominant-baseline="middle" fill="${colors.text}" font-size="11" style="cursor: pointer;" onclick="showMindMapTooltip('${itemId}', '${escapeHtml(item).replace(/'/g, "\\'")}')">${escapeHtml(item)}</text>`;
           });
         }
       });
@@ -5861,7 +8574,7 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
           ${svgContent}
         </svg>`;
       
-      return `<div style="overflow: auto; text-align: center; max-height: 520px; border-radius: 12px;">${svg}</div>`;
+      return `<div style="overflow: auto; -webkit-overflow-scrolling: touch; text-align: center; max-height: 520px; border-radius: 12px;">${svg}</div>`;
     }
     
     // 文字换行辅助函数
@@ -5879,6 +8592,17 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
       if (currentLine) lines.push(currentLine);
       
       return lines.length > 0 ? lines : [text];
+    }
+
+    // 脑图节点点击显示详情
+    function showMindMapTooltip(id, text) {
+      const existing = document.getElementById('mindmap-tooltip');
+      if (existing) existing.remove();
+      
+      const tooltip = document.createElement('div');
+      tooltip.id = 'mindmap-tooltip';
+      tooltip.innerHTML = `<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 10000; max-width: 80vw; font-size: 16px; color: #333; text-align: center;">${text}</div><div id="mindmap-tooltip-bg" onclick="this.parentElement.remove()" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;"></div>`;
+      document.body.appendChild(tooltip);
     }
 
     function buildWeeklyPrompt(monday) {
@@ -5966,8 +8690,15 @@ ${userBackground}
 - keywords：本周最核心的中文关键词，数组格式，2-4字词语，最多5个`;
     }
 
-    function callAIApi(prompt, onSuccess, onError) {
-      console.log('API调用信息:', { endpoint: apiEndpoint, model: apiModel, key: apiKey ? apiKey.substring(0, 10) + '...' : 'empty' });
+    function callAIApi(prompt, onSuccess, onError, featureName) {
+      if (!checkAIAccess(featureName || 'AI功能')) {
+        if (onError) onError('请升级会员以继续使用');
+        return;
+      }
+      
+      var limitInfo = checkApiLimit();
+      
+      console.log('API调用信息:', { endpoint: apiEndpoint, model: apiModel, key: apiKey ? apiKey.substring(0, 10) + '...' : 'empty', todayCalls: limitInfo.count + 1, limit: limitInfo.limit });
       
       fetch(apiEndpoint, {
         method: 'POST',
@@ -5996,6 +8727,7 @@ ${userBackground}
         }
         const content = data.choices?.[0]?.message?.content || 'AI 没有返回有效内容';
         console.log('提取的AI内容:', content);
+        incrementApiCalls(); // 调用成功，增加计数
         onSuccess(content);
       })
       .catch(error => {
