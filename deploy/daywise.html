@@ -2229,15 +2229,18 @@
       <!-- Entry Section -->
       <div class="entry-section">
         <!-- 心情选择器（可选） -->
-        <div class="mood-selector">
-          <button class="mood-btn" onclick="selectMood('😄')" data-mood="😄" title="开心">😄</button>
-          <button class="mood-btn" onclick="selectMood('😊')" data-mood="😊" title="愉悦">😊</button>
-          <button class="mood-btn" onclick="selectMood('😌')" data-mood="😌" title="平静">😌</button>
-          <button class="mood-btn" onclick="selectMood('🤔')" data-mood="🤔" title="思考">🤔</button>
-          <button class="mood-btn" onclick="selectMood('😔')" data-mood="😔" title="低落">😔</button>
-          <button class="mood-btn" onclick="selectMood('😤')" data-mood="😤" title="生气">😤</button>
-          <button class="mood-btn" onclick="selectMood('😴')" data-mood="😴" title="疲惫">😴</button>
-          <button class="mood-btn" onclick="selectMood('💪')" data-mood="💪" title="充实">💪</button>
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+          <div class="mood-selector">
+            <button class="mood-btn" onclick="selectMood('😄')" data-mood="😄" title="开心">😄</button>
+            <button class="mood-btn" onclick="selectMood('😊')" data-mood="😊" title="愉悦">😊</button>
+            <button class="mood-btn" onclick="selectMood('😌')" data-mood="😌" title="平静">😌</button>
+            <button class="mood-btn" onclick="selectMood('🤔')" data-mood="🤔" title="思考">🤔</button>
+            <button class="mood-btn" onclick="selectMood('😔')" data-mood="😔" title="低落">😔</button>
+            <button class="mood-btn" onclick="selectMood('😤')" data-mood="😤" title="生气">😤</button>
+            <button class="mood-btn" onclick="selectMood('😴')" data-mood="😴" title="疲惫">😴</button>
+            <button class="mood-btn" onclick="selectMood('💪')" data-mood="💪" title="充实">💪</button>
+          </div>
+          <span id="moodHint" style="font-size: 0.8rem; color: var(--text-muted);"></span>
         </div>
         <textarea 
           class="entry-textarea main-input" 
@@ -6907,10 +6910,20 @@
           ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
           : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
         const starStyle = isStarred ? 'color: #f59e0b;' : 'color: var(--text-muted);';
+        
+        // 提取心情emoji
+        const moodMatch = entry.content.match(/^[😄😊😌🤔😔😤😴💪]\s*/);
+        const moodLabel = moodMatch ? entry.content.match(/^[😄😊😌🤔😔😤😴💪]/)[0] : '';
+        const moodLabels = {
+          '😄': '开心', '😊': '愉悦', '😌': '平静', '🤔': '思考',
+          '😔': '低落', '😤': '生气', '😴': '疲惫', '💪': '充实'
+        };
+        const moodText = moodLabel ? moodLabels[moodLabel] || moodLabel : '';
+        
         html += `
           <div class="entry-card" data-id="${entry.id}">
             <div class="entry-card-header">
-              <span class="entry-time">${entry.time}</span>
+              <span class="entry-time">${entry.time}${moodText ? ' · ' + moodText : ''}</span>
               <button class="btn btn-ghost" onclick="toggleStar('${entry.id}')" style="padding: 2px 6px; ${starStyle}" title="收藏">
                 ${starIcon}
               </button>
@@ -6994,10 +7007,23 @@
       if (currentMood === mood) {
         // 取消选择
         currentMood = null;
+        document.getElementById('moodHint').textContent = '';
       } else {
         // 选择心情
         currentMood = mood;
         document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+        // 显示心情含义
+        const moodLabels = {
+          '😄': '开心 — 心情愉悦，好事发生',
+          '😊': '愉悦 — 内心满足，享受当下',
+          '😌': '平静 — 心态平和，从容淡定',
+          '🤔': '思考 — 正在思考或困惑中',
+          '😔': '低落 — 心情不好，需要关注',
+          '😤': '生气 — 情绪激动，需要发泄',
+          '😴': '疲惫 — 累了需要休息',
+          '💪': '充实 — 成就感满满，收获满满'
+        };
+        document.getElementById('moodHint').textContent = moodLabels[mood] || '';
       }
     }
 
