@@ -6911,14 +6911,21 @@
           : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
         const starStyle = isStarred ? 'color: #f59e0b;' : 'color: var(--text-muted);';
         
-        // 提取心情emoji
-        const moodMatch = entry.content.match(/^[😄😊😌🤔😔😤😴💪]\s*/);
-        const moodLabel = moodMatch ? entry.content.match(/^[😄😊😌🤔😔😤😴💪]/)[0] : '';
-        const moodLabels = {
+        // 提取心情emoji并显示简洁的中文名
+        const moodMatch = entry.content.match(/^[😄😊😌🤔😔😤😴💪]/);
+        const moodLabel = moodMatch ? moodMatch[0] : '';
+        const moodDisplayNames = {
           '😄': '开心', '😊': '愉悦', '😌': '平静', '🤔': '思考',
           '😔': '低落', '😤': '生气', '😴': '疲惫', '💪': '充实'
         };
-        const moodText = moodLabel ? moodLabels[moodLabel] || moodLabel : '';
+        const moodText = moodLabel ? moodDisplayNames[moodLabel] || '' : '';
+        
+        // 清理内容：移除心情标签（emoji及后面的心情中文名和解释）
+        let cleanContent = entry.content;
+        if (moodMatch) {
+          // 匹配格式：emoji + 可选空格 + 心情中文名 + 可选破折号及解释
+          cleanContent = entry.content.replace(/^[😄😊😌🤔😔😤😴💪]\s*((开心|愉悦|平静|思考|低落|生气|疲惫|充实)(\s*[—\-]\s*[^，。,\n]*)?)?\s*/, '');
+        }
         
         html += `
           <div class="entry-card" data-id="${entry.id}">
@@ -6928,13 +6935,13 @@
                 ${starIcon}
               </button>
             </div>
-            <div class="entry-content">${escapeHtml(entry.content)}</div>
+            <div class="entry-content">${escapeHtml(cleanContent)}</div>
             <div class="entry-actions">
               <button class="btn btn-ghost" onclick="setAsHighlight('${entry.id}')" id="highlightBtn_${entry.id}" title="设为今日高光" style="color: #f59e0b;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
                 高光
               </button>
-              <button class="btn btn-ghost" onclick="openTodoModal('${entry.id}', \`${entry.content.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="设为待办" style="color: #059669;">
+              <button class="btn btn-ghost" onclick="openTodoModal('${entry.id}', \`${cleanContent.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="设为待办" style="color: #059669;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                 待办
               </button>
