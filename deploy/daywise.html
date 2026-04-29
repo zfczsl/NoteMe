@@ -6930,7 +6930,8 @@
         html += `
           <div class="entry-card" data-id="${entry.id}">
             <div class="entry-card-header">
-              <span class="entry-time">${entry.time}${moodText ? ' · ' + moodText : ''}</span>
+              <span class="entry-time">${entry.time}</span>
+              ${moodLabel ? `<span style="font-size: 1.1rem; margin: 0 2px;">${moodLabel}</span><span style="font-size: 0.75rem; color: var(--cta); font-weight: 500;">${moodText}</span>` : ''}
               <button class="btn btn-ghost" onclick="toggleStar('${entry.id}')" style="padding: 2px 6px; ${starStyle}" title="收藏">
                 ${starIcon}
               </button>
