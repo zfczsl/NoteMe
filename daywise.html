@@ -6450,11 +6450,11 @@
         'isToday=', isToday, 'isFuture=', isFuture, 'dateText=', dateText);
 
       if (isToday) {
-        // 今天：大数字加粗橙色 + "今天"小标签橙色
-        dayEl.innerHTML = `${day}<span style="display:block;font-size:0.75rem;font-weight:400;color:#f59e0b;-webkit-text-fill-color:#f59e0b;margin-top:4px;">今天</span>`;
-        dayEl.style.cssText = 'color:#f59e0b;font-size:3rem;font-weight:900;display:inline-block;line-height:1;text-align:center;';
+        // 今天：大数字加粗红粉色 + "今天"小标签红粉色
+        dayEl.innerHTML = `${day}<span style="display:block;font-size:0.75rem;font-weight:400;color:var(--cta);-webkit-text-fill-color:var(--cta);margin-top:4px;">今天</span>`;
+        dayEl.style.cssText = 'color:var(--cta);font-size:3rem;font-weight:900;display:inline-block;line-height:1;text-align:center;';
         fullEl.textContent = dateText;
-        fullEl.style.cssText = 'color:#f59e0b;font-weight:400;';
+        fullEl.style.cssText = 'color:var(--cta);font-weight:500;';
       } else if (isFuture) {
         // 未来：普通黑色不加粗
         dayEl.textContent = String(day);
