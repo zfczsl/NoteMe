@@ -516,6 +516,40 @@
       min-width: 200px;
     }
 
+    /* 心情选择器 */
+    .mood-selector {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .mood-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-secondary);
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--duration-fast) var(--ease-out);
+      padding: 0;
+    }
+
+    .mood-btn:hover {
+      border-color: var(--cta);
+      transform: scale(1.1);
+    }
+
+    .mood-btn.selected {
+      border-color: var(--cta);
+      background: var(--cta-pale);
+      box-shadow: 0 0 0 2px var(--cta-soft);
+    }
+
     /* 标签选择器 */
     .tag-selector {
       display: flex;
@@ -2194,6 +2228,17 @@
 
       <!-- Entry Section -->
       <div class="entry-section">
+        <!-- 心情选择器（可选） -->
+        <div class="mood-selector">
+          <button class="mood-btn" onclick="selectMood('😄')" data-mood="😄" title="开心">😄</button>
+          <button class="mood-btn" onclick="selectMood('😊')" data-mood="😊" title="愉悦">😊</button>
+          <button class="mood-btn" onclick="selectMood('😌')" data-mood="😌" title="平静">😌</button>
+          <button class="mood-btn" onclick="selectMood('🤔')" data-mood="🤔" title="思考">🤔</button>
+          <button class="mood-btn" onclick="selectMood('😔')" data-mood="😔" title="低落">😔</button>
+          <button class="mood-btn" onclick="selectMood('😤')" data-mood="😤" title="生气">😤</button>
+          <button class="mood-btn" onclick="selectMood('😴')" data-mood="😴" title="疲惫">😴</button>
+          <button class="mood-btn" onclick="selectMood('💪')" data-mood="💪" title="充实">💪</button>
+        </div>
         <textarea 
           class="entry-textarea main-input" 
           id="entryInput" 
@@ -6940,12 +6985,37 @@
       }
     }
 
+    // 当前选中的心情
+    let currentMood = null;
+
+    function selectMood(mood) {
+      const buttons = document.querySelectorAll('.mood-btn');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+      
+      if (currentMood === mood) {
+        // 取消选择
+        currentMood = null;
+      } else {
+        // 选择心情
+        currentMood = mood;
+        document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+      }
+    }
+
     function saveEntry() {
       const input = document.getElementById('entryInput');
-      const content = input.value.trim();
+      let content = input.value.trim();
       
       if (!content) {
         return;
+      }
+
+      // 如果选择了心情，添加到文本最前面
+      if (currentMood) {
+        content = currentMood + ' ' + content;
+        // 清除心情选择
+        currentMood = null;
+        document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
       }
 
       // 检查每日字数限制
