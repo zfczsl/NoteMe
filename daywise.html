@@ -82,7 +82,7 @@
     }
 
     body {
-      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Noto Sans SC', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-secondary);
       color: var(--text-primary);
       line-height: 1.6;
@@ -1523,31 +1523,148 @@
        AI 展示区 · 灵动智能卡片
     ═══════════════════════════════════════════ */
     .ai-display-section {
-      background: var(--glass);
-      backdrop-filter: blur(var(--glass-blur));
-      border: 1.5px solid rgba(255,255,255,0.8);
-      border-radius: var(--radius-xl);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow-card);
-      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ═══ AI 复盘卡片网格 ═══ */
+    .ai-cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .ai-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-xs);
+      transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+    }
+
+    .ai-card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ai-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .ai-card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .ai-card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .ai-card-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .ai-card-body {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* 卡片颜色主题 */
+    .ai-card-mood .ai-card-icon { background: #fce7f3; }
+    .ai-card-mood .ai-card-value { color: #ec4899; }
+
+    .ai-card-energy .ai-card-icon { background: #fef3c7; }
+    .ai-card-energy .ai-card-value { color: #f59e0b; }
+
+    .ai-card-keywords .ai-card-icon { background: #e0e7ff; }
+
+    .ai-card-highlight .ai-card-icon { background: #fef9c3; }
+
+    .ai-card-alignment .ai-card-icon { background: #dcfce7; }
+
+    .ai-card-suggestion .ai-card-icon { background: #f3e8ff; }
+
+    /* 关键词标签 */
+    .keyword-tag {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin: 0.15rem;
+      border: 1px solid var(--border-light);
+    }
+
+    /* 行动对齐条目 */
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      padding: 0.2rem 0;
+    }
+
+    .action-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .action-dot.green { background: #22c55e; }
+    .action-dot.red { background: #ef4444; }
+
+    /* 进度条 */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
       overflow: hidden;
     }
 
-    .ai-display-section::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--gradient-amber);
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s var(--ease-out);
     }
 
-    .ai-display-section .section-header {
-      margin-bottom: 1rem;
-    }
+    .ai-card-category .ai-card-icon { background: #e0f2fe; }
 
-    .ai-display-section .section-title svg {
-      color: var(--peach);
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.3rem 0.6rem;
+      background: white;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      margin: 0.15rem;
+      border: 1px solid var(--border-light);
     }
 
     .ai-display-content {
@@ -2269,15 +2386,15 @@
       </div>
 
       <!-- AI Analysis Section -->
-      <div style="margin: 0 1rem 1rem;">
-        <div class="ai-display-section" id="homeAiDisplaySection" style="background: var(--bg-card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm);">
-          <div class="section-header" style="padding: 0.75rem 1rem;">
-            <div class="section-title">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/><circle cx="12" cy="12" r="6"/></svg>
-              AI 智能分析
-            </div>
+      <div class="entries-section" style="margin-bottom: 1.5rem;">
+        <div class="section-header">
+          <div class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><circle cx="17" cy="5" r="1.5" fill="currentColor"/><circle cx="20" cy="9" r="1" fill="currentColor"/></svg>
+            AI 每日复盘
           </div>
-          <div id="homeAiDisplayContent" style="padding: 0 1rem 1rem;">
+        </div>
+        <div class="ai-display-section" id="homeAiDisplaySection">
+          <div id="homeAiDisplayContent">
             <div class="empty-state" id="homeAiEmptyState">
               <button class="btn btn-primary" onclick="triggerHomeAIAnalysis()" style="margin: 0.5rem auto; display: flex;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
@@ -2287,21 +2404,21 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 记录页面 - 今日脑图 -->
       <div style="margin: 0 1rem 1rem;">
-        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); border: 1px solid #f59e0b;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 600; color: #92400e;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
-              今日脑图
+        <div class="ai-card" style="padding: 1.25rem;">
+          <div class="ai-card-header" style="margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-light);">
+            <div class="ai-card-icon" style="background: #e0f2fe;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
             </div>
-            <button id="recordMindMapBtn" onclick="generateRecordMindMap()" style="padding: 0.4rem 0.8rem; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500;">
+            <div class="ai-card-title">今日脑图</div>
+            <button id="recordMindMapBtn" onclick="generateRecordMindMap()" style="margin-left: auto; padding: 0.35rem 0.75rem; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 500;">
               生成脑图
             </button>
           </div>
-          <div id="recordMindMapContent" style="font-size: 0.85rem; color: #334155; line-height: 1.7; min-height: 60px;">
-            <span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>
+          <div id="recordMindMapContent" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; min-height: 60px;">
+            <span style="font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>
           </div>
         </div>
       </div>
@@ -2378,18 +2495,18 @@
         
         <!-- AI 生成脑图 -->
         <div style="padding: 0 1rem 1rem;">
-          <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); border: 1px solid #f59e0b;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-              <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 600; color: #92400e;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
-                每周脑图
+          <div class="ai-card" style="padding: 1.25rem;">
+            <div class="ai-card-header" style="margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-light);">
+              <div class="ai-card-icon" style="background: #e0f2fe;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
               </div>
-              <button id="generateMindMapBtn" onclick="generateWeeklyMindMap()" style="padding: 0.4rem 0.8rem; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500;">
+              <div class="ai-card-title">每周脑图</div>
+              <button id="generateMindMapBtn" onclick="generateWeeklyMindMap()" style="margin-left: auto; padding: 0.35rem 0.75rem; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 500;">
                 生成脑图
               </button>
             </div>
-            <div id="mindMapContent" style="font-size: 0.85rem; color: #334155; line-height: 1.7; min-height: 60px;">
-              <span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据本周记录生成脑图</span>
+            <div id="mindMapContent" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; min-height: 60px;">
+              <span style="font-style: italic;">点击上方按钮，AI 将根据本周记录生成脑图</span>
             </div>
           </div>
         </div>
@@ -2494,14 +2611,14 @@
             <label style="color: rgba(255,255,255,0.9);">我的角色</label>
             <select id="userRoleInputPage" style="width: 100%; padding: 0.75rem; border: none; border-radius: var(--radius); font-size: 0.9rem; background: rgba(255,255,255,0.95);">
               <option value="">请选择你的角色...</option>
-              <option value="学生">学生</option>
-              <option value="职场人">职场人</option>
-              <option value="自由职业者">自由职业者</option>
-              <option value="创业者">创业者</option>
-              <option value="创作者">创作者</option>
-              <option value="全职爸妈">全职爸妈</option>
-              <option value="退休人士">退休人士</option>
-              <option value="其他">其他（自定义）</option>
+              <option value="学生">🎓 学生</option>
+              <option value="职场人">💼 职场人</option>
+              <option value="自由职业者">💻 自由职业者</option>
+              <option value="创业者">🚀 创业者</option>
+              <option value="创作者">🎨 创作者</option>
+              <option value="全职爸妈">👪 全职爸妈</option>
+              <option value="退休人士">🏖️ 退休人士</option>
+              <option value="其他">🌟 其他（自定义）</option>
             </select>
             <input type="text" id="customRoleInputPage" placeholder="输入自定义角色..." style="margin-top: 0.5rem; display: none; width: 100%; padding: 0.75rem; border: none; border-radius: var(--radius);">
           </div>
@@ -2743,17 +2860,17 @@
         <!-- 角色与目标设置 -->
         <div class="review-question">
           <label>我的角色 <span class="hint">/ 帮助AI了解你是谁</span></label>
-          <select id="userRoleInput" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; background: white;">
-            <option value="">请选择你的角色...</option>
-            <option value="学生">🎓 学生</option>
-            <option value="职场人">💼 职场人</option>
-            <option value="自由职业者">🌟 自由职业者</option>
-            <option value="创业者">🚀 创业者</option>
-            <option value="创作者">🎨 创作者</option>
-            <option value="全职爸妈">👨‍👩‍👧 全职爸妈</option>
-            <option value="退休人士">🌿 退休人士</option>
-            <option value="其他">✨ 其他</option>
-          </select>
+            <select id="userRoleInput" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; background: white;">
+              <option value="">请选择你的角色...</option>
+              <option value="学生">🎓 学生</option>
+              <option value="职场人">💼 职场人</option>
+              <option value="自由职业者">💻 自由职业者</option>
+              <option value="创业者">🚀 创业者</option>
+              <option value="创作者">🎨 创作者</option>
+              <option value="全职爸妈">👪 全职爸妈</option>
+              <option value="退休人士">🏖️ 退休人士</option>
+              <option value="其他">🌟 其他</option>
+            </select>
           <input type="text" id="customRoleInput" placeholder="或输入自定义角色..." style="margin-top: 0.5rem; display: none;">
         </div>
         
@@ -3606,7 +3723,7 @@
     let historyFilterStarred = false; // 历史页面筛选：只看星标
     let isPremium = false; // 是否为付费会员
     let subscriptionInfo = null; // 订阅详情 {plan, status, expireAt, activatedBy}
-    const FREE_DAILY_LIMIT = 2; // 免费用户每日AI调用次数
+    const FREE_DAILY_LIMIT = 10; // 免费用户每日AI调用次数
     const PREMIUM_DAILY_LIMIT = 15; // 付费会员每日AI调用次数
     
     // 获取今日调用次数
@@ -6487,7 +6604,7 @@
       if (!content) return;
       
       // 先立即清空，防止显示上一个日期的内容
-      content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+      content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
       if (btn) btn.innerHTML = '生成脑图';
       
       const dateKey = getDateKey(currentDate);
@@ -6507,12 +6624,12 @@
           if (btn) btn.innerHTML = '重新生成';
         } catch (e) {
           // 解析失败，显示占位
-          content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+          content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
           if (btn) btn.innerHTML = '生成脑图';
         }
       } else {
         // 没有保存的脑图，等待用户手动点击按钮
-        content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
         if (btn) btn.innerHTML = '生成脑图';
       }
     }
@@ -6520,7 +6637,7 @@
     // 自动生成脑图
     function autoGenerateMindMap(content, btn) {
       if (!apiKey) {
-        content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
         if (btn) btn.innerHTML = '生成脑图';
         return;
       }
@@ -6530,14 +6647,14 @@
       const todayReview = dailyReviews[dateKey];
       
       if (todayEntries.length === 0 && !todayReview?.achievement && !todayReview?.challenge) {
-        content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
         if (btn) btn.innerHTML = '生成脑图';
         return;
       }
       
       // 有记录，自动生成脑图
       if (btn) btn.disabled = true;
-      content.innerHTML = '<span style="color: #92400e;">🤖 AI 正在生成脑图...</span>';
+      content.innerHTML = '<span style="color: var(--text-muted);">🤖 AI 正在生成脑图...</span>';
       
       const prompt = buildMindMapPrompt(todayEntries, todayReview);
       
@@ -6556,7 +6673,7 @@
           btn.innerHTML = '重新生成';
         }
       }, (error) => {
-        content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据今日记录生成脑图</span>';
+        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = '生成脑图';
@@ -7790,7 +7907,6 @@ ${entry.content}`;
 
     function showHomeAISummary(summary) {
       const container = document.getElementById('homeAiDisplayContent');
-      // 处理可能是对象或字符串的情况
       const content = typeof summary === 'string' ? summary : (summary.content || '');
       const generatedAt = summary.generatedAt ? new Date(summary.generatedAt).toLocaleString('zh-CN') : '';
 
@@ -7806,133 +7922,351 @@ ${entry.content}`;
         }
       }
 
-      // 渲染3个可视化模块
-      const visualizationHtml = renderDailyVisualizations(insights);
+      // 提取心情数据（从当天记录中）
+      const dateKey = getDateKey(currentDate);
+      const dayEntries = entries.filter(e => e.dateKey === dateKey);
+      const moodData = extractMoodData(dayEntries);
+
+      // 渲染卡片网格
+      const cardsHtml = renderAICards(insights, moodData, dayEntries);
 
       container.innerHTML = `
-        <div class="ai-summary">
-          ${generatedAt ? `<div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">分析时间：${generatedAt}</div>` : ''}
-          <div class="ai-summary-content">${formatSummaryContent(content)}</div>
-        </div>
-        ${visualizationHtml}
-        <div style="text-align: center; margin-top: 1rem;">
-          <button class="btn btn-secondary" onclick="refreshHomeAISummary()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">${generatedAt ? '分析于 ' + generatedAt : ''}</div>
+        ${cardsHtml}
+        <div style="text-align: center; margin-top: 0.75rem;">
+          <button class="btn btn-secondary" onclick="refreshHomeAISummary()" style="font-size: 0.78rem; padding: 0.4rem 0.8rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
             重新分析
           </button>
         </div>
       `;
     }
 
-    // 渲染每日3个可视化模块
-    function renderDailyVisualizations(insights) {
-      if (!insights || Object.keys(insights).length === 0) return '';
+    // 提取当天记录的心情数据
+    function extractMoodData(dayEntries) {
+      const moodMap = {};
+      dayEntries.forEach(e => {
+        const moodMatch = e.content.match(/^[😄😊😌🤔😔😤😴💪]/);
+        if (moodMatch) {
+          const emoji = moodMatch[0];
+          moodMap[emoji] = (moodMap[emoji] || 0) + 1;
+        }
+      });
+      return moodMap;
+    }
 
-      let html = '';
+    // 获取心情标签
+    function getMoodLabel(emoji) {
+      const labels = {
+        '😄': '开心', '😊': '愉悦', '😌': '平静', '🤔': '思考',
+        '😔': '低落', '😤': '生气', '😴': '疲惫', '💪': '充实'
+      };
+      return labels[emoji] || '';
+    }
 
-      // 1. 目标契合度模块
-      const alignmentScore = insights.alignmentScore || 0;
-      const alignedActions = insights.alignedActions || [];
-      const nonAlignedActions = insights.nonAlignedActions || [];
-      const alignmentSuggestion = insights.alignmentSuggestion || '';
-      const totalActions = alignedActions.length + nonAlignedActions.length;
-      
-      if (totalActions > 0) {
-        const alignPercent = totalActions > 0 ? Math.round(alignedActions.length / totalActions * 100) : 0;
-        const scoreColor = alignPercent >= 70 ? '#22c55e' : alignPercent >= 40 ? '#f59e0b' : '#ef4444';
-        
-        html += `
-          <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius);">
-            <div style="font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>🎯</span> 今日行动与目标契合度
-            </div>
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
-              <div style="flex: 1; height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden;">
-                <div style="width: ${alignPercent}%; height: 100%; background: ${scoreColor}; border-radius: 6px; transition: width 0.5s;"></div>
-              </div>
-              <div style="font-size: 1.25rem; font-weight: 700; color: ${scoreColor};">${alignPercent}%</div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.8rem;">
-              <div>
-                <div style="color: #22c55e; font-weight: 500; margin-bottom: 0.25rem;">✓ 朝向目标 (${alignedActions.length})</div>
-                ${alignedActions.slice(0,2).map(a => `<div style="color: var(--text-secondary); padding-left: 0.5rem; border-left: 2px solid #22c55e; margin-bottom: 0.25rem;">${escapeHtml(a)}</div>`).join('')}
-              </div>
-              <div>
-                <div style="color: #ef4444; font-weight: 500; margin-bottom: 0.25rem;">✗ 偏离目标 (${nonAlignedActions.length})</div>
-                ${nonAlignedActions.slice(0,2).map(a => `<div style="color: var(--text-secondary); padding-left: 0.5rem; border-left: 2px solid #ef4444; margin-bottom: 0.25rem;">${escapeHtml(a)}</div>`).join('')}
-              </div>
-            </div>
-            ${alignmentSuggestion ? `<div style="margin-top: 0.75rem; padding: 0.5rem; background: white; border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); border-left: 3px solid ${scoreColor};">💡 ${escapeHtml(alignmentSuggestion)}</div>` : ''}
-          </div>
-        `;
+    // 渲染 AI 复盘卡片
+    function renderAICards(insights, moodData, dayEntries) {
+      if (!insights || Object.keys(insights).length === 0) {
+        return `<div style="text-align: center; padding: 1.5rem; color: var(--text-muted);">暂无分析数据</div>`;
       }
 
-      // 2. 事件类型分布模块
-      const categories = insights.categories || {};
-      const categoryEntries = Object.entries(categories).filter(([k, v]) => v > 0);
-      const categoryColors = { '工作': '#3b82f6', '学习': '#8b5cf6', '生活': '#10b981', '社交': '#f59e0b', '健康': '#ef4444', '其他': '#6b7280' };
-      const categoryIcons = { '工作': '💼', '学习': '📚', '生活': '🏠', '社交': '👥', '健康': '🏃', '其他': '📝' };
-      
-      if (categoryEntries.length > 0) {
-        const maxCount = Math.max(...categoryEntries.map(([,v]) => v));
-        html += `
-          <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius);">
-            <div style="font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>📊</span> 今日事件类型分布
+      let html = '<div class="ai-cards-grid">';
+
+      // ── 卡片1: 情绪画像 ──
+      html += renderMoodCard(moodData, insights, dayEntries);
+
+      // ── 卡片2: 精力指数 ──
+      html += renderEnergyCard(insights);
+
+      // ── 卡片3: 今日关键词 ──
+      html += renderKeywordsCard(insights);
+
+      // ── 卡片4: 今日高光 ──
+      html += renderHighlightCard(insights);
+
+      // ── 卡片5: 目标契合度 ──
+      html += renderAlignmentCard(insights);
+
+      // ── 卡片6: AI 建议 ──
+      html += renderSuggestionCard(insights);
+
+      // ── 卡片7: 事件类型 ──
+      html += renderCategoryCard(insights);
+
+      html += '</div>';
+      return html;
+    }
+
+    // 卡片1: 情绪画像
+    function renderMoodCard(moodData, insights, dayEntries) {
+      const moodEntries = Object.entries(moodData);
+      const total = moodEntries.reduce((s, [, v]) => s + v, 0);
+      const topMood = moodEntries.length > 0 ? moodEntries.sort((a, b) => b[1] - a[1])[0] : null;
+      const emotionScore = insights.emotionScore || 0;
+
+      let moodDesc = '';
+      if (emotionScore > 0.5) moodDesc = '今天的你状态非常好，能量满满！';
+      else if (emotionScore > 0.1) moodDesc = '整体心情不错，保持这个节奏。';
+      else if (emotionScore > -0.1) moodDesc = '平淡中带着踏实，也是一种力量。';
+      else if (emotionScore > -0.5) moodDesc = '情绪有些波动，记得给自己一点空间。';
+      else moodDesc = '今天不容易，好好休息，明天会更好。';
+
+      const moodColors = {
+        '😄': '#f59e0b', '😊': '#f97316', '😌': '#10b981', '🤔': '#6366f1',
+        '😔': '#64748b', '😤': '#ef4444', '😴': '#8b5cf6', '💪': '#22c55e'
+      };
+      const mainColor = topMood ? (moodColors[topMood[0]] || '#94a3b8') : '#94a3b8';
+
+      return `
+        <div class="ai-card ai-card-mood">
+          <div class="ai-card-header">
+            <div class="ai-card-icon" style="background: ${mainColor}15;">🎭</div>
+            <div class="ai-card-title">情绪画像</div>
+            <div style="margin-left: auto; font-size: 0.75rem; color: var(--text-muted);">共 ${dayEntries.length} 条记录</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+            <div style="width: 48px; height: 48px; border-radius: var(--radius-lg); background: ${mainColor}12; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;">
+              ${topMood ? topMood[0] : '😊'}
             </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-              ${categoryEntries.map(([cat, count]) => {
-                const color = categoryColors[cat] || '#6b7280';
-                const icon = categoryIcons[cat] || '📝';
-                const width = maxCount > 0 ? Math.max(30, (count / maxCount) * 100) : 0;
-                return `
-                  <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem; background: white; border-radius: 8px; font-size: 0.8rem; min-width: 80px;">
-                    <span>${icon}</span>
-                    <span style="color: var(--text-secondary);">${cat}</span>
-                    <span style="font-weight: 600; color: ${color};">${count}</span>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-            <div style="margin-top: 0.75rem; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; display: flex;">
-              ${categoryEntries.map(([cat, count]) => {
-                const color = categoryColors[cat] || '#6b7280';
-                const width = totalActions > 0 ? (count / totalActions * 100) : 0;
-                return `<div style="width: ${width}%; height: 100%; background: ${color};"></div>`;
-              }).join('')}
+            <div style="flex: 1;">
+              <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.15rem;">${topMood ? getMoodLabel(topMood[0]) : '未记录'}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">${moodDesc}</div>
             </div>
           </div>
-        `;
-      }
+          ${moodEntries.length > 0 ? `
+          <div style="display: flex; gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border-light);">
+            ${moodEntries.map(([emoji, count]) => `
+              <div style="flex: 1; text-align: center; padding: 0.4rem 0; background: var(--bg-secondary); border-radius: var(--radius-sm);">
+                <div style="font-size: 1.1rem;">${emoji}</div>
+                <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 0.15rem;">${getMoodLabel(emoji)} · ${count}</div>
+              </div>
+            `).join('')}
+          </div>` : ''}
+        </div>
+      `;
+    }
 
-      // 3. 今日高光时刻模块
+    // 卡片2: 精力指数
+    function renderEnergyCard(insights) {
+      const energy = insights.energyLevel || 0;
+      const energyReason = insights.energyReason || '';
+      let energyColor = '#22c55e';
+      let energyLabel = '精力充沛';
+      let energyEmoji = '🔥';
+      if (energy <= 3) { energyColor = '#ef4444'; energyLabel = '需要充电'; energyEmoji = '🔋'; }
+      else if (energy <= 5) { energyColor = '#f59e0b'; energyLabel = '中规中矩'; energyEmoji = '⚡'; }
+      else if (energy <= 7) { energyColor = '#22c55e'; energyLabel = '状态良好'; energyEmoji = '💪'; }
+      else { energyColor = '#22c55e'; energyLabel = '精力充沛'; energyEmoji = '🔥'; }
+
+      // 待办完成率
+      const todoStats = insights.todoStats || {};
+      const todoTotal = todoStats.total || 0;
+      const todoCompleted = todoStats.completed || 0;
+      const completionRate = todoStats.completionRate || 0;
+
+      return `
+        <div class="ai-card ai-card-energy">
+          <div class="ai-card-header">
+            <div class="ai-card-icon" style="background: #fef3c7;">${energyEmoji}</div>
+            <div class="ai-card-title">精力指数</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem;">
+            <div style="text-align: center;">
+              <div style="font-size: 2rem; font-weight: 700; color: ${energyColor}; line-height: 1;">${energy}</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">满分 10</div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+                <span style="font-size: 0.78rem; color: var(--text-secondary); font-weight: 500;">${energyLabel}</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${energy * 10}%; background: ${energyColor};"></div>
+              </div>
+            </div>
+          </div>
+          ${energyReason ? `<div style="margin-top: 0.6rem; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; padding: 0.4rem 0.5rem; background: var(--bg-secondary, rgba(0,0,0,0.03)); border-radius: 6px;">💡 ${energyReason}</div>` : ''}
+          ${todoTotal > 0 ? `
+          <div style="padding-top: 0.75rem; border-top: 1px solid var(--border-light);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.3rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+                待办完成
+              </span>
+              <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary);">${todoCompleted}/${todoTotal}</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${completionRate}%; background: ${completionRate >= 70 ? '#22c55e' : completionRate >= 40 ? '#f59e0b' : '#ef4444'};"></div>
+            </div>
+            <div style="text-align: right; margin-top: 0.25rem; font-size: 0.72rem; color: var(--text-muted);">完成率 ${completionRate}%</div>
+          </div>` : ''}
+        </div>
+      `;
+    }
+
+    // 卡片3: 今日关键词
+    function renderKeywordsCard(insights) {
+      const keywords = insights.keywords || [];
+      if (keywords.length === 0) return '';
+
+      return `
+        <div class="ai-card ai-card-keywords">
+          <div class="ai-card-header">
+            <div class="ai-card-icon" style="background: #e0e7ff;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1" fill="#4f46e5"/></svg>
+            </div>
+            <div class="ai-card-title">今日关键词</div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+            ${keywords.map((k, i) => `
+              <span class="keyword-tag" style="${i === 0 ? 'background: var(--cta-pale); color: var(--cta); border-color: var(--cta-soft); font-weight: 500;' : ''}">${escapeHtml(k)}</span>
+            `).join('')}
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">AI 从今日记录中提取的核心主题</div>
+        </div>
+      `;
+    }
+
+    // 卡片4: 今日高光
+    function renderHighlightCard(insights) {
       const highlight = insights.highlight || '';
-      if (highlight) {
-        html += `
-          <div style="margin-top: 1rem; padding: 1rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: var(--radius); border: 1px solid #fcd34d;" id="highlightContainer">
-            <div style="font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span>⭐</span> 今日高光时刻
-              </div>
-              <button onclick="editHighlight()" style="background: none; border: none; cursor: pointer; padding: 4px; color: #92400e; opacity: 0.7;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              </button>
+      if (!highlight) return '';
+
+      return `
+        <div class="ai-card ai-card-highlight">
+          <div class="ai-card-header">
+            <div class="ai-card-icon" style="background: #fef9c3;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" fill="#f59e0b"/></svg>
             </div>
-            <div id="highlightText" style="font-size: 0.95rem; color: #92400e; line-height: 1.6;">
+            <div class="ai-card-title">今日高光</div>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <div style="width: 3px; min-height: 36px; background: linear-gradient(to bottom, #f59e0b, #fbbf24); border-radius: 2px; flex-shrink: 0;"></div>
+            <div style="font-size: 0.92rem; color: var(--text-primary); line-height: 1.7;">
               ${escapeHtml(highlight)}
             </div>
-            <div id="highlightEdit" style="display: none;">
-              <textarea id="highlightInput" style="width: 100%; padding: 0.5rem; border: 1px solid #fcd34d; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.5rem; resize: vertical; min-height: 60px; background: #fff;">${escapeHtml(highlight)}</textarea>
-              <div style="display: flex; gap: 0.5rem;">
-                <button onclick="saveHighlight()" style="flex: 1; padding: 0.4rem 0.8rem; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">保存</button>
-                <button onclick="cancelEditHighlight()" style="flex: 1; padding: 0.4rem 0.8rem; background: #e5e7eb; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">取消</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 卡片5: 目标契合度
+    function renderAlignmentCard(insights) {
+      const alignedActions = insights.alignedActions || [];
+      const nonAlignedActions = insights.nonAlignedActions || [];
+      const total = alignedActions.length + nonAlignedActions.length;
+      if (total === 0) return '';
+
+      const score = insights.alignmentScore || 0;
+      let scoreColor = '#22c55e';
+      let scoreLabel = '优秀';
+      if (score < 40) { scoreColor = '#ef4444'; scoreLabel = '需关注'; }
+      else if (score < 70) { scoreColor = '#f59e0b'; scoreLabel = '一般'; }
+      else { scoreColor = '#22c55e'; scoreLabel = '优秀'; }
+
+      return `
+        <div class="ai-card ai-card-alignment">
+          <div class="ai-card-header">
+            <div class="ai-card-icon" style="background: #dcfce7;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#22c55e" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="ai-card-title">目标契合度</div>
+            <div style="margin-left: auto; font-size: 0.85rem; font-weight: 700; color: ${scoreColor};">${score}%</div>
+          </div>
+          <div class="progress-bar" style="margin-bottom: 0.75rem; height: 6px;">
+            <div class="progress-fill" style="width: ${score}%; background: ${scoreColor};"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            ${alignedActions.length > 0 ? `
+            <div>
+              <div style="font-size: 0.72rem; color: #22c55e; font-weight: 600; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                朝向目标 (${alignedActions.length})
               </div>
+              ${alignedActions.slice(0, 3).map(a => `
+                <div class="action-item"><div class="action-dot green"></div><span>${escapeHtml(a)}</span></div>
+              `).join('')}
+            </div>` : ''}
+            ${nonAlignedActions.length > 0 ? `
+            <div>
+              <div style="font-size: 0.72rem; color: #ef4444; font-weight: 600; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/></svg>
+                偏离方向 (${nonAlignedActions.length})
+              </div>
+              ${nonAlignedActions.slice(0, 3).map(a => `
+                <div class="action-item"><div class="action-dot red"></div><span>${escapeHtml(a)}</span></div>
+              `).join('')}
+            </div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // 卡片6: AI 建议
+    function renderSuggestionCard(insights) {
+      const suggestion = insights.alignmentSuggestion || '';
+      if (!suggestion) return '';
+
+      return `
+        <div class="ai-card ai-card-suggestion">
+          <div class="ai-card-header">
+            <div class="ai-card-icon" style="background: #f3e8ff;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#8b5cf6"/><path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="ai-card-title">AI 建议</div>
+          </div>
+          <div style="padding: 0.75rem 1rem; background: var(--bg-secondary); border-radius: var(--radius); border-left: 3px solid #8b5cf6;">
+            <div style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.7;">
+              ${escapeHtml(suggestion)}
             </div>
           </div>
-        `;
-      }
+        </div>
+      `;
+    }
 
-      return html;
+    // 卡片7: 事件类型分布
+    function renderCategoryCard(insights) {
+      const categories = insights.categories || {};
+      const categoryEntries = Object.entries(categories).filter(([, v]) => v > 0);
+      if (categoryEntries.length === 0) return '';
+
+      const categoryIcons = { '工作': '💼', '学习': '📚', '生活': '🏠', '社交': '🤝', '健康': '💪', '其他': '📌', '运动': '🏃', '娱乐': '🎮', '饮食': '🍽️', '休息': '😴' };
+      const categoryColors = { '工作': '#3b82f6', '学习': '#8b5cf6', '生活': '#10b981', '社交': '#f59e0b', '健康': '#ef4444', '其他': '#6b7280' };
+      const total = categoryEntries.reduce((s, [, v]) => s + v, 0);
+
+      return `
+        <div class="ai-card ai-card-category">
+          <div class="ai-card-header">
+            <div class="ai-card-icon" style="background: #e0f2fe;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            </div>
+            <div class="ai-card-title">今日事件分布</div>
+            <span style="margin-left: auto; font-size: 0.75rem; color: var(--text-muted);">${total} 条记录</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+            ${categoryEntries.map(([cat, count]) => {
+              const color = categoryColors[cat] || '#6b7280';
+              const icon = (categoryIcons && categoryIcons[cat]) || '📝';
+              const percent = total > 0 ? Math.round(count / total * 100) : 0;
+              return `
+                <div class="category-tag" style="flex: 1; min-width: 100px; justify-content: center; padding: 0.5rem 0.6rem;">
+                  <span style="display: flex; justify-content: center; font-size: 1.2rem;">${icon}</span>
+                  <div style="text-align: center;">
+                    <div style="font-size: 0.72rem; color: var(--text-secondary);">${cat}</div>
+                    <div style="font-size: 0.82rem; font-weight: 600; color: ${color};">${count} <span style="font-size: 0.68rem; font-weight: 400; color: var(--text-muted);">${percent}%</span></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div class="progress-bar" style="height: 8px; display: flex; gap: 2px; overflow: hidden;">
+            ${categoryEntries.map(([cat, count]) => {
+              const color = categoryColors[cat] || '#6b7280';
+              const width = total > 0 ? (count / total * 100) : 0;
+              return `<div style="width: ${width}%; height: 100%; background: ${color}; border-radius: 3px;"></div>`;
+            }).join('')}
+          </div>
+        </div>
+      `;
     }
 
     function refreshHomeAISummary() {
@@ -8142,7 +8476,7 @@ ${entry.content}`;
         <div class="ai-summary">
           <div class="ai-summary-header">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/><circle cx="12" cy="12" r="6"/></svg>
-            AI 智能分析
+            AI 每日复盘
           </div>
           <div class="ai-summary-content" style="white-space: pre-wrap; font-family: inherit;">${formatSummaryContent(cached.content)}</div>
         </div>
@@ -8353,7 +8687,8 @@ ${entryTexts || '无记录'}
   "categories": {"工作": 3, "学习": 1, "生活": 2, "社交": 0, "健康": 0, "其他": 0},
   "categorizedEntries": {"工作": ["记录内容1", "记录内容2"], "学习": ["记录内容3"], "生活": [], "社交": [], "健康": [], "其他": []},
   "highlight": "今天最有价值的事情是...",
-  "todoStats": {"total": 5, "completed": 3, "uncompleted": 2, "completionRate": 60}
+  "todoStats": {"total": 5, "completed": 3, "uncompleted": 2, "completionRate": 60},
+  "energyReason": "今天完成了3项重要任务，情绪积极，但晚上有些疲惫"
 }
 \`\`\`
 字段说明：
@@ -8367,6 +8702,7 @@ ${entryTexts || '无记录'}
 - categories：今日事件类型统计，对象格式如 {"工作":3,"学习":1,"生活":2,"社交":0,"健康":0,"其他":0}，所有数值加起来应等于今日记录数
 - categorizedEntries：**重要**- 今日每条记录对应的类型分类，对象格式如 {"工作":["记录1","记录2"],"学习":["记录3"],"生活":[]...}，请将每条记录归类到对应类别，未分类的归入"其他"
 - highlight：今日最有价值/最值得记录的高光时刻（一句话，30字以内）
+- energyReason：精力指数的理由说明（一句话，20字以内，简述打分依据）
 - todoStats：今日待办统计{"total":总数量,"completed":已完成,"uncompleted":未完成,"completionRate":完成率(0-100)}`;
     }
 
@@ -8494,7 +8830,7 @@ ${entryTexts || '无记录'}
       // 显示加载状态
       btn.disabled = true;
       btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> 生成中';
-      content.innerHTML = '<span style="color: #92400e;">🤖 AI 正在生成脑图...</span>';
+      content.innerHTML = '<span style="color: var(--text-muted);">🤖 AI 正在生成脑图...</span>';
       
       const prompt = buildWeeklyMindMapPrompt(weekEntries, weekReviews, monday, sunday);
       
@@ -8606,7 +8942,7 @@ ${entryTexts || '无记录'}
       }
       
       // 如果没有保存的脑图，显示默认提示
-      content.innerHTML = '<span style="color: #92400e; font-style: italic;">点击上方按钮，AI 将根据本周记录生成脑图</span>';
+      content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据本周记录生成脑图</span>';
       return false;
     }
 
@@ -8636,7 +8972,7 @@ ${entryTexts || '无记录'}
       // 显示加载状态
       btn.disabled = true;
       btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> 生成中';
-      content.innerHTML = '<span style="color: #92400e;">🤖 AI 正在生成脑图...</span>';
+      content.innerHTML = '<span style="color: var(--text-muted);">🤖 AI 正在生成脑图...</span>';
       
       const prompt = buildMindMapPrompt(todayEntries, todayReview);
       
@@ -8738,121 +9074,111 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
         return '<span style="color: #f59e0b;">⚠️ 脑图格式解析失败</span>';
       }
       
-      // 柔和网络图配色 - 莫兰迪色系
-      const colorPalette = [
-        { main: '#7eb5d6', light: '#b8d4e8', text: '#4a7a99' },
-        { main: '#9dbf8f', light: '#c8dbc0', text: '#5d8a52' },
-        { main: '#e8c577', light: '#f2dfb3', text: '#b89545' },
-        { main: '#d49393', light: '#e8c4c4', text: '#a35656' },
-        { main: '#a88fbf', light: '#d4c4e0', text: '#6d558a' },
-        { main: '#d49eb8', light: '#e8ccd8', text: '#9c5d78' },
-        { main: '#8fbfbf', light: '#c4dcdc', text: '#4d8888' },
-        { main: '#d4a887', light: '#e8cdbc', text: '#a46d4a' }
-      ];
-      
       const branches = data.branches;
       const count = branches.length;
-      
-      const svgWidth = Math.max(600, 250 + count * 100);
-      const svgHeight = Math.max(500, 320 + count * 40);
+      if (count === 0) return '<span style="color: #f59e0b;">⚠️ 无分支数据</span>';
+
+      // 计算画布尺寸
+      const branchRadius = 130; // 中心到分支的距离
+      const subRadius = 90;     // 分支到子节点的距离
+      const svgWidth = Math.max(680, 200 + count * 140);
+      const svgHeight = Math.max(480, 280 + count * 50);
       const centerX = svgWidth / 2;
-      const centerY = svgHeight * 0.45;
-      const branchRadius = Math.min(110, svgHeight * 0.35);
-      const subBranchRadius = 85;
-      
+      const centerY = svgHeight * 0.82; // 中心在底部区域
+
+      // 扇形展开角度范围（向上半圆）
+      const totalSpread = Math.min(Math.PI * 1.2, Math.PI * 0.4 * count);
+      const startAngle = -Math.PI / 2 - totalSpread / 2;
+
       let svgContent = '';
-      
-      // 绘制连线（曲线贝塞尔）
+
+      // ── 第一遍：绘制所有连线 ──
+      // 中心到分支的连线
       branches.forEach((branch, idx) => {
-        const colors = colorPalette[idx % colorPalette.length];
-        const angle = (2 * Math.PI * idx / count) - Math.PI / 2;
+        const angle = count === 1 ? -Math.PI / 2 : startAngle + totalSpread * idx / (count - 1);
         const bx = centerX + branchRadius * Math.cos(angle);
         const by = centerY + branchRadius * Math.sin(angle);
-        
-        const midX = (centerX + bx) / 2;
-        const midY = (centerY + by) / 2 - 20;
-        svgContent += `<path d="M${centerX},${centerY} Q${midX},${midY} ${bx},${by}" fill="none" stroke="${colors.light}" stroke-width="1.5" opacity="0.8"/>`;
-        
-        // 子节点连线 - 根据实际items数量分散显示
+        svgContent += `<line x1="${centerX}" y1="${centerY}" x2="${bx}" y2="${by}" stroke="#d1d5db" stroke-width="1.5"/>`;
+
+        // 分支到子节点的连线
         if (branch.items && branch.items.length > 0) {
           const items = branch.items;
           const itemsCount = items.length;
-          const spreadAngle = Math.PI / 3; // 60度范围分散
-          const startAngle = angle - spreadAngle / 2;
+          const subSpread = Math.min(Math.PI / 3, Math.PI / 6 * itemsCount);
+          const subStart = angle - subSpread / 2;
           
           items.forEach((item, itemIdx) => {
-            const subAngle = itemsCount > 1 ? startAngle + spreadAngle * itemIdx / (itemsCount - 1) : angle;
-            const sx = bx + subBranchRadius * Math.cos(subAngle);
-            const sy = by + subBranchRadius * Math.sin(subAngle);
-            const subMidX = (bx + sx) / 2;
-            const subMidY = (by + sy) / 2 - 10;
-            svgContent += `<path d="M${bx},${by} Q${subMidX},${subMidY} ${sx},${sy}" fill="none" stroke="${colors.light}" stroke-width="1" opacity="0.6"/>`;
+            const subAngle = itemsCount === 1 ? angle : subStart + subSpread * itemIdx / (itemsCount - 1);
+            const sx = bx + subRadius * Math.cos(subAngle);
+            const sy = by + subRadius * Math.sin(subAngle);
+            svgContent += `<line x1="${bx}" y1="${by}" x2="${sx}" y2="${sy}" stroke="#e5e7eb" stroke-width="1"/>`;
           });
         }
       });
-      
-      // 绘制子节点 - 根据实际items数量分散显示
+
+      // ── 第二遍：绘制子节点（小圆点 + 文字标签） ──
       branches.forEach((branch, idx) => {
-        const colors = colorPalette[idx % colorPalette.length];
-        const angle = (2 * Math.PI * idx / count) - Math.PI / 2;
+        const angle = count === 1 ? -Math.PI / 2 : startAngle + totalSpread * idx / (count - 1);
         const bx = centerX + branchRadius * Math.cos(angle);
         const by = centerY + branchRadius * Math.sin(angle);
-        
+
         if (branch.items && branch.items.length > 0) {
           const items = branch.items;
           const itemsCount = items.length;
-          const spreadAngle = Math.PI / 3;
-          const startAngle = angle - spreadAngle / 2;
-          
+          const subSpread = Math.min(Math.PI / 3, Math.PI / 6 * itemsCount);
+          const subStart = angle - subSpread / 2;
+
           items.forEach((item, itemIdx) => {
-            const subAngle = itemsCount > 1 ? startAngle + spreadAngle * itemIdx / (itemsCount - 1) : angle;
-            const sx = bx + subBranchRadius * Math.cos(subAngle);
-            const sy = by + subBranchRadius * Math.sin(subAngle);
-            
-            // 子节点圆点 + 点击显示完整文字
+            const subAngle = itemsCount === 1 ? angle : subStart + subSpread * itemIdx / (itemsCount - 1);
+            const sx = bx + subRadius * Math.cos(subAngle);
+            const sy = by + subRadius * Math.sin(subAngle);
+
             const itemId = 'mindmap-item-' + idx + '-' + itemIdx;
-            svgContent += `<g class="mindmap-item" data-item="${escapeHtml(item)}" data-id="${itemId}" style="cursor: pointer;">
-              <circle cx="${sx}" cy="${sy}" r="8" fill="white" stroke="${colors.main}" stroke-width="2" opacity="0.9"/>
-            </g>`;
-            
-            // 显示完整文字（不截断）
-            const textX = sx + (sx > bx ? 18 : -18);
-            svgContent += `<text x="${textX}" y="${sy}" text-anchor="${sx > bx ? 'start' : 'end'}" dominant-baseline="middle" fill="${colors.text}" font-size="11" style="cursor: pointer;" onclick="showMindMapTooltip('${itemId}', '${escapeHtml(item).replace(/'/g, "\\'")}')">${escapeHtml(item)}</text>`;
+            // 小圆点
+            svgContent += `<circle cx="${sx}" cy="${sy}" r="5" fill="#9ca3af" opacity="0.7"/>`;
+            // 文字标签 - 放在圆点外侧
+            const textOffset = 14;
+            const textX = sx + (Math.abs(Math.cos(subAngle)) > 0.3 ? textOffset * Math.sign(Math.cos(subAngle)) : 0);
+            const textY = sy + (Math.abs(Math.sin(subAngle)) > 0.3 ? textOffset * Math.sign(Math.sin(subAngle)) : -textOffset);
+            const anchor = Math.cos(subAngle) > 0.3 ? 'start' : Math.cos(subAngle) < -0.3 ? 'end' : 'middle';
+            svgContent += `<text x="${textX}" y="${textY}" text-anchor="${anchor}" dominant-baseline="middle" fill="#4b5563" font-size="11" font-family="system-ui, sans-serif" style="cursor:pointer;" onclick="showMindMapTooltip('${itemId}', '${escapeHtml(item).replace(/'/g, "\\'")}')">${escapeHtml(item)}</text>`;
           });
         }
       });
-      
-      // 分支节点
+
+      // ── 第三遍：绘制分支节点 ──
       branches.forEach((branch, idx) => {
-        const colors = colorPalette[idx % colorPalette.length];
-        const angle = (2 * Math.PI * idx / count) - Math.PI / 2;
+        const angle = count === 1 ? -Math.PI / 2 : startAngle + totalSpread * idx / (count - 1);
         const bx = centerX + branchRadius * Math.cos(angle);
         const by = centerY + branchRadius * Math.sin(angle);
-        
-        svgContent += `<circle cx="${bx}" cy="${by}" r="36" fill="${colors.main}" opacity="0.9"/>`;
-        
+
+        // 白色圆形 + 浅灰边框
+        svgContent += `<circle cx="${bx}" cy="${by}" r="28" fill="white" stroke="#d1d5db" stroke-width="2"/>`;
+
+        // emoji
         const emoji = branch.emoji || '📌';
-        svgContent += `<text x="${bx}" y="${by - 14}" text-anchor="middle" dominant-baseline="middle" font-size="16">${emoji}</text>`;
-        
-        const nameLines = splitText(escapeHtml(branch.name), 3);
+        svgContent += `<text x="${bx}" y="${by - 5}" text-anchor="middle" dominant-baseline="middle" font-size="14">${emoji}</text>`;
+
+        // 分支名称
+        const nameLines = splitText(escapeHtml(branch.name), 4);
         nameLines.forEach((line, i) => {
-          svgContent += `<text x="${bx}" y="${by + (i - (nameLines.length-1)/2) * 11 + 2}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="9" font-weight="600">${line}</text>`;
+          svgContent += `<text x="${bx}" y="${by + 10 + i * 10}" text-anchor="middle" dominant-baseline="middle" fill="#374151" font-size="8.5" font-weight="600" font-family="system-ui, sans-serif">${line}</text>`;
         });
       });
-      
-      // 中心节点
-      const centerLines = splitText(escapeHtml(data.center), 3);
+
+      // ── 中心节点 ──
       const centerEmoji = data.centerEmoji || '🎯';
-      svgContent += `<circle cx="${centerX}" cy="${centerY}" r="50" fill="#f59e0b" opacity="0.95"/>`;
-      svgContent += `<text x="${centerX}" y="${centerY - 18}" text-anchor="middle" dominant-baseline="middle" font-size="22">${centerEmoji}</text>`;
+      svgContent += `<circle cx="${centerX}" cy="${centerY}" r="40" fill="#1f2937" opacity="0.95"/>`;
+      svgContent += `<text x="${centerX}" y="${centerY - 8}" text-anchor="middle" dominant-baseline="middle" font-size="20">${centerEmoji}</text>`;
+      const centerLines = splitText(escapeHtml(data.center), 4);
       centerLines.forEach((line, i) => {
-        svgContent += `<text x="${centerX}" y="${centerY + (i - (centerLines.length-1)/2) * 13 + 4}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="11" font-weight="700">${line}</text>`;
+        svgContent += `<text x="${centerX}" y="${centerY + 10 + i * 12}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="10" font-weight="700" font-family="system-ui, sans-serif">${line}</text>`;
       });
-      
-      const svg = `<svg width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}" xmlns="http://www.w3.org/2000/svg" style="background: #fafafa;">
+
+      const svg = `<svg width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}" xmlns="http://www.w3.org/2000/svg" style="background: white; border-radius: 12px;">
           ${svgContent}
         </svg>`;
-      
+
       return `<div style="overflow: auto; -webkit-overflow-scrolling: touch; text-align: center; max-height: 520px; border-radius: 12px;">${svg}</div>`;
     }
     
