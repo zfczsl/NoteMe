@@ -4127,20 +4127,20 @@
             <div style="font-size: 0.85rem; font-weight: 600;">${date.getDate()}</div>
           `;
         } else if (isToday) {
-          // 今天：深薄荷绿，不管有没有记录
-          style += 'background: #059669; color: white; box-shadow: 0 2px 8px rgba(5,150,105,0.3);';
+          // 今天：红粉色（与记录按钮同色）
+          style += 'background: var(--cta); color: white; box-shadow: 0 2px 8px rgba(244,63,94,0.3);';
           content = `
             <div style="font-size: 0.65rem; margin-bottom: 2px; opacity: 0.85;">${dayNames[i]}</div>
             <div style="font-size: 0.85rem; font-weight: 700;">${date.getDate()}</div>
             <div style="font-size: 0.6rem; margin-top: 2px;">${hasRecord ? '✓' : '今'}</div>
           `;
         } else if (hasRecord) {
-          // 有记录（不是今天）：浅薄荷绿背景 + ✓
-          style += 'background: #d1fae5; color: #065f46;';
+          // 有记录（不是今天）：浅红粉背景
+          style += 'background: var(--cta-pale); color: var(--cta);';
           content = `
             <div style="font-size: 0.65rem; margin-bottom: 2px;">${dayNames[i]}</div>
             <div style="font-size: 0.85rem; font-weight: 600;">${date.getDate()}</div>
-            <div style="font-size: 0.7rem; margin-top: 2px; color: #10b981; font-weight: 700;">✓</div>
+            <div style="font-size: 0.7rem; margin-top: 2px; color: var(--cta); font-weight: 700;">✓</div>
           `;
         } else {
           // 无记录、不是今天：灰色
