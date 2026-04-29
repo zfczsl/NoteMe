@@ -18,55 +18,79 @@
 
     :root {
       /* ═══════════════════════════════════════════
-         ShadcnUI 配色系统 · 黑白主色 · 红粉CTA
+         记我 Design System v1.0
+         黑白灰主色 · 红粉CTA · 极简SaaS
       ═══════════════════════════════════════════ */
       
-      /* 背景色 - 纯净白灰 */
+      /* 背景色 */
       --bg-main: #ffffff;
-      --bg-secondary: #f8fafc;
-      --bg-tertiary: #f1f5f9;
+      --bg-secondary: #F9FAFB;    /* gray-50: AI建议背景、统计标签 */
+      --bg-tertiary: #F3F4F6;     /* gray-100: 骨架屏 */
       --bg-card: #ffffff;
+      --bg-primary: #ffffff;
       
       /* ════ CTA 红粉渐变（唯一强调色）════ */
-      --cta: #f43f5e;
-      --cta-light: #fb7185;
+      --cta: #F43F5E;             /* rose-500: CTA渐变起点 */
+      --cta-light: #FB7185;       /* rose-400: 开心情绪、关键词标签 */
       --cta-soft: #fecdd3;
       --cta-pale: #fff1f2;
-      --cta-dark: #e11d48;
+      --cta-dark: #E11D48;        /* rose-600: CTA hover起点 */
+      --pink-500: #EC4899;        /* CTA渐变终点 */
+      --pink-600: #DB2777;        /* CTA hover终点 */
+      --primary: #F43F5E;
+      --primary-light: #FB7185;
+      --primary-dark: #E11D48;
       
-      /* ════ 文字色 - 明确层次 ════ */
-      --text-primary: #0f172a;
-      --text-secondary: #334155;
-      --text-muted: #64748b;
-      --text-light: #94a3b8;
-      --text-placeholder: #cbd5e1;
+      /* ════ 文字色 - Gray阶梯 ════ */
+      --text-primary: #111827;    /* gray-900: 品牌标题、导航激活 */
+      --text-secondary: #6B7280;  /* gray-500: 正文描述、次级文字 */
+      --text-muted: #9CA3AF;      /* gray-400: 平静情绪、次级图标 */
+      --text-light: #9CA3AF;      /* gray-400: 同muted */
+      --text-placeholder: #D1D5DB;/* gray-300: 占位符 */
       
-      /* ════ 边框色 - 微妙灰 ════ */
-      --border: #e2e8f0;
-      --border-light: #f1f5f9;
-      --border-focus: #f43f5e;
+      /* ════ 边框色 ════ */
+      --border: #E5E7EB;          /* gray-200: 卡片边框、分割线 */
+      --border-light: #F3F4F6;    /* gray-100 */
+      --border-focus: #FDA4AF;    /* rose-300: 输入框聚焦环 */
       
-      /* ════ 阴影系统 - 多层次 ════ */
-      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+      /* ════ 情绪色 ════ */
+      --mood-happy: #FB7185;      /* rose-400 */
+      --mood-calm: #9CA3AF;       /* gray-400 */
+      --mood-excited: #FBBF24;    /* amber */
+      --mood-tired: #94A3B8;      /* gray-blue */
+      --mood-sad: #7DD3FC;        /* blue */
+      --mood-anxious: #FDBA74;    /* orange */
+      --mood-neutral: #D1D5DB;    /* gray-300 */
       
-      /* ════ 圆角 - 统一圆润 ════ */
-      --radius-sm: 6px;
+      /* ════ 辅助色 ════ */
+      --success: #6B7280;         /* 极简风格下成功用gray-500 */
+      --peach-dark: #6B7280;      /* 统一灰度 */
+      
+      /* ════ 阴影系统 - 极轻 ════ */
+      --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-cta: 0 1px 2px rgba(244, 63, 94, 0.15);
+      --shadow-cta-hover: 0 4px 12px rgba(244, 63, 94, 0.25);
+      
+      /* ════ 圆角系统 ════ */
+      --radius-sm: 8px;           /* 小按钮、图标按钮 */
       --radius: 8px;
-      --radius-md: 10px;
-      --radius-lg: 12px;
-      --radius-xl: 14px;
+      --radius-md: 12px;          /* 情绪标签、统计标签 */
+      --radius-lg: 16px;          /* 卡片、输入框 */
+      --radius-xl: 20px;          /* 大卡片 */
+      --radius-full: 9999px;      /* 圆形标签 */
 
       /* ════ CTA 渐变 ════ */
-      --gradient-cta: linear-gradient(135deg, #fb7185, #f43f5e);
-      --gradient-cta-hover: linear-gradient(135deg, #f43f5e, #e11d48);
+      --gradient-cta: linear-gradient(135deg, #F43F5E 0%, #EC4899 100%);
+      --gradient-cta-hover: linear-gradient(135deg, #E11D48 0%, #DB2777 100%);
       
       /* ════ 过渡 ════ */
       --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
       --ease-in: cubic-bezier(0.4, 0, 1, 1);
+      --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
       --duration-fast: 150ms;
       --duration-normal: 200ms;
     }
@@ -180,10 +204,10 @@
     }
 
     .logo-text {
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-size: 1.75rem;
+      font-weight: 700;
       color: var(--text-primary);
-      letter-spacing: 0;
+      letter-spacing: -0.02em;
       line-height: 1;
     }
 
@@ -209,9 +233,9 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.625rem 1rem;
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       font-size: 0.875rem;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       transition: all var(--duration-normal) var(--ease-out);
       border: 1px solid var(--border);
@@ -233,13 +257,17 @@
       background: var(--gradient-cta);
       color: white;
       border: none;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-cta);
     }
 
     .btn-primary:hover {
       background: var(--gradient-cta-hover);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-cta-hover);
       transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
     }
 
     .btn-secondary {
@@ -365,7 +393,7 @@
     .quick-actions {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
+      gap: 1rem;
       margin-bottom: 1.5rem;
     }
 
@@ -412,18 +440,18 @@
     }
 
     .quick-action-card .icon.green {
-      background: #f0fdf4;
-      color: #16a34a;
+      background: #F9FAFB;
+      color: #6B7280;
     }
 
     .quick-action-card .icon.orange {
-      background: #fff7ed;
-      color: #ea580c;
+      background: #F9FAFB;
+      color: #6B7280;
     }
 
     .quick-action-card .icon.lavender {
-      background: #faf5ff;
-      color: #9333ea;
+      background: #F9FAFB;
+      color: #6B7280;
     }
 
     .quick-action-card h3 {
@@ -445,7 +473,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.5rem;
+      padding: 1.25rem;
       margin-bottom: 1.5rem;
       box-shadow: var(--shadow-sm);
     }
@@ -465,9 +493,10 @@
     }
 
     .entry-header h2 {
-      font-size: 0.95rem;
+      font-size: 1.0625rem;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
     }
 
     .entry-textarea {
@@ -600,9 +629,10 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.9rem;
+      font-size: 1.0625rem;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
     }
 
     .section-title svg {
@@ -616,7 +646,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 1.25rem 1.25rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
       transition: all var(--duration-normal) var(--ease-out);
       box-shadow: var(--shadow-xs);
       animation: fadeUp 0.4s var(--ease-out) both;
@@ -1203,8 +1233,8 @@
     }
 
     .heatmap-cell.level-0 { background: var(--bg-tertiary); }
-    .heatmap-cell.level-1 { background: #fecdd3; color: #be123c; }
-    .heatmap-cell.level-2 { background: #fb7185; color: white; }
+    .heatmap-cell.level-1 { background: #F9FAFB; color: #111827; }
+    .heatmap-cell.level-2 { background: #E5E7EB; color: #111827; }
     .heatmap-cell.level-3 { background: #f43f5e; color: white; }
     .heatmap-cell.level-4 { background: var(--text-primary); color: white; border-color: transparent; }
 
@@ -1233,8 +1263,8 @@
     .chart-insight p { margin-bottom: 0.5rem; }
     .chart-insight p:last-child { margin-bottom: 0; }
 
-    .chart-insight .trend-up { color: #16a34a; font-weight: 500; }
-    .chart-insight .trend-down { color: #dc2626; font-weight: 500; }
+    .chart-insight .trend-up { color: #6B7280; font-weight: 500; }
+    .chart-insight .trend-down { color: #6B7280; font-weight: 500; }
     .chart-insight .trend-flat { color: var(--text-muted); font-weight: 500; }
 
     .heatmap-labels {
@@ -1272,7 +1302,7 @@
     }
 
     .compare-bar-fill.challenge {
-      background: #3b82f6;
+      background: #111827;
     }
 
     .compare-bar-fill.achievement {
@@ -1399,7 +1429,7 @@
       left: 0;
       width: 22px;
       height: 22px;
-      border: 2px solid #10b981;
+      border: 2px solid #9CA3AF;
       border-radius: 6px;
       background: white;
       transition: all 0.2s ease;
@@ -1408,8 +1438,8 @@
       justify-content: center;
     }
     .todo-checkbox input:checked + .checkmark {
-      background: #10b981;
-      border-color: #10b981;
+      background: #9CA3AF;
+      border-color: #9CA3AF;
       animation: checkPop 0.25s ease;
     }
     @keyframes checkPop {
@@ -1463,8 +1493,8 @@
       opacity: 1;
     }
     .todo-delete:hover {
-      background: #fee2e2;
-      color: #ef4444;
+      background: #F9FAFB;
+      color: #6B7280;
     }
     
     /* 待办弹窗日期选项 */
@@ -1592,10 +1622,10 @@
 
     /* 卡片颜色主题 */
     .ai-card-mood .ai-card-icon { background: #fce7f3; }
-    .ai-card-mood .ai-card-value { color: #ec4899; }
+    .ai-card-mood .ai-card-value { color: var(--cta-light); }
 
     .ai-card-energy .ai-card-icon { background: #fef3c7; }
-    .ai-card-energy .ai-card-value { color: #f59e0b; }
+    .ai-card-energy .ai-card-value { color: #6B7280; }
 
     .ai-card-keywords .ai-card-icon { background: #e0e7ff; }
 
@@ -1610,7 +1640,7 @@
       display: inline-block;
       padding: 0.25rem 0.6rem;
       background: var(--bg-secondary);
-      border-radius: 20px;
+      border-radius: var(--radius-full);
       font-size: 0.78rem;
       color: var(--text-secondary);
       margin: 0.15rem;
@@ -1635,8 +1665,8 @@
       flex-shrink: 0;
     }
 
-    .action-dot.green { background: #22c55e; }
-    .action-dot.red { background: #ef4444; }
+    .action-dot.green { background: #9CA3AF; }
+    .action-dot.red { background: #6B7280; }
 
     /* 进度条 */
     .progress-bar {
@@ -2085,7 +2115,7 @@
       width: 90%;
       max-width: 360px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
-      border: 1px solid #e2e8f0;
+      border: 1px solid #E5E7EB;
       animation: pwaSlideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
     @keyframes pwaSlideUp {
@@ -2160,7 +2190,7 @@
     .demo-screen {
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      background: #FFFFFF;
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -2191,7 +2221,7 @@
     .pwa-guide-btn {
       width: 100%;
       padding: 0.75rem;
-      background: linear-gradient(135deg, #fb7185, #f43f5e);
+      background: var(--gradient-cta);
       color: white;
       border: none;
       border-radius: 8px;
@@ -2199,10 +2229,10 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 1px 3px rgba(244, 63, 94, 0.3);
+      box-shadow: 0 1px 2px rgba(244, 63, 94, 0.15);
     }
     .pwa-guide-btn:hover {
-      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      background: var(--gradient-cta-hover);
     }
   </style>
   
@@ -2452,17 +2482,17 @@
         
         <!-- 每周 AI 复盘 -->
         <div style="padding: 0 1rem 1rem;">
-          <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); border: 1px solid #bae6fd;">
+          <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm);">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-              <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 600; color: #0369a1;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 600; color: #111827;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 每周 AI 复盘
               </div>
-              <button id="weeklyAIReportBtn" style="padding: 0.4rem 0.8rem; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500;">
+              <button id="weeklyAIReportBtn" style="padding: 0.4rem 0.8rem; background: #111827; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500;">
                 生成周复盘
               </button>
             </div>
-            <div id="weeklyAIReportContent" style="font-size: 0.85rem; color: #334155; line-height: 1.7; white-space: pre-wrap; min-height: 60px;">
+            <div id="weeklyAIReportContent" style="font-size: 0.85rem; color: #6B7280; line-height: 1.7; white-space: pre-wrap; min-height: 60px;">
               <span style="color: #94a3b8; font-style: italic;">点击上方按钮，AI 将基于本周所有记录生成周复盘总结</span>
             </div>
           </div>
@@ -2472,7 +2502,7 @@
         <div style="padding: 0 1rem 1rem;">
           <div style="background: var(--bg-card); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm);">
             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #3b82f6;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
               本周事件类型分布
             </div>
             <div id="weekCategoryStats" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 1rem;"></div>
@@ -2484,7 +2514,7 @@
         <div style="padding: 0 1rem 1rem;">
           <div style="background: var(--bg-card); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm);">
             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #f59e0b;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
               目标契合度分析
             </div>
             <div id="weekAlignmentStats" style="width: 100%;"></div>
@@ -2520,7 +2550,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           历史记录
         </div>
-        <button id="exportHistoryBtn" onclick="exportHistoryData()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #ffadd2, #7fc8ff); color: white; border: none; border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(255,173,210,0.3);">
+        <button id="exportHistoryBtn" onclick="exportHistoryData()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #FFFFFF; border: 1px solid #E5E7EB; color: #111827; border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer; box-shadow: none;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           导出
         </button>
@@ -2539,7 +2569,7 @@
       <div style="padding: 0 1rem;">
         
         <!-- 账号与同步 -->
-        <div id="accountSection" style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: white;">
+        <div id="accountSection" style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: #111827;">
           <!-- 未登录状态 -->
           <div id="loginPanel">
             <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">
@@ -2549,20 +2579,20 @@
               登录后可在手机和电脑之间自动同步数据
             </div>
             
-            <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 1rem;">
+            <div style="background: rgba(0,0,0,0.04); border-radius: 12px; padding: 1rem;">
               <div style="font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 500;">📱 手机号快捷登录</div>
               <input type="tel" id="loginPhone" placeholder="请输入手机号" maxlength="11"
                 style="width: 100%; padding: 0.75rem; border: none; border-radius: 8px; font-size: 0.9rem; margin-bottom: 0.75rem; background: rgba(255,255,255,0.95); color: #333;">
               <div style="display: flex; gap: 0.5rem;">
                 <input type="text" id="loginCode" placeholder="验证码" maxlength="6"
                   style="flex: 1; padding: 0.75rem; border: none; border-radius: 8px; font-size: 0.9rem; background: rgba(255,255,255,0.95); color: #333;">
-                <button id="sendCodeBtn" onclick="handleSendCode()" 
-                  style="padding: 0 1rem; background: rgba(255,255,255,0.25); color: white; border: none; border-radius: 8px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
+                <button id="sendCodeBtn" onclick="handleSendCode()"
+                  style="padding: 0 1rem; background: rgba(0,0,0,0.08); color: #6B7280; border: none; border-radius: 8px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
                   获取验证码
                 </button>
               </div>
               <button onclick="handleLogin()" 
-                style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; background: white; color: #7a5699; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                style="width: 100%; margin-top: 0.75rem; padding: 0.85rem; background: white; color: #6B7280; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                 登录 / 注册
               </button>
               <div id="loginMsg" style="font-size: 0.75rem; margin-top: 0.5rem; text-align: center; min-height: 1rem;"></div>
@@ -2576,35 +2606,35 @@
                 ☁️ 云同步已开启
               </div>
               <div id="syncStatus" style="font-size: 0.75rem; opacity: 0.85;">
-                <span style="display: inline-block; width: 8px; height: 8px; background: #4ade80; border-radius: 50%; margin-right: 4px;"></span>
+                <span style="display: inline-block; width: 8px; height: 8px; background: #9CA3AF; border-radius: 50%; margin-right: 4px;"></span>
                 已连接
               </div>
             </div>
-            <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: rgba(0,0,0,0.04); border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
               <div>
                 <div style="font-size: 0.85rem; font-weight: 500;" id="userPhoneDisplay">📱 已登录</div>
                 <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 2px;">数据已自动同步到云端</div>
               </div>
               <button onclick="handleLogout()" 
-                style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                style="padding: 0.5rem 1rem; background: rgba(0,0,0,0.06); color: #6B7280; border: 1px solid #E5E7EB; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
                 退出登录
               </button>
             </div>
             <button onclick="handleManualSync()" id="manualSyncBtn"
-              style="width: 100%; margin-top: 0.75rem; padding: 0.7rem; background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
+              style="width: 100%; margin-top: 0.75rem; padding: 0.7rem; background: rgba(0,0,0,0.04); color: #6B7280; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
               🔄 手动同步数据
             </button>
           </div>
         </div>
         
         <!-- 角色与目标设置 -->
-        <div style="background: linear-gradient(135deg, var(--primary) 0%, #10b981 100%); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: white;">
+        <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: #111827;">
           <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">
-            👤 个人背景 <span style="font-weight: 400; opacity: 0.85; font-size: 0.8rem;">/ 让AI更懂你</span>
+            👤 个人背景 <span style="font-weight: 400; color: #6B7280; font-size: 0.8rem;">/ 让AI更懂你</span>
           </div>
           
           <div class="review-question">
-            <label style="color: rgba(255,255,255,0.9);">我的角色</label>
+            <label style="color: #6B7280;">我的角色</label>
             <select id="userRoleInputPage" style="width: 100%; padding: 0.75rem; border: none; border-radius: var(--radius); font-size: 0.9rem; background: rgba(255,255,255,0.95);">
               <option value="">请选择你的角色...</option>
               <option value="学生">🎓 学生</option>
@@ -2657,7 +2687,7 @@
         
         <!-- 导出数据 -->
         <div style="margin-top: 1.5rem;">
-          <div style="background: linear-gradient(135deg, #ffadd2 0%, #7fc8ff 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+          <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius); padding: 1rem; color: #111827;">
             <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">📥 导出数据</div>
             
             <!-- 导出模式选择 -->
@@ -2665,14 +2695,14 @@
               .export-mode { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
               .export-mode label {
                 flex: 1; min-width: 100px;
-                background: rgba(255,255,255,0.15);
+                background: rgba(0,0,0,0.04);
                 border: 2px solid transparent;
                 border-radius: 10px; padding: 0.5rem 0.4rem;
                 text-align: center; cursor: pointer; transition: all 0.2s;
                 font-size: 0.78rem; line-height: 1.35;
               }
-              .export-mode label:hover { background: rgba(255,255,255,0.25); }
-              .export-mode input:checked + span { color: #fbbf24; font-weight: 700; }
+              .export-mode label:hover { background: rgba(0,0,0,0.08); }
+              .export-mode input:checked + span { color: #111827; font-weight: 700; }
             </style>
             <div class="export-mode">
               <label><input type="radio" name="exportMode" value="dateRange" checked><span>按日期范围</span></label>
@@ -2690,7 +2720,7 @@
             </div>
             
             <!-- 操作按钮 -->
-            <button onclick="downloadExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #7a5699; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer;">
+            <button onclick="downloadExport()" style="width: 100%; padding: 0.7rem 1rem; background: white; color: #6B7280; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer;">
               📥 导出 Markdown 文件
             </button>
           </div>
@@ -2698,14 +2728,14 @@
         
         <!-- 反馈与支持 -->
         <div style="margin-top: 1.5rem;">
-          <div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+          <div style="background: var(--gradient-cta); border-radius: var(--radius); padding: 1rem; color: #FFFFFF;">
             <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem;">
               ☕ 支持一下
             </div>
             <div style="font-size: 0.75rem; opacity: 0.9; margin-bottom: 1rem;">
               使用 AI 功能需要消耗 API Token，运营成本不低。如果觉得好用，欢迎支持一下！
             </div>
-            <button onclick="showDonateQR()" style="width: 100%; padding: 0.6rem 1rem; background: white; color: #f59e0b; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+            <button onclick="showDonateQR()" style="width: 100%; padding: 0.6rem 1rem; background: white; color: #6B7280; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
               💰 展示收款码
             </button>
           </div>
@@ -2882,14 +2912,14 @@
         </div>
         
         <!-- 会员状态卡片 -->
-        <div id="memberCard" style="margin-top: 1rem; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 1rem; border: 1px solid #fcd34d;">
+        <div id="memberCard" style="margin-top: 1rem; background: #FFFFFF; border-radius: 12px; padding: 1rem; border: 1px solid #E5E7EB;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
-            <span style="font-weight:600;color:#92400e;font-size:0.9rem;" id="memberStatusText">免费版</span>
+            <span style="font-weight:600;color:#6B7280;font-size:0.9rem;" id="memberStatusText">免费版</span>
             <span id="memberBadgeSmall" style="font-size:0.75rem;"></span>
           </div>
-          <div style="font-size:0.82rem;color:#a16207;line-height:1.6;" id="memberDetailText">
+          <div style="font-size:0.82rem;color:#6B7280;line-height:1.6;" id="memberDetailText">
             AI 调用：<strong>2次/天</strong><br/>
-            <button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#92400e;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500;">🔓 输入激活码升级</button>
+            <button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#111827;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500;">🔓 输入激活码升级</button>
           </div>
         </div>
 
@@ -2904,8 +2934,8 @@
           <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">💾 数据管理</div>
           <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">所有数据存储在浏览器本地，建议定期导出备份。</p>
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-            <button onclick="exportAllData()" style="flex:1;min-width:120px;padding:0.75rem;background:linear-gradient(135deg,#ffadd2,#7fc8ff);color:white;border:none;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;">📤 导出全部数据</button>
-            <label style="flex:1;min-width:120px;padding:0.75rem;background:white;color:#7a5699;border:2px dashed #c7d2fe;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;">
+            <button onclick="exportAllData()" style="flex:1;min-width:120px;padding:0.75rem;background:#FFFFFF;border:1px solid #E5E7EB;color:#111827;border:none;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;">📤 导出全部数据</button>
+            <label style="flex:1;min-width:120px;padding:0.75rem;background:white;color:#6B7280;border:1px solid #E5E7EB;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;">
               📥 导入数据
               <input type="file" accept=".json" onchange="if(this.files[0])importAllData(this.files[0])" style="display:none;">
             </label>
@@ -2929,7 +2959,7 @@
         
         <!-- 反馈与支持 -->
         <div style="border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem;">
-          <div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); border-radius: var(--radius); padding: 1rem; color: white;">
+          <div style="background: var(--gradient-cta); border-radius: var(--radius); padding: 1rem; color: #FFFFFF;">
             <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem;">
               ☕ 支持一下
             </div>
@@ -2985,7 +3015,7 @@
         <!-- 情绪曲线图 -->
         <div class="chart-container">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #8b5cf6;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #9CA3AF;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             情绪曲线（近30天）
           </div>
           <div id="emotionLineChart" style="height: 180px;"></div>
@@ -2997,7 +3027,7 @@
         <!-- 精力状态柱状图 -->
         <div class="chart-container">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #3b82f6;"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
             精力/状态柱状图（近7天）
           </div>
           <div id="energyBarChart" style="height: 140px;"></div>
@@ -3009,7 +3039,7 @@
         <!-- 成就感趋势 -->
         <div class="chart-container">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #22c55e;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
             成就感趋势（近30天）
           </div>
           <div id="achievementLineChart" style="height: 140px;"></div>
@@ -3021,7 +3051,7 @@
         <!-- 关键词词云 -->
         <div class="chart-container">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #ec4899;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #FB7185;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             高频关键词（近30天）
           </div>
           <div id="wordCloudContainer" style="min-height: 120px; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: center; padding: 1rem;">
@@ -3035,7 +3065,7 @@
         <!-- 周雷达图 -->
         <div class="chart-container">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #14b8a6;"><polygon points="12 2 19 21 12 17 5 21 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><polygon points="12 2 19 21 12 17 5 21 12 2"/></svg>
             本周成长雷达图
           </div>
           <div id="radarChartContainer" style="display: flex; justify-content: center;">
@@ -3049,7 +3079,7 @@
         <!-- 周趋势折线图 -->
         <div class="chart-container" id="weekTrendChartContainer" style="display:none;">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #8b5cf6;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #9CA3AF;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             本周成长趋势
           </div>
           <div id="weekTrendChart" style="width: 100%; height: 200px;"></div>
@@ -3060,7 +3090,7 @@
         <!-- 情绪/精力曲线 -->
         <div class="chart-container" id="emotionEnergyChartContainer" style="display:none;">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #f59e0b;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             情绪与精力趋势
           </div>
           <div id="emotionEnergyChart" style="width: 100%; height: 160px;"></div>
@@ -3071,7 +3101,7 @@
         <!-- 分类环形图 -->
         <div class="chart-container" id="categoryDonutContainer" style="display:none;">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #3b82f6;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
             本周事件类型分布
           </div>
           <div id="categoryDonutChart" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 1rem;"></div>
@@ -3083,7 +3113,7 @@
         <!-- 目标契合度 -->
         <div class="chart-container" id="alignmentContainer" style="display:none;">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #10b981;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             本周行动与目标契合度
           </div>
           <div id="alignmentContent" style="padding: 0.5rem 0;"></div>
@@ -3094,7 +3124,7 @@
         <!-- 关键词展示 -->
         <div class="chart-container" id="weekKeywordsContainer" style="display:none;">
           <div class="chart-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #ec4899;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #FB7185;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
             本周关键词
           </div>
           <div id="weekKeywords" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; padding: 0.5rem;"></div>
@@ -3509,7 +3539,7 @@
               ${statusText}
             </span>
             ${uncompletedCount > 0 ? `<span style="font-size:0.7rem;color:#9ca3af;margin-left:4px;">(${dateStr})</span>` : ''}
-            ${uncompletedCount > 0 && uncompletedCount < totalCount ? `<span style="font-size:0.7rem;color:#10b981;margin-left:4px;">(剩${uncompletedCount}项)</span>` : ''}
+            ${uncompletedCount > 0 && uncompletedCount < totalCount ? `<span style="font-size:0.7rem;color:#6B7280;margin-left:4px;">(剩${uncompletedCount}项)</span>` : ''}
           </div>
           <span class="todo-banner-arrow" id="todoBannerArrow">▼</span>
         </div>
@@ -3847,7 +3877,7 @@
       
       var overlay = document.createElement('div');
       overlay.id = 'upgradePromptModal';
-      overlay.innerHTML = '<div class="modal-overlay" onclick="closeModal(\'upgradePromptModal\')" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center"><div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.3s ease"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#f59e0b,#ef4444);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">👑</div><h3 style="margin:0 0 0.5rem;font-size:1.25rem;color:#1f2937">解锁全部功能</h3><p style="margin:0;color:#6b7280;font-size:0.9rem">今日免费AI次数已用完</p></div><div style="background:#fef3c7;border-radius:12px;padding:1rem;margin-bottom:1.5rem"><div style="font-weight:600;color:#92400e;margin-bottom:0.75rem;font-size:0.95rem">💎 付费会员 ¥19.9/月</div><div style="font-size:0.85rem;color:#a16207;line-height:1.8">✅ AI调用提升至 <strong>15次/天</strong><br/>✅ 无限记录 & 待办管理<br/>✅ 云端多端同步<br/>✅ 优先体验新功能</div></div><button onclick="openActivationModal()" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">立即开通</button><button onclick="closeModal(\'upgradePromptModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">稍后再说</button></div></div><style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}</style>';
+      overlay.innerHTML = '<div class="modal-overlay" onclick="closeModal(\'upgradePromptModal\')" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center"><div style="background:white;border-radius:16px;padding:2rem;max-width:340px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.3s ease"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:var(--gradient-cta);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">👑</div><h3 style="margin:0 0 0.5rem;font-size:1.25rem;color:#111827">解锁全部功能</h3><p style="margin:0;color:#6b7280;font-size:0.9rem">今日免费AI次数已用完</p></div><div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:1rem;margin-bottom:1.5rem"><div style="font-weight:600;color:#6B7280;margin-bottom:0.75rem;font-size:0.95rem">💎 付费会员 ¥19.9/月</div><div style="font-size:0.85rem;color:#6B7280;line-height:1.8">✅ AI调用提升至 <strong>15次/天</strong><br/>✅ 无限记录 & 待办管理<br/>✅ 云端多端同步<br/>✅ 优先体验新功能</div></div><button onclick="openActivationModal()" style="width:100%;padding:0.9rem;background:var(--gradient-cta);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">立即开通</button><button onclick="closeModal(\'upgradePromptModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">稍后再说</button></div></div><style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}</style>';
       document.body.appendChild(overlay);
     }
 
@@ -3860,7 +3890,7 @@
 
       modal = document.createElement('div');
       modal.id = 'activationModal';
-      modal.innerHTML = '<div class="modal-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)closeModal(\'activationModal\')"><div style="background:white;border-radius:16px;padding:2rem;max-width:360px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:linear-gradient(135deg,#ffadd2,#7fc8ff);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">🎫</div><h3 style="margin:0 0 0.5rem;font-size:1.2rem;color:#1f2937">激活会员</h3><p style="margin:0;color:#6b7280;font-size:0.85rem">请输入购买获得的激活码</p></div><input type="text" id="activationCodeInput" placeholder="请输入激活码（如：XXXX-XXXX）" maxlength="30" style="width:100%;padding:0.9rem 1rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;text-align:center;letter-spacing:1px;margin-bottom:1rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'#6366f1\'" onblur="this.style.borderColor=\'#e5e7eb\'" onkeydown="if(event.key===\'Enter\')doActivate()"><div id="activationMsg" style="font-size:0.85rem;text-align:center;margin-bottom:1rem;min-height:1.2rem"></div><button onclick="doActivate()" id="activateBtn" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">确认激活</button><button onclick="closeModal(\'activationModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">取消</button><p style="text-align:center;margin-top:1rem;font-size:0.78rem;color:#9ca3af">还没有激活码？<br/>联系客服获取 →</p></div></div>';
+      modal.innerHTML = '<div class="modal-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)closeModal(\'activationModal\')"><div style="background:white;border-radius:16px;padding:2rem;max-width:360px;width:90%;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="text-align:center;margin-bottom:1.5rem"><div style="width:56px;height:56px;background:var(--gradient-cta);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px">🎫</div><h3 style="margin:0 0 0.5rem;font-size:1.2rem;color:#111827">激活会员</h3><p style="margin:0;color:#6b7280;font-size:0.85rem">请输入购买获得的激活码</p></div><input type="text" id="activationCodeInput" placeholder="请输入激活码（如：XXXX-XXXX）" maxlength="30" style="width:100%;padding:0.9rem 1rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;text-align:center;letter-spacing:1px;margin-bottom:1rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor=\'#FDA4AF\'" onblur="this.style.borderColor=\'#e5e7eb\'" onkeydown="if(event.key===\'Enter\')doActivate()"><div id="activationMsg" style="font-size:0.85rem;text-align:center;margin-bottom:1rem;min-height:1.2rem"></div><button onclick="doActivate()" id="activateBtn" style="width:100%;padding:0.9rem;background:var(--gradient-cta);color:white;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;margin-bottom:0.75rem">确认激活</button><button onclick="closeModal(\'activationModal\')" style="width:100%;padding:0.75rem;background:#f3f4f6;color:#6b7280;border:none;border-radius:10px;font-size:0.9rem;cursor:pointer">取消</button><p style="text-align:center;margin-top:1rem;font-size:0.78rem;color:#9ca3af">还没有激活码？<br/>联系客服获取 →</p></div></div>';
       document.body.appendChild(modal);
     }
 
@@ -3874,20 +3904,20 @@
       btn.disabled = true;
       btn.textContent = '验证中...';
       msgEl.textContent = '';
-      msgEl.style.color = '#7a5699';
+      msgEl.style.color = '#6B7280';
 
       try {
         var success = await activateWithCode(code);
         if (success) {
-          msgEl.style.color = '#10b981';
+          msgEl.style.color = '#111827';
           msgEl.textContent = '✅ 激活成功！';
         } else {
-          msgEl.style.color = '#ef4444';
+          msgEl.style.color = '#6B7280';
           btn.disabled = false;
           btn.textContent = '确认激活';
         }
       } catch(e) {
-        msgEl.style.color = '#ef4444';
+        msgEl.style.color = '#6B7280';
         msgEl.textContent = '⚠️ ' + (e.message || '激活失败，请重试');
         btn.disabled = false;
         btn.textContent = '确认激活';
@@ -3901,7 +3931,7 @@
       if (isPremium && subscriptionInfo && subscriptionInfo.status === 'active') {
         var exp = subscriptionInfo.expireAt ? new Date(subscriptionInfo.expireAt) : null;
         var expStr = exp ? ((exp.getMonth()+1) + '/' + exp.getDate() + '到期') : '';
-        badge.innerHTML = '<span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:600">👑 会员 ' + expStr + '</span>';
+        badge.innerHTML = '<span style="background:var(--gradient-cta);color:white;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:600">👑 会员 ' + expStr + '</span>';
         badge.style.display = 'inline-block';
       } else {
         badge.style.display = 'none';
@@ -3916,22 +3946,22 @@
       if (!card || !statusText || !detailText) return;
 
       if (isPremium && subscriptionInfo && subscriptionInfo.status === 'active') {
-        card.style.background = 'linear-gradient(135deg, #d1fae5, #a7f3d0)';
-        card.style.borderColor = '#10b981';
+        card.style.background = '#FFFFFF';
+        card.style.borderColor = '#E5E7EB';
         statusText.textContent = subscriptionInfo.plan === 'yearly' ? '🏆 年度会员' : '👑 月度会员';
-        statusText.style.color = '#065f46';
+        statusText.style.color = '#111827';
 
         var exp = subscriptionInfo.expireAt ? new Date(subscriptionInfo.expireAt) : null;
         var expStr = exp ? (exp.getFullYear() + '-' + ('0'+(exp.getMonth()+1)).slice(-2) + '-' + ('0'+exp.getDate()).slice(-2) + ' 到期') : '';
-        detailText.innerHTML = 'AI 调用：<strong>15次/天</strong><br/>有效期：' + expStr + '<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#065f46;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔄 续费/换码</button>';
-        if (badgeSmall) badgeSmall.innerHTML = '<span style="background:#10b981;color:white;padding:1px 6px;border-radius:10px;font-size:0.7rem">生效中</span>';
+        detailText.innerHTML = 'AI 调用：<strong>15次/天</strong><br/>有效期：' + expStr + '<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#111827;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔄 续费/换码</button>';
+        if (badgeSmall) badgeSmall.innerHTML = '<span style="background:#9CA3AF;color:white;padding:1px 6px;border-radius:10px;font-size:0.7rem">生效中</span>';
       } else {
-        card.style.background = 'linear-gradient(135deg, #fef3c7, #fde68a)';
-        card.style.borderColor = '#fcd34d';
+        card.style.background = '#FFFFFF';
+        card.style.borderColor = '#E5E7EB';
         statusText.textContent = '免费版';
-        statusText.style.color = '#92400e';
+        statusText.style.color = '#6B7280';
         var count = getTodayApiCalls();
-        detailText.innerHTML = 'AI 调用：<strong>2次/天</strong> (今日已用' + count + '/2)<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#92400e;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔓 输入激活码升级</button>';
+        detailText.innerHTML = 'AI 调用：<strong>2次/天</strong> (今日已用' + count + '/2)<br/><button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#111827;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500">🔓 输入激活码升级</button>';
         if (badgeSmall) badgeSmall.innerHTML = '';
       }
     }
@@ -4521,21 +4551,19 @@
       window._weekCategorizedEntries = weekCategorizedEntries;
       
       const categoryInfo = {
-        '工作': { name: '工作', icon: '💼', color: '#3b82f6' },
-        '学习': { name: '学习', icon: '📚', color: '#8b5cf6' },
-        '生活': { name: '生活', icon: '🏠', color: '#22c55e' },
-        '健康': { name: '健康', icon: '🏃', color: '#f97316' },
-        '社交': { name: '社交', icon: '👥', color: '#ec4899' },
-        '其他': { name: '其他', icon: '📌', color: '#6b7280' }
+        '工作': { name: '工作', icon: '💼', color: '#111827' },
+        '学习': { name: '学习', icon: '📚', color: '#6B7280' },
+        '生活': { name: '生活', icon: '🏠', color: '#9CA3AF' },
+        '健康': { name: '健康', icon: '🏃', color: '#4B5563' },
+        '社交': { name: '社交', icon: '👥', color: '#D1D5DB' },
+        '其他': { name: '其他', icon: '📌', color: '#E5E7EB' }
       };
-      
-      const entries = Object.entries(weekCategories).filter(([k, v]) => v > 0);
       const total = entries.reduce((sum, [, v]) => sum + v, 0);
       
       // 生成数据来源说明（放在最下面，字小一点）
       let dataSourceInfo = '';
       if (daysWithData.length > 0) {
-        dataSourceInfo = `<div style="text-align: center; margin-top: 0.75rem; font-size: 0.7rem; color: #22c55e;">
+        dataSourceInfo = `<div style="text-align: center; margin-top: 0.75rem; font-size: 0.7rem; color: #6B7280;">
           ✅ 已统计 ${daysWithData.length} 天的数据：${daysWithData.join('、')}
         </div>`;
       }
@@ -4609,14 +4637,14 @@
     function showCategoryEntries(category) {
       const entries = window._weekCategorizedEntries?.[category] || [];
       const categoryInfo = {
-        '工作': { name: '工作', icon: '💼', color: '#3b82f6' },
-        '学习': { name: '学习', icon: '📚', color: '#8b5cf6' },
-        '生活': { name: '生活', icon: '🏠', color: '#22c55e' },
-        '健康': { name: '健康', icon: '🏃', color: '#f97316' },
-        '社交': { name: '社交', icon: '👥', color: '#ec4899' },
-        '其他': { name: '其他', icon: '📌', color: '#6b7280' }
+        '工作': { name: '工作', icon: '💼', color: '#111827' },
+        '学习': { name: '学习', icon: '📚', color: '#6B7280' },
+        '生活': { name: '生活', icon: '🏠', color: '#9CA3AF' },
+        '健康': { name: '健康', icon: '🏃', color: '#4B5563' },
+        '社交': { name: '社交', icon: '👥', color: '#D1D5DB' },
+        '其他': { name: '其他', icon: '📌', color: '#E5E7EB' }
       };
-      const info = categoryInfo[category] || { name: category, icon: '📌', color: '#6b7280' };
+      const info = categoryInfo[category] || { name: category, icon: '📌', color: '#6B7280' };
       
       let html = `<div style="padding: 1rem;">
         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 1rem; font-weight: 600;">
@@ -4724,7 +4752,7 @@
       // 生成数据来源说明
       let dataSourceInfo = '';
       if (daysWithData.length > 0) {
-        dataSourceInfo = `<div style="text-align: center; margin-top: 0.75rem; font-size: 0.7rem; color: #22c55e;">
+        dataSourceInfo = `<div style="text-align: center; margin-top: 0.75rem; font-size: 0.7rem; color: #6B7280;">
           ✅ 已统计 ${daysWithData.length} 天的数据：${daysWithData.join('、')}
         </div>`;
       }
@@ -4737,19 +4765,19 @@
       // 确定颜色和文字
       let scoreColor, scoreText, icon;
       if (avgScore >= 80) {
-        scoreColor = '#22c55e';
+        scoreColor = '#111827';
         scoreText = '非常棒！';
         icon = '🎯';
       } else if (avgScore >= 60) {
-        scoreColor = '#3b82f6';
+        scoreColor = '#6B7280';
         scoreText = '不错！';
         icon = '👍';
       } else if (avgScore >= 40) {
-        scoreColor = '#f59e0b';
+        scoreColor = '#9CA3AF';
         scoreText = '还需努力';
         icon = '💪';
       } else {
-        scoreColor = '#ef4444';
+        scoreColor = '#D1D5DB';
         scoreText = '需要调整';
         icon = '⚠️';
       }
@@ -4776,11 +4804,11 @@
       // 直接贡献（朝向目标）
       if (allAlignedActions.length > 0) {
         html += `<div style="margin-bottom: 0.75rem;">`;
-        html += `<div style="color: #22c55e; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">`;
+        html += `<div style="color: #111827; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">`;
         html += `<span>👍</span> 朝向目标 (${allAlignedActions.length})</div>`;
         html += `<div style="background: #f0fdf4; border-radius: 8px; padding: 0.5rem; max-height: 100px; overflow-y: auto;">`;
         allAlignedActions.slice(0, 3).forEach(item => {
-          html += `<div style="font-size: 0.8rem; color: var(--text-secondary); padding: 0.25rem 0; border-left: 2px solid #22c55e; padding-left: 0.5rem; margin-bottom: 0.25rem;">${escapeHtml(item.content)}</div>`;
+          html += `<div style="font-size: 0.8rem; color: var(--text-secondary); padding: 0.25rem 0; border-left: 2px solid #E5E7EB; padding-left: 0.5rem; margin-bottom: 0.25rem;">${escapeHtml(item.content)}</div>`;
         });
         html += `</div></div>`;
       }
@@ -4788,11 +4816,11 @@
       // 间接贡献（偏离目标）
       if (allNonAlignedActions.length > 0) {
         html += `<div style="margin-bottom: 0.75rem;">`;
-        html += `<div style="color: #ef4444; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">`;
+        html += `<div style="color: #6B7280; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">`;
         html += `<span>⚠️</span> 偏离目标 (${allNonAlignedActions.length})</div>`;
         html += `<div style="background: #fef2f2; border-radius: 8px; padding: 0.5rem; max-height: 80px; overflow-y: auto;">`;
         allNonAlignedActions.slice(0, 2).forEach(item => {
-          html += `<div style="font-size: 0.8rem; color: var(--text-secondary); padding: 0.25rem 0; border-left: 2px solid #ef4444; padding-left: 0.5rem; margin-bottom: 0.25rem;">${escapeHtml(item.content)}</div>`;
+          html += `<div style="font-size: 0.8rem; color: var(--text-secondary); padding: 0.25rem 0; border-left: 2px solid #D1D5DB; padding-left: 0.5rem; margin-bottom: 0.25rem;">${escapeHtml(item.content)}</div>`;
         });
         html += `</div></div>`;
       }
@@ -4844,7 +4872,7 @@
       if (weekData?.keywords?.length > 0 && keywordsContainer && keywordsDiv) {
         keywordsContainer.style.display = 'block';
         keywordsDiv.innerHTML = weekData.keywords.map(k => 
-          `<span style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); padding: 0.3rem 0.6rem; border-radius: 1rem; font-size: 0.85rem; color: #4338ca;">${k}</span>`
+          `<span style="background: #F9FAFB; color: #6B7280; border: 1px solid #E5E7EB; border-radius: 9999px; padding: 0.3rem 0.6rem; font-size: 0.85rem;">${k}</span>`
         ).join('');
       }
     }
@@ -4855,11 +4883,11 @@
       if (!container || !radarScores) return;
       
       const dimensions = [
-        { key: 'execution', label: '执行力', color: '#f97316' },
-        { key: 'learning', label: '学习成长', color: '#8b5cf6' },
-        { key: 'health', label: '身心健康', color: '#22c55e' },
-        { key: 'social', label: '社交关系', color: '#3b82f6' },
-        { key: 'emotion', label: '情绪稳定', color: '#ec4899' }
+        { key: 'execution', label: '执行力', color: '#111827' },
+        { key: 'learning', label: '学习成长', color: '#6B7280' },
+        { key: 'health', label: '身心健康', color: '#9CA3AF' },
+        { key: 'social', label: '社交关系', color: '#D1D5DB' },
+        { key: 'emotion', label: '情绪稳定', color: '#FB7185' }
       ];
       
       const width = container.offsetWidth || 320;
@@ -4873,7 +4901,7 @@
       // 背景网格线
       for (let i = 0; i <= 10; i += 2) {
         const y = padding.top + chartHeight - (i / 10) * chartHeight;
-        svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="3,3"/>`;
+        svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#F3F4F6" stroke-width="1" stroke-dasharray="3,3"/>`;
         svg += `<text x="${padding.left - 5}" y="${y + 4}" text-anchor="end" font-size="10" fill="#9ca3af">${i}</text>`;
       }
       
@@ -4937,15 +4965,15 @@
           const y = padding.top + chartHeight - (val / 10) * chartHeight;
           points += `${x},${y} `;
         });
-        svg += `<polyline points="${points.trim()}" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+        svg += `<polyline points="${points.trim()}" fill="none" stroke="#6B7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
         energyTrend.forEach((val, i) => {
           const x = padding.left + (i / 6) * chartWidth;
           const y = padding.top + chartHeight - (val / 10) * chartHeight;
-          svg += `<circle cx="${x}" cy="${y}" r="3" fill="#f97316"/>`;
+          svg += `<circle cx="${x}" cy="${y}" r="3" fill="#6B7280"/>`;
         });
       }
       
-      // 情绪趋势线（紫色）
+      // 情绪趋势线（灰色）
       if (emotionTrend && emotionTrend.length === 7) {
         let points = '';
         emotionTrend.forEach((val, i) => {
@@ -4954,19 +4982,19 @@
           const y = padding.top + chartHeight - ((val + 1) / 2) * chartHeight;
           points += `${x},${y} `;
         });
-        svg += `<polyline points="${points.trim()}" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+        svg += `<polyline points="${points.trim()}" fill="none" stroke="#9CA3AF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
         emotionTrend.forEach((val, i) => {
           const x = padding.left + (i / 6) * chartWidth;
           const y = padding.top + chartHeight - ((val + 1) / 2) * chartHeight;
-          svg += `<circle cx="${x}" cy="${y}" r="3" fill="#8b5cf6"/>`;
+          svg += `<circle cx="${x}" cy="${y}" r="3" fill="#9CA3AF"/>`;
         });
       }
       
       // 图例
-      svg += `<circle cx="${padding.left}" cy="${12}" r="3" fill="#f97316"/>`;
-      svg += `<text x="${padding.left + 8}" y="${15}" font-size="10" fill="#6b7280">精力</text>`;
-      svg += `<circle cx="${padding.left + 50}" cy="${12}" r="3" fill="#8b5cf6"/>`;
-      svg += `<text x="${padding.left + 58}" y="${15}" font-size="10" fill="#6b7280">情绪</text>`;
+      svg += `<circle cx="${padding.left}" cy="${12}" r="3" fill="#6B7280"/>`;
+      svg += `<text x="${padding.left + 8}" y="${15}" font-size="10" fill="#6B7280">精力</text>`;
+      svg += `<circle cx="${padding.left + 50}" cy="${12}" r="3" fill="#9CA3AF"/>`;
+      svg += `<text x="${padding.left + 58}" y="${15}" font-size="10" fill="#6B7280">情绪</text>`;
       
       svg += '</svg>';
       container.innerHTML = svg;
@@ -4979,12 +5007,12 @@
       if (!container || !categories) return;
       
       const categoryInfo = {
-        '工作': { name: '工作', icon: '💼', color: '#3b82f6' },
-        '学习': { name: '学习', icon: '📚', color: '#8b5cf6' },
-        '生活': { name: '生活', icon: '🏠', color: '#22c55e' },
-        '健康': { name: '健康', icon: '🏃', color: '#f97316' },
-        '社交': { name: '社交', icon: '👥', color: '#ec4899' },
-        '其他': { name: '其他', icon: '📌', color: '#6b7280' }
+        '工作': { name: '工作', icon: '💼', color: '#111827' },
+        '学习': { name: '学习', icon: '📚', color: '#6B7280' },
+        '生活': { name: '生活', icon: '🏠', color: '#9CA3AF' },
+        '健康': { name: '健康', icon: '🏃', color: '#4B5563' },
+        '社交': { name: '社交', icon: '👥', color: '#D1D5DB' },
+        '其他': { name: '其他', icon: '📌', color: '#E5E7EB' }
       };
       
       const entries = Object.entries(categories).filter(([k, v]) => v > 0);
@@ -5054,10 +5082,10 @@
       const aligned = weekData.alignedActions || [];
       const nonAligned = weekData.nonAlignedActions || [];
       
-      let scoreColor = '#ef4444';
+      let scoreColor = '#9CA3AF';
       let scoreText = '偏低';
-      if (score >= 60) { scoreColor = '#f59e0b'; scoreText = '中等'; }
-      if (score >= 80) { scoreColor = '#22c55e'; scoreText = '很高'; }
+      if (score >= 60) { scoreColor = '#6B7280'; scoreText = '中等'; }
+      if (score >= 80) { scoreColor = '#111827'; scoreText = '很高'; }
       
       container.innerHTML = `
         <div style="text-align: center; margin-bottom: 1rem;">
@@ -5076,13 +5104,13 @@
         </div>
         ${aligned.length > 0 ? `
           <div style="margin-bottom: 0.75rem;">
-            <div style="font-size: 0.8rem; font-weight: 600; color: #22c55e; margin-bottom: 0.25rem;">✓ 契合目标的行动</div>
+            <div style="font-size: 0.8rem; font-weight: 600; color: #111827; margin-bottom: 0.25rem;">✓ 契合目标的行动</div>
             ${aligned.map(a => `<div style="font-size: 0.8rem; color: #6b7280; padding-left: 0.5rem;">• ${a}</div>`).join('')}
           </div>
         ` : ''}
         ${nonAligned.length > 0 ? `
           <div>
-            <div style="font-size: 0.8rem; font-weight: 600; color: #f59e0b; margin-bottom: 0.25rem;">△ 可优化的行动</div>
+            <div style="font-size: 0.8rem; font-weight: 600; color: #6B7280; margin-bottom: 0.25rem;">△ 可优化的行动</div>
             ${nonAligned.map(a => `<div style="font-size: 0.8rem; color: #6b7280; padding-left: 0.5rem;">• ${a}</div>`).join('')}
           </div>
         ` : ''}
@@ -5759,37 +5787,37 @@
         emotion: {
           name: '情绪',
           icon: '💭',
-          color: '#ec4899',
+          color: '#FB7185',
           keywords: ['开心', '高兴', '快乐', '愉快', '兴奋', '激动', '满足', '幸福', '喜悦', '欣慰', '舒服', '轻松', '平静', '难受', '难过', '伤心', '痛苦', '郁闷', '压抑', '焦虑', '紧张', '害怕', '担心', '烦恼', '烦躁', '生气', '愤怒', '失望', '沮丧', '疲惫', '累', '困', '无聊', '孤独', '寂寞', '感动', '暖心', '治愈']
         },
         work: {
           name: '工作',
           icon: '💼',
-          color: '#3b82f6',
+          color: '#111827',
           keywords: ['工作', '项目', '任务', '会议', '报告', '文档', '代码', '开发', '设计', '方案', '客户', '同事', '领导', '老板', '上班', '下班', '加班', '出差', '面试', '简历', '求职', '职称', '晋升', '汇报', '总结', '计划', '目标', 'KPI', 'OKR', '周报', '日报']
         },
         learning: {
           name: '学习',
           icon: '📚',
-          color: '#8b5cf6',
+          color: '#6B7280',
           keywords: ['学习', '读书', '课程', '培训', '考试', '复习', '预习', '笔记', '知识', '技能', '掌握', '学会', '理解', '研究', '练习', '刷题', '算法', '编程', '英语', '数学', '语文', '物理', '化学', '历史', '地理', '政治', '专业', '论文', '作业', '题目', '错题']
         },
         health: {
           name: '健康',
           icon: '🏃',
-          color: '#22c55e',
+          color: '#9CA3AF',
           keywords: ['运动', '跑步', '健身', '瑜伽', '游泳', '篮球', '足球', '羽毛球', '乒乓球', '骑行', '爬山', '散步', '锻炼', '减肥', '增肌', '健康', '身体', '体检', '医生', '医院', '吃药', '休息', '睡眠', '早睡', '早起', '饮食', '吃饭', '喝水', '蔬菜', '水果', '养生']
         },
         life: {
           name: '生活',
           icon: '🏠',
-          color: '#f97316',
+          color: '#D1D5DB',
           keywords: ['做饭', '吃饭', '外卖', '购物', '买', '衣服', '鞋子', '快递', '家务', '打扫', '洗衣', '整理', '房间', '家', '家人', '父母', '孩子', '爱人', '朋友', '聚会', '约会', '旅行', '旅游', '电影', '音乐', '游戏', '追剧', '综艺', '刷手机', '上网']
         },
         action: {
           name: '行动',
           icon: '🎯',
-          color: '#14b8a6',
+          color: '#6B7280',
           keywords: ['完成', '开始', '结束', '进行', '推进', '尝试', '努力', '坚持', '加油', '突破', '进步', '成长', '提升', '改进', '优化', '调整', '解决', '处理', '准备', '规划', '安排', '组织', '协调', '沟通', '讨论', '合作', '帮助', '支持']
         }
       };
@@ -5944,7 +5972,7 @@
       
       // 情绪分值映射 - 优先用 emotion，没有则用 energyLevel 推算
       const emotionScores = { great: 10, good: 7.5, okay: 5, tired: 3, bad: 1 };
-      const emotionColors = { great: '#22c55e', good: '#84cc16', okay: '#eab308', tired: '#f97316', bad: '#ef4444' };
+      const emotionColors = { great: '#FB7185', good: '#9CA3AF', okay: '#D1D5DB', tired: '#94A3B8', bad: '#7DD3FC' };
       
       // 为每一天计算情绪分值，优先用 emotion，没有则 fallback 到 energyLevel
       const points = data.map((d, i) => {
@@ -5996,7 +6024,7 @@
       // 网格线
       for (let y = 0; y <= 10; y += 2) {
         const yPos = scaleY(y);
-        svg += `<line x1="${padding.left}" y1="${yPos}" x2="${width - padding.right}" y2="${yPos}" stroke="#e7e5e4" stroke-dasharray="4"/>`;
+        svg += `<line x1="${padding.left}" y1="${yPos}" x2="${width - padding.right}" y2="${yPos}" stroke="#F3F4F6" stroke-dasharray="4"/>`;
         svg += `<text x="${padding.left - 5}" y="${yPos + 4}" text-anchor="end" font-size="10" fill="#a8a29e">${y}</text>`;
       }
       
@@ -6005,7 +6033,7 @@
       svg += `<text x="${width - padding.right}" y="${height - 5}" font-size="10" fill="#a8a29e" text-anchor="end">第30天</text>`;
       
       // 曲线
-      svg += `<path d="${pathD}" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round"/>`;
+      svg += `<path d="${pathD}" fill="none" stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>`;
       
       // 数据点
       points.forEach(p => {
@@ -6051,7 +6079,7 @@
       data.forEach((d, i) => {
         const score = energyScores[i];
         const height = (score / 10) * 100;
-        const color = score >= 7 ? '#22c55e' : score >= 4 ? '#3b82f6' : '#f97316';
+        const color = '#111827';
         
         html += `
           <div style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
@@ -6104,12 +6132,12 @@
       }
       
       const colors = {
-        work: '#3b82f6',
-        study: '#8b5cf6',
-        exercise: '#22c55e',
-        social: '#f97316',
-        entertainment: '#ec4899',
-        rest: '#06b6d4'
+        work: '#111827',
+        study: '#6B7280',
+        exercise: '#9CA3AF',
+        social: '#D1D5DB',
+        entertainment: '#FB7185',
+        rest: '#E5E7EB'
       };
       
       const labels = {
@@ -6145,7 +6173,7 @@
       
       container.innerHTML = `
         <svg width="140" height="140" viewBox="0 0 160 160" style="transform: rotate(-90deg);">
-          <circle cx="80" cy="80" r="60" fill="none" stroke="#e7e5e4" stroke-width="24"/>
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#F3F4F6" stroke-width="24"/>
           ${segments}
         </svg>
         <div style="display: flex; flex-direction: column; gap: 0.25rem;">${legendHtml}</div>
@@ -6194,7 +6222,7 @@
       
       // 网格
       for (let y = 0; y <= 10; y += 5) {
-        svg += `<line x1="${padding.left}" y1="${scaleY(y)}" x2="${width - padding.right}" y2="${scaleY(y)}" stroke="#e7e5e4" stroke-dasharray="3"/>`;
+        svg += `<line x1="${padding.left}" y1="${scaleY(y)}" x2="${width - padding.right}" y2="${scaleY(y)}" stroke="#F3F4F6" stroke-dasharray="3"/>`;
         svg += `<text x="${padding.left - 5}" y="${scaleY(y) + 4}" text-anchor="end" font-size="9" fill="#a8a29e">${y}</text>`;
       }
       
@@ -6204,12 +6232,12 @@
         for (let i = 1; i < points.length; i++) {
           pathD += ` L ${scaleX(points[i].x)} ${scaleY(points[i].y)}`;
         }
-        svg += `<path d="${pathD}" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+        svg += `<path d="${pathD}" fill="none" stroke="#111827" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
       }
       
       // 点和标签
       points.forEach((p, i) => {
-        svg += `<circle cx="${scaleX(p.x)}" cy="${scaleY(p.y)}" r="${p.y > 0 ? 4 : 0}" fill="#22c55e" stroke="white" stroke-width="2"/>`;
+        svg += `<circle cx="${scaleX(p.x)}" cy="${scaleY(p.y)}" r="${p.y > 0 ? 4 : 0}" fill="#111827" stroke="white" stroke-width="2"/>`;
         svg += `<text x="${scaleX(p.x)}" y="${height - 5}" text-anchor="middle" font-size="9" fill="#a8a29e">周${weekdays[last7[i].date.getDay()]}</text>`;
       });
       
@@ -6297,7 +6325,7 @@
           const y = cy + Math.sin(angle) * radius * level;
           points += `${x},${y} `;
         }
-        svg += `<polygon points="${points.trim()}" fill="none" stroke="#e7e5e4" stroke-width="1"/>`;
+        svg += `<polygon points="${points.trim()}" fill="none" stroke="#F3F4F6" stroke-width="1"/>`;
       });
       
       // 轴线
@@ -6305,12 +6333,12 @@
         const angle = -Math.PI / 2 + i * angleStep;
         const x = cx + Math.cos(angle) * radius;
         const y = cy + Math.sin(angle) * radius;
-        svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e7e5e4" stroke-width="1"/>`;
+        svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#F3F4F6" stroke-width="1"/>`;
       }
       
       // 数据区域
       let dataPoints = '';
-      const colors = ['#f97316', '#8b5cf6', '#ec4899', '#3b82f6', '#22c55e'];
+      const colors = ['#111827', '#6B7280', '#FB7185', '#D1D5DB', '#9CA3AF'];
       
       dimensions.forEach((dim, i) => {
         const angle = -Math.PI / 2 + i * angleStep;
@@ -6812,8 +6840,8 @@
       
       // 筛选按钮
       const filterBtn = historyFilterStarred
-        ? `<button onclick="toggleHistoryFilter()" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        ? `<button onclick="toggleHistoryFilter()" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; background: #FFFFFF; color: #111827; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#111827" stroke="#111827" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             ${starCount} 条星标记录
           </button>`
         : `<button onclick="toggleHistoryFilter()" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
@@ -6841,10 +6869,10 @@
               ${grouped[dateKey].reverse().map(entry => {
                 const isStarred = entry.starred ? true : false;
                 return `
-                  <div class="entry-card" style="margin-bottom: 0.5rem; ${isStarred ? 'border-left: 3px solid #f59e0b;' : ''}">
+                  <div class="entry-card" style="margin-bottom: 0.5rem; ${isStarred ? 'border-left: 3px solid #111827;' : ''}">
                     <div class="entry-card-header">
                       <span class="entry-time">${entry.time}</span>
-                      ${isStarred ? '<span style="color: #f59e0b; font-size: 0.75rem;">⭐ 星标</span>' : ''}
+                      ${isStarred ? '<span style="color: #111827; font-size: 0.75rem;">⭐ 星标</span>' : ''}
                     </div>
                     <div class="entry-content">${escapeHtml(entry.content)}</div>
                   </div>
@@ -6970,7 +6998,7 @@
       let formatted = escapeHtml(content);
       
       // 处理标题 (## 或 ### 开头的行)
-      formatted = formatted.replace(/^### (.+)$/gm, '<h4 style="font-size: 0.9rem; color: #8b5cf6;">◉ $1</h4>');
+      formatted = formatted.replace(/^### (.+)$/gm, '<h4 style="font-size: 0.9rem; color: #6B7280;">◉ $1</h4>');
       formatted = formatted.replace(/^## (.+)$/gm, '<h4>$1</h4>');
       
       // 处理列表项
@@ -7020,9 +7048,9 @@
       dayEntries.reverse().forEach(entry => {
         const isStarred = entry.starred ? true : false;
         const starIcon = isStarred 
-          ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+          ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#111827" stroke="#111827" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
           : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
-        const starStyle = isStarred ? 'color: #f59e0b;' : 'color: var(--text-muted);';
+        const starStyle = isStarred ? 'color: #111827;' : 'color: var(--text-muted);';
         
         // 提取心情emoji并显示简洁的中文名
         const moodMatch = entry.content.match(/^[😄😊😌🤔😔😤😴💪]/);
@@ -7050,7 +7078,7 @@
             </div>
             <div class="entry-content">${escapeHtml(cleanContent)}</div>
             <div class="entry-actions">
-              <button class="btn btn-ghost" onclick="setAsHighlight('${entry.id}')" id="highlightBtn_${entry.id}" title="设为今日高光" style="color: #f59e0b;">
+              <button class="btn btn-ghost" onclick="setAsHighlight('${entry.id}')" id="highlightBtn_${entry.id}" title="设为今日高光" style="color: #6B7280;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
                 高光
               </button>
@@ -7066,7 +7094,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 编辑
               </button>
-              <button class="btn btn-ghost" onclick="deleteEntry('${entry.id}')" style="color: #ef4444;">
+              <button class="btn btn-ghost" onclick="deleteEntry('${entry.id}')" style="color: #6B7280;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 删除
               </button>
@@ -7109,9 +7137,9 @@
       const pct = Math.min(100, Math.round(used / DAILY_CHAR_LIMIT * 100));
       
       if (used >= DAILY_CHAR_LIMIT) {
-        el.innerHTML = `<span style="color:#ef4444;font-weight:600;">⚠️ 今日已用 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字（已达上限）</span>`;
+        el.innerHTML = `<span style="color:#6B7280;font-weight:600;">⚠️ 今日已用 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字（已达上限）</span>`;
       } else if (pct >= 80) {
-        el.innerHTML = `<span style="color:#f59e0b;">今日已输入 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字，剩余 ${remaining.toLocaleString()}</span>`;
+        el.innerHTML = `<span style="color:#9CA3AF;">今日已输入 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字，剩余 ${remaining.toLocaleString()}</span>`;
       } else {
         el.innerHTML = `今日已输入 ${used.toLocaleString()}/${DAILY_CHAR_LIMIT.toLocaleString()} 字`;
       }
@@ -7240,22 +7268,22 @@
         const aiContent = document.getElementById('aiDisplayContent');
         if (aiContent) {
           const highlightHtml = `
-            <div style="margin-top: 1rem; padding: 1rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: var(--radius); border: 1px solid #fcd34d;" id="highlightContainer">
+            <div style="margin-top: 1rem; padding: 1rem; background: #FFFFFF; border-radius: var(--radius); border: 1px solid #E5E7EB;" id="highlightContainer">
               <div style="font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                   <span>⭐</span> 今日高光时刻
                 </div>
-                <button onclick="editHighlight()" style="background: none; border: none; cursor: pointer; padding: 4px; color: #92400e; opacity: 0.7;">
+                <button onclick="editHighlight()" style="background: none; border: none; cursor: pointer; padding: 4px; color: #6B7280; opacity: 0.7;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 </button>
               </div>
-              <div id="highlightText" style="font-size: 0.95rem; color: #92400e; line-height: 1.6;">
+              <div id="highlightText" style="font-size: 0.95rem; color: #111827; line-height: 1.6;">
                 ${escapeHtml(highlightText)}
               </div>
               <div id="highlightEdit" style="display: none;">
                 <textarea id="highlightInput" style="width: 100%; padding: 0.5rem; border: 1px solid #fcd34d; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.5rem; resize: vertical; min-height: 60px; background: #fff;">${escapeHtml(highlightText)}</textarea>
                 <div style="display: flex; gap: 0.5rem;">
-                  <button onclick="saveHighlight()" style="flex: 1; padding: 0.4rem 0.8rem; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">保存</button>
+                  <button onclick="saveHighlight()" style="flex: 1; padding: 0.4rem 0.8rem; background: var(--gradient-cta); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem;">保存</button>
                   <button onclick="cancelEditHighlight()" style="flex: 1; padding: 0.4rem 0.8rem; background: #e5e7eb; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">取消</button>
                 </div>
               </div>
@@ -8008,10 +8036,10 @@ ${entry.content}`;
       else moodDesc = '今天不容易，好好休息，明天会更好。';
 
       const moodColors = {
-        '😄': '#f59e0b', '😊': '#f97316', '😌': '#10b981', '🤔': '#6366f1',
-        '😔': '#64748b', '😤': '#ef4444', '😴': '#8b5cf6', '💪': '#22c55e'
+        '😄': '#FB7185', '😊': '#FB7185', '😌': '#9CA3AF', '🤔': '#D1D5DB',
+        '😔': '#7DD3FC', '😤': '#FDBA74', '😴': '#94A3B8', '💪': '#9CA3AF'
       };
-      const mainColor = topMood ? (moodColors[topMood[0]] || '#94a3b8') : '#94a3b8';
+      const mainColor = topMood ? (moodColors[topMood[0]] || '#9CA3AF') : '#9CA3AF';
 
       return `
         <div class="ai-card ai-card-mood">
@@ -8046,13 +8074,13 @@ ${entry.content}`;
     function renderEnergyCard(insights) {
       const energy = insights.energyLevel || 0;
       const energyReason = insights.energyReason || '';
-      let energyColor = '#22c55e';
+      let energyColor = '#111827';
       let energyLabel = '精力充沛';
       let energyEmoji = '🔥';
-      if (energy <= 3) { energyColor = '#ef4444'; energyLabel = '需要充电'; energyEmoji = '🔋'; }
-      else if (energy <= 5) { energyColor = '#f59e0b'; energyLabel = '中规中矩'; energyEmoji = '⚡'; }
-      else if (energy <= 7) { energyColor = '#22c55e'; energyLabel = '状态良好'; energyEmoji = '💪'; }
-      else { energyColor = '#22c55e'; energyLabel = '精力充沛'; energyEmoji = '🔥'; }
+      if (energy <= 3) { energyColor = '#9CA3AF'; energyLabel = '需要充电'; energyEmoji = '🔋'; }
+      else if (energy <= 5) { energyColor = '#6B7280'; energyLabel = '中规中矩'; energyEmoji = '⚡'; }
+      else if (energy <= 7) { energyColor = '#111827'; energyLabel = '状态良好'; energyEmoji = '💪'; }
+      else { energyColor = '#111827'; energyLabel = '精力充沛'; energyEmoji = '🔥'; }
 
       // 待办完成率
       const todoStats = insights.todoStats || {};
@@ -8091,7 +8119,7 @@ ${entry.content}`;
               <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary);">${todoCompleted}/${todoTotal}</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill" style="width: ${completionRate}%; background: ${completionRate >= 70 ? '#22c55e' : completionRate >= 40 ? '#f59e0b' : '#ef4444'};"></div>
+              <div class="progress-fill" style="width: ${completionRate}%; background: ${completionRate >= 70 ? '#111827' : completionRate >= 40 ? '#6B7280' : '#9CA3AF'};"></div>
             </div>
             <div style="text-align: right; margin-top: 0.25rem; font-size: 0.72rem; color: var(--text-muted);">完成率 ${completionRate}%</div>
           </div>` : ''}
@@ -8131,12 +8159,12 @@ ${entry.content}`;
         <div class="ai-card ai-card-highlight">
           <div class="ai-card-header">
             <div class="ai-card-icon" style="background: #fef9c3;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" fill="#f59e0b"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" fill="#111827"/></svg>
             </div>
             <div class="ai-card-title">今日高光</div>
           </div>
           <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
-            <div style="width: 3px; min-height: 36px; background: linear-gradient(to bottom, #f59e0b, #fbbf24); border-radius: 2px; flex-shrink: 0;"></div>
+            <div style="width: 3px; min-height: 36px; background: #9CA3AF; border-radius: 2px; flex-shrink: 0;"></div>
             <div style="font-size: 0.92rem; color: var(--text-primary); line-height: 1.7;">
               ${escapeHtml(highlight)}
             </div>
@@ -8153,17 +8181,17 @@ ${entry.content}`;
       if (total === 0) return '';
 
       const score = insights.alignmentScore || 0;
-      let scoreColor = '#22c55e';
+      let scoreColor = '#111827';
       let scoreLabel = '优秀';
-      if (score < 40) { scoreColor = '#ef4444'; scoreLabel = '需关注'; }
-      else if (score < 70) { scoreColor = '#f59e0b'; scoreLabel = '一般'; }
-      else { scoreColor = '#22c55e'; scoreLabel = '优秀'; }
+      if (score < 40) { scoreColor = '#9CA3AF'; scoreLabel = '需关注'; }
+      else if (score < 70) { scoreColor = '#6B7280'; scoreLabel = '一般'; }
+      else { scoreColor = '#111827'; scoreLabel = '优秀'; }
 
       return `
         <div class="ai-card ai-card-alignment">
           <div class="ai-card-header">
             <div class="ai-card-icon" style="background: #dcfce7;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#22c55e" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#111827" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#111827" stroke-width="2" stroke-linecap="round"/></svg>
             </div>
             <div class="ai-card-title">目标契合度</div>
             <div style="margin-left: auto; font-size: 0.85rem; font-weight: 700; color: ${scoreColor};">${score}%</div>
@@ -8174,8 +8202,8 @@ ${entry.content}`;
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
             ${alignedActions.length > 0 ? `
             <div>
-              <div style="font-size: 0.72rem; color: #22c55e; font-weight: 600; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div style="font-size: 0.72rem; color: #111827; font-weight: 600; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#111827" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 朝向目标 (${alignedActions.length})
               </div>
               ${alignedActions.slice(0, 3).map(a => `
@@ -8184,8 +8212,8 @@ ${entry.content}`;
             </div>` : ''}
             ${nonAlignedActions.length > 0 ? `
             <div>
-              <div style="font-size: 0.72rem; color: #ef4444; font-weight: 600; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/></svg>
+              <div style="font-size: 0.72rem; color: #6B7280; font-weight: 600; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#6B7280" stroke-width="3" stroke-linecap="round"/></svg>
                 偏离方向 (${nonAlignedActions.length})
               </div>
               ${nonAlignedActions.slice(0, 3).map(a => `
@@ -8206,11 +8234,11 @@ ${entry.content}`;
         <div class="ai-card ai-card-suggestion">
           <div class="ai-card-header">
             <div class="ai-card-icon" style="background: #f3e8ff;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#8b5cf6"/><path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#6B7280"/><path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
             </div>
             <div class="ai-card-title">AI 建议</div>
           </div>
-          <div style="padding: 0.75rem 1rem; background: var(--bg-secondary); border-radius: var(--radius); border-left: 3px solid #8b5cf6;">
+          <div style="padding: 0.75rem 1rem; background: var(--bg-secondary); border-radius: var(--radius); border-left: 3px solid #6B7280;">
             <div style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.7;">
               ${escapeHtml(suggestion)}
             </div>
@@ -8226,7 +8254,7 @@ ${entry.content}`;
       if (categoryEntries.length === 0) return '';
 
       const categoryIcons = { '工作': '💼', '学习': '📚', '生活': '🏠', '社交': '🤝', '健康': '💪', '其他': '📌', '运动': '🏃', '娱乐': '🎮', '饮食': '🍽️', '休息': '😴' };
-      const categoryColors = { '工作': '#3b82f6', '学习': '#8b5cf6', '生活': '#10b981', '社交': '#f59e0b', '健康': '#ef4444', '其他': '#6b7280' };
+      const categoryColors = { '工作': '#111827', '学习': '#6B7280', '生活': '#9CA3AF', '社交': '#D1D5DB', '健康': '#4B5563', '其他': '#E5E7EB' };
       const total = categoryEntries.reduce((s, [, v]) => s + v, 0);
 
       return `
@@ -8373,7 +8401,7 @@ ${entry.content}`;
       }, (error) => {
         container.innerHTML = `
           <div style="text-align: center; padding: 1rem;">
-            <div style="color: #ef4444; margin-bottom: 0.5rem;">分析失败</div>
+            <div style="color: #6B7280; margin-bottom: 0.5rem;">分析失败</div>
             <div style="color: var(--text-muted); font-size: 0.85rem;">${error}</div>
           </div>
         `;
@@ -8595,7 +8623,7 @@ ${entry.content}`;
       }, (error) => {
         container.innerHTML = `
           <div class="empty-state" style="padding: 1.5rem; text-align: center;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 0.5rem; color: #ef4444;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 0.5rem; color: #6B7280;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             <p>分析失败</p>
             <p style="font-size: 0.85rem; color: var(--text-muted);">${error}</p>
             <button class="btn btn-secondary" onclick="triggerAIAnalysis()" style="margin-top: 1rem;">重试</button>
@@ -8735,7 +8763,7 @@ ${entryTexts || '无记录'}
       }
       
       if (!hasData) {
-        content.innerHTML = '<span style="color: #f59e0b;">📝 本周暂无足够数据，请先记录一些内容</span>';
+        content.innerHTML = '<span style="color: #6B7280;">📝 本周暂无足够数据，请先记录一些内容</span>';
         return;
       }
       
@@ -8777,7 +8805,7 @@ ${entryTexts || '无记录'}
         // 刷新整个洞察页面以更新基于 AI 复盘的可视化
         loadWeekData();
       }, (error) => {
-        content.innerHTML = `<span style="color: #ef4444;">❌ 生成失败: ${error}</span>`;
+        content.innerHTML = `<span style="color: #6B7280;">❌ 生成失败: ${error}</span>`;
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       });
@@ -8819,7 +8847,7 @@ ${entryTexts || '无记录'}
       }
       
       if (weekEntries.length === 0 && weekReviews.length === 0) {
-        content.innerHTML = '<span style="color: #f59e0b;">📝 本周暂无记录，请先添加一些内容</span>';
+        content.innerHTML = '<span style="color: #6B7280;">📝 本周暂无记录，请先添加一些内容</span>';
         return;
       }
       
@@ -8851,7 +8879,7 @@ ${entryTexts || '无记录'}
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       }, (error) => {
-        content.innerHTML = `<span style="color: #ef4444;">❌ 生成失败: ${error}</span>`;
+        content.innerHTML = `<span style="color: #6B7280;">❌ 生成失败: ${error}</span>`;
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       });
@@ -8961,7 +8989,7 @@ ${entryTexts || '无记录'}
       const todayReview = dailyReviews[dateKey];
       
       if (todayEntries.length === 0 && !todayReview?.achievement && !todayReview?.challenge) {
-        content.innerHTML = '<span style="color: #f59e0b;">📝 今日暂无记录，请先添加一些内容</span>';
+        content.innerHTML = '<span style="color: #6B7280;">📝 今日暂无记录，请先添加一些内容</span>';
         return;
       }
       
@@ -8993,7 +9021,7 @@ ${entryTexts || '无记录'}
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       }, (error) => {
-        content.innerHTML = '<span style="color: #ef4444;">❌ 生成失败，请重试</span>';
+        content.innerHTML = '<span style="color: #6B7280;">❌ 生成失败，请重试</span>';
         btn.disabled = false;
         btn.innerHTML = '重新生成';
       });
@@ -9041,7 +9069,7 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
 2. centerEmoji 是中心主题的相关emoji
 3. branches 是分支主题，根据记录内容分类，每个分支包含名称、emoji、颜色和要点列表
 4. emoji 使用相关的emoji，如：💼工作、📚学习、🏠生活、💪健康、👥社交、💰财务、🎮娱乐、🌱成长等
-5. 颜色使用有意义的颜色代码，如：#3b82f6(蓝色工作)、#10b981(绿色学习)、#f59e0b(橙色生活)、#ef4444(红色健康)、#8b5cf6(紫色社交)
+5. 颜色遵循极简灰度规范：#111827(工作)、#6B7280(学习)、#9CA3AF(生活)、#4B5563(健康)、#D1D5DB(社交)、#E5E7EB(其他)、#FB7185(情感/情绪，唯一彩色)
 6. items 是该分类下的具体要点，从记录中提取
 7. 根据实际记录内容调整分支数量和内容`;
     }
@@ -9067,12 +9095,12 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
 
     function renderMindMap(data) {
       if (!data || !data.branches) {
-        return '<span style="color: #f59e0b;">⚠️ 脑图格式解析失败</span>';
+        return '<span style="color: #6B7280;">⚠️ 脑图格式解析失败</span>';
       }
       
       const branches = data.branches;
       const count = branches.length;
-      if (count === 0) return '<span style="color: #f59e0b;">⚠️ 无分支数据</span>';
+      if (count === 0) return '<span style="color: #6B7280;">⚠️ 无分支数据</span>';
 
       // 计算画布尺寸
       const branchRadius = 130; // 中心到分支的距离
@@ -9164,7 +9192,7 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
 
       // ── 中心节点 ──
       const centerEmoji = data.centerEmoji || '🎯';
-      svgContent += `<circle cx="${centerX}" cy="${centerY}" r="40" fill="#1f2937" opacity="0.95"/>`;
+      svgContent += `<circle cx="${centerX}" cy="${centerY}" r="40" fill="#111827"/>`;
       svgContent += `<text x="${centerX}" y="${centerY - 8}" text-anchor="middle" dominant-baseline="middle" font-size="20">${centerEmoji}</text>`;
       const centerLines = splitText(escapeHtml(data.center), 4);
       centerLines.forEach((line, i) => {
@@ -9422,7 +9450,7 @@ ${userBackground}
       }, (error) => {
         resultDiv.innerHTML = `
           <div style="background: var(--bg-card); border-radius: var(--radius); padding: 1.5rem; text-align: center;">
-            <p style="color: #ef4444; margin-bottom: 0.5rem;">❌ 分析失败</p>
+            <p style="color: #6B7280; margin-bottom: 0.5rem;">❌ 分析失败</p>
             <p style="color: var(--text-muted); font-size: 0.85rem;">${error}</p>
           </div>
         `;
@@ -9614,7 +9642,7 @@ ${userBackground}
       
       if (dayReview) {
         if (dayReview.achievement?.trim()) {
-          html += '<div style="margin-bottom: 4px;"><strong>成就：</strong><span style="color: #22c55e;">' + escapeHtml(dayReview.achievement.substring(0, 60)) + '</span></div>';
+          html += '<div style="margin-bottom: 4px;"><strong>成就：</strong><span style="color: #6B7280;">' + escapeHtml(dayReview.achievement.substring(0, 60)) + '</span></div>';
         }
         if (dayReview.emotion) {
           html += '<div style="margin-bottom: 4px;"><strong>情绪：</strong>' + getEmotionText(dayReview.emotion) + '</div>';
@@ -9673,8 +9701,8 @@ ${userBackground}
         const goodDays = last7.filter(d => d.emotion === 'great' || d.emotion === 'good');
         const badDays = last7.filter(d => d.emotion === 'tired' || d.emotion === 'bad');
         html += '<div style="margin-bottom: 8px;"><strong>情绪状态来源：</strong></div>';
-        html += '<div style="color: #22c55e; font-size: 0.85rem;">✓ 积极日：' + goodDays.length + '天</div>';
-        html += '<div style="color: #f97316; font-size: 0.85rem;">⚠ 疲惫日：' + badDays.length + '天</div>';
+        html += '<div style="color: #6B7280; font-size: 0.85rem;">✓ 积极日：' + goodDays.length + '天</div>';
+        html += '<div style="color: #9CA3AF; font-size: 0.85rem;">⚠ 疲惫日：' + badDays.length + '天</div>';
       } else if (dimKey === 'social') {
         // 社交关系：来自关键词匹配
         const socialDays = last7.filter(d => {
@@ -9698,7 +9726,7 @@ ${userBackground}
         const emotions = last7.filter(d => d.emotion);
         if (emotions.length > 0) {
           html += '<div style="margin-bottom: 8px;"><strong>情绪记录来源：</strong></div>';
-          const emotionColors = { great: '#22c55e', good: '#84cc16', okay: '#eab308', tired: '#f97316', bad: '#ef4444' };
+          const emotionColors = { great: '#FB7185', good: '#9CA3AF', okay: '#D1D5DB', tired: '#94A3B8', bad: '#7DD3FC' };
           const emotionText = { great: '很棒', good: '不错', okay: '一般', tired: '疲惫', bad: '低落' };
           emotions.forEach(d => {
             html += '<div style="color: ' + (emotionColors[d.emotion] || '#888') + '; font-size: 0.85rem; margin-bottom: 2px;">• ' + formatDateKey(d.dateKey) + '：' + (emotionText[d.emotion] || d.emotion) + '</div>';
