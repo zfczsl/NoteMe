@@ -1,4 +1,12 @@
-# Secrets - never commit
+# ═══════════════════════════════════════════
+# 记我 Noteme - .gitignore
+# ═══════════════════════════════════════════
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build / debug scripts (local only)
 *.py
 _bf_result.txt
 _test*.js
@@ -27,21 +35,6 @@ _bf*.js
 _binary_*.js
 _bracket_*.js
 _server.js
-_daywise*.zip
-package.json
-package-lock.json
-node_modules/
-deploy_log.txt
-noteme_backup_*.zip
-daywise.html.orig
-daywise_fixed.html
-daywise_ui_v1_original.html
-.cos-cli*
-cos_upload.py
-.github/
-android-app/
-functions/
-.git-temp/
 build_*.js
 fetch_cloud_data.js
 todo_prompt_fix.js
@@ -49,3 +42,39 @@ track_brackets.js
 final_fix.js
 locate_error*.js
 deep_debug.js
+cos_upload.js
+input_for_esbuild.js
+
+# Archives & backups
+_daywise*.zip
+noteme_backup_*.zip
+daywise.html.orig
+daywise_fixed.html
+daywise_ui_v1_original.html
+
+# Cloud deploy tools
+.cos-cli*
+deploy_log.txt
+
+# Infrastructure (managed separately)
+.github/
+android-app/
+functions/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Preview / debug HTML (not for production)
+ai-debug.html
+ai-test.html
+demo.html
+new-todo-preview.html
+reflection-icon-preview.html
+suggestion-card-preview.html
+todo-card-preview.html
+test-data.html
+
+# Screenshots (local reference only)
+*.png
+!icons/*.png

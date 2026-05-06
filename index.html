@@ -2,14 +2,979 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DayWise - 每日记录</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>记我 Noteme · 记录即自我</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.min.css">
+  <meta name="theme-color" content="#FFF8F5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="记我 Noteme">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#F43F5E">
+  <meta name="application-name" content="记我 Noteme">
+  <meta name="msapplication-TileColor" content="#F43F5E">
+  <meta name="msapplication-TileImage" content="icons/icon-192.png">
+  <meta name="description" content="记我 Noteme - 记录即自我的每一天">
+  <meta name="color-scheme" content="light">
+  
+  <!-- PWA Service Worker -->
   <script>
-    // 自动跳转到主应用
-    window.location.href = 'daywise.html';
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(e => console.log('SW not available'));
+    }
   </script>
-</head>
+  
+  
+  </head>
 <body>
-  <p style="text-align:center;padding:50px;">正在跳转到应用...</p>
+
+
+  <!-- 登录页面 -->
+  <div id="page-login" class="page" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; overflow-y: auto; background: var(--bg, #FFF8F5);">
+    <div style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem;">
+      <!-- 品牌区域 -->
+      <div style="text-align: center; margin-bottom: 2.5rem;">
+        <div style="width: 72px; height: 72px; background: linear-gradient(135deg, #F43F5E, #EC4899); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; box-shadow: 0 8px 24px rgba(244,63,94,0.3);">
+          <span style="font-size: 2rem; color: #fff; font-weight: 700;">记</span>
+        </div>
+        <h1 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0 0 0.35rem;">记我 Noteme</h1>
+        <p style="font-size: 0.85rem; color: #6B7280; margin: 0;">记录即自我</p>
+      </div>
+
+      <!-- 登录卡片 -->
+      <div style="width: 100%; max-width: 360px; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+        <div style="font-size: 1.05rem; font-weight: 600; color: #111827; margin-bottom: 0.3rem;">手机号登录</div>
+        <div style="font-size: 0.78rem; color: #6B7280; margin-bottom: 1.25rem;">验证码将发送至您的手机</div>
+
+        <!-- 手机号输入 -->
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.78rem; font-weight: 500; color: #374151; margin-bottom: 0.4rem;">手机号码</label>
+          <div style="display: flex; align-items: center; gap: 0;">
+            <span style="padding: 0.75rem 0.5rem; background: #F9FAFB; border: 1px solid #E5E7EB; border-right: none; border-radius: 10px 0 0 10px; font-size: 0.85rem; color: #6B7280; font-weight: 500;">+86</span>
+            <input type="tel" id="loginPhoneInput" placeholder="请输入手机号" maxlength="11" style="flex: 1; padding: 0.75rem 0.8rem; border: 1px solid #E5E7EB; border-radius: 0 10px 10px 0; font-size: 0.9rem; outline: none; background: #fff; color: #111827; transition: border-color 0.2s;" onfocus="this.style.borderColor='#FDA4AF'" onblur="this.style.borderColor='#E5E7EB'" oninput="this.value=this.value.replace(/\D/g,'')">
+          </div>
+        </div>
+
+        <!-- 验证码输入 -->
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.78rem; font-weight: 500; color: #374151; margin-bottom: 0.4rem;">验证码</label>
+          <div style="display: flex; gap: 0.6rem;">
+            <input type="text" id="loginCodeInput" placeholder="6位验证码" maxlength="6" style="flex: 1; min-width: 0; padding: 0.75rem 0.6rem; border: 1px solid #E5E7EB; border-radius: 10px; font-size: 0.9rem; outline: none; background: #fff; color: #111827; transition: border-color 0.2s;" onfocus="this.style.borderColor='#FDA4AF'" onblur="this.style.borderColor='#E5E7EB'" oninput="this.value=this.value.replace(/\D/g,'')">
+            <button id="sendCodeBtn" onclick="handleSendCode()" style="flex-shrink: 0; padding: 0.75rem 0.6rem; background: linear-gradient(135deg, #F43F5E, #EC4899); color: #fff; border: none; border-radius: 10px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 14px rgba(244,63,94,0.25); transition: all 0.2s;">获取验证码</button>
+          </div>
+        </div>
+
+        <!-- 登录按钮 -->
+        <button id="doLoginBtn" onclick="handlePhoneLogin()" style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #F43F5E, #EC4899); color: #fff; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(244,63,94,0.3); transition: all 0.2s;">
+          登录
+        </button>
+
+        <!-- 状态提示 -->
+        <div id="loginMsg" style="margin-top: 0.75rem; font-size: 0.78rem; text-align: center; min-height: 1.2rem; color: #EF4444;"></div>
+      </div>
+
+      <!-- 底部提示 -->
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <p style="font-size: 0.72rem; color: #9CA3AF; line-height: 1.6; max-width: 280px;">
+          登录即表示同意使用本服务<br>您的数据将安全存储在本地设备中
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 背景层 -->
+  <div class="bg-warm-gradient" aria-hidden="true"></div>
+
+  <!-- 浮动装饰彩球 -->
+  <div class="deco-balls" aria-hidden="true">
+    <div class="deco-ball"></div>
+    <div class="deco-ball"></div>
+    <div class="deco-ball"></div>
+    <div class="deco-ball"></div>
+    <div class="deco-ball"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+  </div>
+
+
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">记</div>
+        <div class="logo-text">记我<span class="tagline">记录即自我</span></div>
+        <span id="memberBadge" style="display:none;margin-left:auto;"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Page: 记录 -->
+    <div id="page-record" class="page active">
+      <!-- Date Navigation -->
+      <div class="date-nav">
+        <button class="date-nav-btn" onclick="changeDate(-1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="current-date">
+          <div class="day" id="currentDay"></div>
+          <div class="date-full" id="currentDateFull"></div>
+        </div>
+        <button class="date-nav-btn" onclick="changeDate(1)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- 待办横幅 -->
+      <div id="todoBannerContainer" style="margin-bottom: 1rem;"></div>
+
+      <!-- Entry Section -->
+      <div class="entry-section">
+        <!-- 心情选择器 -->
+        <div class="mood-selector-outer" style="justify-content: flex-start;">
+          <div class="mood-selector">
+            <button class="mood-btn" onclick="selectMood('😄')" data-mood="😄" title="开心">😄</button>
+            <button class="mood-btn" onclick="selectMood('😊')" data-mood="😊" title="愉悦">😊</button>
+            <button class="mood-btn" onclick="selectMood('😌')" data-mood="😌" title="平静">😌</button>
+            <button class="mood-btn" onclick="selectMood('🤔')" data-mood="🤔" title="思考">🤔</button>
+            <button class="mood-btn" onclick="selectMood('😔')" data-mood="😔" title="低落">😔</button>
+            <button class="mood-btn" onclick="selectMood('😤')" data-mood="😤" title="生气">😤</button>
+            <button class="mood-btn" onclick="selectMood('😴')" data-mood="😴" title="疲惫">😴</button>
+            <button class="mood-btn" onclick="selectMood('💪')" data-mood="💪" title="充实">💪</button>
+          </div>
+          <span id="moodHint" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+        </div>
+        <textarea 
+          class="entry-textarea main-input" 
+          id="entryInput" 
+          placeholder="像给自己发消息一样，随手把想法、做的事情丢进来..."
+        ></textarea>
+        <div class="entry-footer">
+          <span id="dailyCharCounter" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+          <button class="btn btn-primary" onclick="saveEntry()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            记录
+          </button>
+        </div>
+      </div>
+
+      <!-- Today's Entries -->
+      <div class="entries-section" id="entriesSection">
+        <div class="section-header">
+          <div class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            今日记录
+          </div>
+          <span id="entryCount" style="color: var(--text-muted); font-size: 0.875rem;">0 条</span>
+        </div>
+        <div id="entriesList"></div>
+      </div>
+
+      <!-- AI Analysis Section -->
+      <div class="entries-section" style="margin-bottom: 1.5rem;">
+        <div class="section-header">
+          <div class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><circle cx="17" cy="5" r="1.5" fill="currentColor"/><circle cx="20" cy="9" r="1" fill="currentColor"/></svg>
+            AI 每日复盘
+          </div>
+        </div>
+        <div class="ai-display-section" id="homeAiDisplaySection">
+          <div id="homeAiDisplayContent">
+            <div class="empty-state" id="homeAiEmptyState" style="padding: 3rem 1rem; text-align: center;">
+              <button class="btn btn-primary" onclick="triggerHomeAIAnalysis()" style="margin: 0 auto; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2rem; font-size: 0.9rem; font-weight: 600; border-radius: 12px; background: linear-gradient(135deg, #F43F5E, #EC4899); border: none; color: #fff; box-shadow: 0 4px 16px rgba(244,63,94,0.3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                开始 AI 分析
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录页面 - 每日星云网络 -->
+      <div class="entries-section" style="margin-bottom: 1.5rem;">
+        <div class="section-header">
+          <div class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="12" cy="19" r="1"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+            每日星云网络
+          </div>
+        </div>
+        <div id="dailyNebulaSection" style="background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden;">
+          <div id="dailyNebulaContent" style="min-height: 180px; display: flex; align-items: center; justify-content: center;">
+            <button id="dailyNebulaBtn" class="btn btn-primary" onclick="generateDailyNebulaNetwork()" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2rem; font-size: 0.9rem; font-weight: 600; border-radius: 12px; background: linear-gradient(135deg, #F43F5E, #EC4899); border: none; color: #fff; box-shadow: 0 4px 16px rgba(244,63,94,0.3);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="12" cy="19" r="1"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+              生成星云网络
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 洞察 -->
+        <div id="page-insight" class="page">
+      <!-- 周选择器 -->
+      <div style="padding: 1rem 1rem 0;">
+        <div class="week-selector" style="background: var(--bg-card); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <button onclick="changeWeek(-1)" class="week-nav-btn" style="background: var(--bg-secondary); border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div id="weekDisplay" style="font-weight: 600; font-size: 0.95rem; color: var(--text-primary);"></div>
+            <button onclick="changeWeek(1)" class="week-nav-btn" style="background: var(--bg-secondary); border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <div id="weekCalendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center;"></div>
+        </div>
+      </div>
+
+      <!-- 统计卡片区域 -->
+      <div id="insightStatsSection" style="padding: 0 1rem;">
+        <!-- Section: 记录习惯养成 -->
+        <div class="insight-section" style="margin-bottom: 1rem;">
+          <div class="section-header" style="padding: 1rem 0;">
+            <div class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              记录习惯养成
+            </div>
+          </div>
+          <div class="stats-grid" id="statsGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 0.75rem;"></div>
+          <div id="dailyWordsCard" class="fin-card" style="padding: 1rem 1.25rem; min-height: 120px;"></div>
+        </div>
+
+        <!-- Section: 每周状态 -->
+        <div class="insight-section" style="margin-bottom: 1rem;">
+          <div class="section-header" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+            <div class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              每周状态
+            </div>
+            <button id="batchAiStatusBtn" onclick="batchGenerateDailyAI()" style="padding: 0.35rem 0.75rem; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 500; display: none;">
+              批量AI分析
+            </button>
+          </div>
+          <!-- 心情轨迹 -->
+          <div id="weekMoodCard" class="fin-card" style="padding: 1rem 1.25rem; margin-bottom: 0.75rem; min-height: 120px;"></div>
+          <!-- 精力指数 -->
+          <div id="weekEnergyCard" class="fin-card" style="padding: 1rem 1.25rem; margin-bottom: 0.75rem; min-height: 120px;"></div>
+          <!-- 关键词 -->
+          <div id="weekKeywordsCard" class="fin-card" style="padding: 1rem 1.25rem; min-height: 80px;"></div>
+        </div>
+
+        <!-- Section: 本周回顾 -->
+        <div class="insight-section" style="margin-bottom: 1rem;">
+          <div class="section-header" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+            <div class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/><path d="M12 2v6"/><path d="M17 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/><path d="M17 2v6"/><path d="M7 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/><path d="M7 2v6"/><path d="M17 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/><path d="M17 15v6"/><path d="M7 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/><path d="M7 15v6"/><path d="M12 13v8"/><path d="M12 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
+              本周回顾
+            </div>
+            <button id="batchAiReviewBtn" onclick="batchGenerateDailyAI()" style="padding: 0.35rem 0.75rem; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 500; display: none;">
+              批量AI分析
+            </button>
+          </div>
+
+          <!-- 第1行：目标契合度 + 时间分布 并排 -->
+          <div class="week-review-pair" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div id="weekAlignmentCard" class="fin-card" style="padding: 1rem 1.25rem; min-height: 120px;"></div>
+            <div id="weekTimeDistCard" class="fin-card" style="padding: 1rem 1.25rem; min-height: 120px;"></div>
+          </div>
+
+          <!-- 第2行：待办分析 单独 -->
+          <div id="weekTodoCard" class="fin-card" style="padding: 1rem 1.25rem; margin-bottom: 0.75rem; min-height: 100px;"></div>
+
+          <!-- 第3行：AI 高光画作 -->
+          <div class="insight-section" style="margin-bottom: 1rem;">
+            <div class="section-header" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+              <div class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                AI 高光画作
+              </div>
+            </div>
+            <div id="weekHighlightImagesCard" class="fin-card" style="padding: 0; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div id="highlightImagesInner" style="text-align: center; padding: 1.5rem;">
+                <div style="margin-bottom: 0.5rem; font-size: 1.5rem;">🎨</div>
+                <div style="margin-bottom: 0.75rem; color: #6B7280; font-size: 0.82rem;">
+                  <span id="highlightImagesCount">本周已有 0 个高光时刻</span>
+                </div>
+                <button id="generateHighlightImagesBtn" onclick="generateWeekHighlightImages()" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2rem; font-size: 0.9rem; font-weight: 600; border-radius: 12px; background: linear-gradient(135deg, #F43F5E, #EC4899); border: none; color: #fff; box-shadow: 0 4px 16px rgba(244,63,94,0.3); cursor: pointer; white-space: nowrap;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  生成本周高光画作
+                </button>
+                <div id="highlightImagesCachedHint" style="display: none; margin-top: 0.5rem; font-size: 0.75rem; color: #FB7185;">
+                  已生成过，点击按钮可重新生成
+                </div>
+              </div>
+              <div id="highlightImagesContent" style="display: none; width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: 每周星云网络 -->
+        <div class="insight-section" style="margin-bottom: 1rem;">
+          <div class="section-header" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+            <div class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="12" cy="19" r="1"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+              每周星云网络
+            </div>
+          </div>
+          <div id="nebulaNetworkContent" class="nebula-chart-container fin-card" style="padding: 0; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div id="nebulaInner" style="text-align: center; padding: 1.5rem;">
+              <div style="margin-bottom: 0.75rem; font-size: 1.5rem;">✨</div>
+              <div style="color: #6B7280; font-size: 0.82rem;">
+                AI 将分析本周记录并生成星云网络图
+              </div>
+            </div>
+            <button id="generateNebulaBtn" onclick="generateNebulaNetwork()" style="margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2rem; font-size: 0.9rem; font-weight: 600; border-radius: 12px; background: linear-gradient(135deg, #F43F5E, #EC4899); border: none; color: #fff; box-shadow: 0 4px 16px rgba(244,63,94,0.3); cursor: pointer; white-space: nowrap;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="12" cy="19" r="1"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+              生成星云图
+            </button>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- Page: 历史 -->
+    <div id="page-history" class="page">
+      <div class="section-header" style="padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <div class="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          历史记录
+        </div>
+        <button id="exportHistoryBtn" onclick="exportHistoryData()" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #FFFFFF; border: 1px solid #E5E7EB; color: #111827; border-radius: 10px; font-size: 0.85rem; font-weight: 500; cursor: pointer; box-shadow: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          导出
+        </button>
+      </div>
+      <div id="historyContent"></div>
+    </div>
+
+    <!-- Page: 设置 -->
+    <div id="page-settings" class="page">
+      <div class="section-header" style="padding: 1rem;">
+        <div class="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          设置
+        </div>
+      </div>
+      <div style="padding: 0 1rem;">
+        
+        <!-- 账号信息 -->
+        <div id="accountCardContainer" style="margin-bottom: 0.5rem;"></div>
+        
+        <!-- 角色与目标设置 -->
+        <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; color: #111827;">
+          <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">
+            👤 个人背景 <span style="font-weight: 400; color: #6B7280; font-size: 0.8rem;">/ 让AI更懂你</span>
+          </div>
+          
+          <div class="review-question">
+            <label style="color: #6B7280;">我的角色</label>
+            <select id="userRoleInputPage" style="width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; background: var(--bg-secondary); color: var(--text-primary); appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236B7280%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpolyline points=%226 9 12 15 18 9%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; cursor: pointer; transition: border-color 0.15s;">
+              <option value="">请选择你的角色...</option>
+              <option value="学生">🎓 学生</option>
+              <option value="职场人">💼 职场人</option>
+              <option value="自由职业者">💻 自由职业者</option>
+              <option value="创业者">🚀 创业者</option>
+              <option value="创作者">🎨 创作者</option>
+              <option value="全职爸妈">👪 全职爸妈</option>
+              <option value="退休人士">🏖️ 退休人士</option>
+              <option value="其他">🌟 其他（自定义）</option>
+            </select>
+            <input type="text" id="customRoleInputPage" placeholder="输入自定义角色..." style="margin-top: 0.5rem; display: none; width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; transition: border-color 0.15s;">
+          </div>
+          
+          <div class="review-question" style="margin-top: 1rem;">
+            <label style="color: var(--text-secondary);">我的目标 <span style="font-size: 0.75rem; color: var(--text-muted);">（AI会判断是否在向目标前进）</span></label>
+            <div id="goalsContainerPage">
+              <!-- 目标列表将在这里动态渲染 -->
+            </div>
+            <button class="btn btn-secondary" onclick="addGoalPage()" style="width: 100%; margin-top: 0.75rem; font-size: 0.85rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              添加新目标
+            </button>
+          </div>
+
+          <button class="btn btn-primary" onclick="saveSettingsBottom()" style="width: 100%; margin-top: 1rem; font-weight: 600; padding: 0.85rem;">
+            ✅ 保存设置
+          </button>
+        </div>
+        
+        <!-- AI调用次数统计 -->
+        <div style="margin-top: 1rem; padding: 1.25rem; background: #FFFFFF; border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-xs);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">⚡ AI调用剩余</div>
+            <div id="apiCallCount" style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">10 / 10 次</div>
+          </div>
+          <div style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+            <div id="apiCallProgress" style="height: 100%; background: var(--gradient-cta); border-radius: 3px; width: 0%; transition: width 0.3s;"></div>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.75rem;">
+            每个账号共10次，包括：AI复盘、润色、画作、星云图等
+          </div>
+        </div>
+        
+        <!-- 反馈与支持 -->
+        <div style="margin-top: 1.5rem;">
+          <div style="background: var(--gradient-cta); border-radius: var(--radius); padding: 1rem; color: #FFFFFF;">
+            <div style="font-size: 0.75rem; opacity: 0.9; margin-bottom: 1rem;">
+              使用 AI 功能需要消耗 API Token，运营成本不低。如果觉得好用，欢迎支持一下！
+            </div>
+            <button onclick="showDonateQR()" style="width: 100%; padding: 0.6rem 1rem; background: white; color: #6B7280; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+              💰 展示收款码
+            </button>
+          </div>
+          
+          <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); text-align: center;">
+            <div style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.5rem;">📮 反馈建议</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              欢迎提交使用意见或 Bug 反馈
+            </div>
+            <a href="mailto:495924055@qq.com" style="display: inline-block; padding: 0.5rem 1rem; background: var(--primary); color: white; border-radius: var(--radius); font-size: 0.8rem; text-decoration: none;">
+              发送邮件反馈
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- 待办设置弹窗 -->
+  <div class="modal-overlay" id="todoModal">
+    <div class="modal" style="max-width: 360px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          设为待办
+        </div>
+        <button class="modal-close" onclick="closeTodoModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="background: var(--bg-secondary); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">待办内容</div>
+          <div id="todoModalContent" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-primary);"></div>
+        </div>
+        
+        <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.75rem; color: var(--text-primary);">选择时间</div>
+        
+        <div class="todo-date-options">
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="today" checked>
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📅</span>
+              <span class="todo-date-text" id="todoTodayLabel">今天</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="tomorrow">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📆</span>
+              <span class="todo-date-text" id="todoTomorrowLabel">明天</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="week">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📌</span>
+              <span class="todo-date-text">本周五</span>
+            </span>
+          </label>
+          
+          <label class="todo-date-option">
+            <input type="radio" name="todoDate" value="custom">
+            <span class="todo-date-option-content">
+              <span class="todo-date-icon">📅</span>
+              <span class="todo-date-text">自定义</span>
+            </span>
+          </label>
+        </div>
+        
+        <div id="customDateContainer" style="margin-top: 0.75rem; display: none;">
+          <input type="date" id="todoCustomDate" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeTodoModal()">取消</button>
+        <button class="btn btn-primary" onclick="confirmAddTodo()">确认添加</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 收款码弹窗 -->
+  <div class="modal-overlay" id="donateModal">
+    <div class="modal" style="max-width: 320px;">
+      <div class="modal-header">
+        <div class="modal-title">☕ 感谢支持</div>
+        <button class="modal-close" onclick="closeModal('donateModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">扫码付款任意金额，您的支持是我更新的动力！</p>
+        <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+          <div>
+            <div style="font-size: 0.8rem; font-weight: 500; margin-bottom: 0.5rem;">微信支付</div>
+            <img src="assets/wechat-pay.png" alt="微信支付" style="width: 150px; height: auto; border-radius: 8px; border: 1px solid var(--border);">
+          </div>
+          <div>
+            <div style="font-size: 0.8rem; font-weight: 500; margin-bottom: 0.5rem;">支付宝</div>
+            <img src="assets/alipay.png" alt="支付宝" style="width: 150px; height: auto; border-radius: 8px; border: 1px solid var(--border);">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function showDonateQR() {
+      document.getElementById('donateModal').classList.add('active');
+    }
+  </script>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchPage('record')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>记录</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('insight')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>每周洞察</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('history')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>历史</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('settings')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>设置</span>
+    </button>
+  </nav>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          设置
+        </div>
+        <button class="modal-close" onclick="closeModal('settingsModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- 角色与目标设置 -->
+        <div class="review-question">
+          <label>我的角色 <span class="hint">/ 帮助AI了解你是谁</span></label>
+            <select id="userRoleInput" style="width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem; background: var(--bg-secondary); color: var(--text-primary); appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236B7280%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpolyline points=%226 9 12 15 18 9%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; cursor: pointer; transition: border-color 0.15s;">
+              <option value="">请选择你的角色...</option>
+              <option value="学生">🎓 学生</option>
+              <option value="职场人">💼 职场人</option>
+              <option value="自由职业者">💻 自由职业者</option>
+              <option value="创业者">🚀 创业者</option>
+              <option value="创作者">🎨 创作者</option>
+              <option value="全职爸妈">👪 全职爸妈</option>
+              <option value="退休人士">🏖️ 退休人士</option>
+              <option value="其他">🌟 其他</option>
+            </select>
+          <input type="text" id="customRoleInput" placeholder="或输入自定义角色..." style="margin-top: 0.5rem; display: none;">
+        </div>
+        
+        <div class="review-question" style="margin-top: 1rem;">
+          <label>我的目标 <span class="hint">/ AI会判断你是否在向目标前进</span></label>
+          <div id="goalsContainer">
+            <!-- 目标列表将在这里动态渲染 -->
+          </div>
+          <button class="btn btn-secondary" onclick="addGoal()" style="width: 100%; margin-top: 0.75rem; font-size: 0.85rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            添加新目标
+          </button>
+        </div>
+        
+        <!-- 会员状态卡片 -->
+        <div id="memberCard" style="margin-top: 1rem; background: #FFFFFF; border-radius: 12px; padding: 1rem; border: 1px solid #E5E7EB;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <span style="font-weight:600;color:#6B7280;font-size:0.9rem;" id="memberStatusText">免费版</span>
+            <span id="memberBadgeSmall" style="font-size:0.75rem;"></span>
+          </div>
+          <div style="font-size:0.82rem;color:#6B7280;line-height:1.6;" id="memberDetailText">
+            AI 调用：<strong>无限制</strong><br/>
+            <button onclick="openActivationModal()" style="margin-top:0.5rem;padding:0.4rem 1rem;background:#111827;color:white;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;font-weight:500;">🔓 输入激活码升级</button>
+          </div>
+        </div>
+
+        <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); margin-top: 1.5rem;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">
+            设置你的角色和目标后，AI分析会更加有针对性。它会帮助你判断：今天的行动是否在帮助我接近目标？有哪些事情让我偏离了方向？
+          </div>
+        </div>
+
+        <!-- 数据管理（本地存储版本） -->
+        <div style="border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem;">
+          <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem;">💾 数据管理</div>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">所有数据存储在浏览器本地，建议定期导出备份。</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button onclick="exportAllData()" style="flex:1;min-width:120px;padding:0.75rem;background:#FFFFFF;border:1px solid #E5E7EB;color:#111827;border:none;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;">📤 导出全部数据</button>
+            <label style="flex:1;min-width:120px;padding:0.75rem;background:white;color:#6B7280;border:1px solid #E5E7EB;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;">
+              📥 导入数据
+              <input type="file" accept=".json" onchange="if(this.files[0])importAllData(this.files[0])" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); margin-top: 1.5rem;">
+          <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">⚙️ API 配置</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+              AI 配置已内置到程序中，无需手动配置
+            </div>
+          </div>
+        </div>
+        
+        <div style="padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); margin-top: 1rem;">
+          <div style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">提示</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">
+            配置好 API 后，点击"AI 提炼"功能即可获得智能分析总结。每次调用会消耗 API 配额。
+          </div>
+        </div>
+        
+        <!-- 反馈与支持 -->
+        <div style="border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem;">
+          <div style="background: var(--gradient-cta); border-radius: var(--radius); padding: 1rem; color: #FFFFFF;">
+            
+            <div style="font-size: 0.8rem; opacity: 0.9; margin-bottom: 1rem;">
+              使用 AI 功能需要消耗 API Token，运营成本不低。如果觉得好用，欢迎支持一下！
+            </div>
+            <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+              <img src="assets/wechat-pay.png" alt="微信支付" style="width: 120px; height: auto; border-radius: 8px; background: white; padding: 4px;">
+              <img src="assets/alipay.png" alt="支付宝" style="width: 120px; height: auto; border-radius: 8px; background: white; padding: 4px;">
+            </div>
+          </div>
+          
+          <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius); text-align: center;">
+            <div style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.5rem;">📮 反馈建议</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              欢迎提交使用意见或 Bug 反馈
+            </div>
+            <a href="mailto:495924055@qq.com" style="display: inline-block; padding: 0.5rem 1rem; background: var(--primary); color: white; border-radius: var(--radius); font-size: 0.85rem; text-decoration: none;">
+              发送邮件反馈
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tooltip Component -->
+  <div id="infoTooltip" style="display: none; position: fixed; z-index: 10001; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); max-width: 280px; font-size: 0.85rem; line-height: 1.5;">
+    <div id="tooltipTitle" style="font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"></div>
+    <div id="tooltipContent" style="color: var(--text-secondary);"></div>
+  </div>
+
+  <!-- Stats Modal -->
+  <div class="modal-overlay" id="statsModal">
+    <div class="modal" style="max-width: 900px; max-height: 90vh;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          数据洞察
+        </div>
+        <button class="modal-close" onclick="closeModal('statsModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="overflow-y: auto;">
+        <div class="stats-grid" id="statsGrid"></div>
+        
+        <div class="section-divider"></div>
+        
+        <!-- 情绪曲线图 -->
+        <div class="chart-container">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #9CA3AF;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            情绪曲线（近30天）
+          </div>
+          <div id="emotionLineChart" style="height: 180px;"></div>
+          <div id="emotionInsight" class="chart-insight" style="display:none;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 精力状态柱状图 -->
+        <div class="chart-container">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            精力/状态柱状图（近7天）
+          </div>
+          <div id="energyBarChart" style="height: 140px;"></div>
+          <div id="energyInsight" class="chart-insight" style="display:none;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 成就感趋势 -->
+        <div class="chart-container">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            成就感趋势（近30天）
+          </div>
+          <div id="achievementLineChart" style="height: 140px;"></div>
+          <div id="achievementInsight" class="chart-insight" style="display:none;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 关键词词云 -->
+        <div class="chart-container">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #FB7185;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            高频关键词（近30天）
+          </div>
+          <div id="wordCloudContainer" style="min-height: 120px; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: center; padding: 1rem;">
+            <div style="text-align: center; color: var(--text-muted);">暂无数据<br><small>AI分析后生成</small></div>
+          </div>
+          <div id="keywordInsight" class="chart-insight" style="display:none;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 周雷达图 -->
+        <div class="chart-container">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><polygon points="12 2 19 21 12 17 5 21 12 2"/></svg>
+            本周成长雷达图
+          </div>
+          <div id="radarChartContainer" style="display: flex; justify-content: center;">
+            <div id="radarChart" style="width: 280px; height: 280px;"></div>
+          </div>
+          <div id="radarInsight" class="chart-insight" style="display:none;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 周趋势折线图 -->
+        <div class="chart-container" id="weekTrendChartContainer" style="display:none;">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #9CA3AF;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            本周成长趋势
+          </div>
+          <div id="weekTrendChart" style="width: 100%; height: 200px;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 情绪/精力曲线 -->
+        <div class="chart-container" id="emotionEnergyChartContainer" style="display:none;">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            情绪与精力趋势
+          </div>
+          <div id="emotionEnergyChart" style="width: 100%; height: 160px;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 分类环形图 -->
+        <div class="chart-container" id="categoryDonutContainer" style="display:none;">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+            本周事件类型分布
+          </div>
+          <div id="categoryDonutChart" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 1rem;"></div>
+          <div id="categoryLegend" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 0.5rem;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 目标契合度 -->
+        <div class="chart-container" id="alignmentContainer" style="display:none;">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #6B7280;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            本周行动与目标契合度
+          </div>
+          <div id="alignmentContent" style="padding: 0.5rem 0;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 关键词展示 -->
+        <div class="chart-container" id="weekKeywordsContainer" style="display:none;">
+          <div class="chart-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #FB7185;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            本周关键词
+          </div>
+          <div id="weekKeywords" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; padding: 0.5rem;"></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+
+      </div>
+            <div class="ai-insight-loading">
+              <div class="spinner-small"></div>
+              <span>AI 正在分析活跃规律...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          历史记录
+        </div>
+        <button class="modal-close" onclick="closeModal('historyModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="historyContent"></div>
+    </div>
+  </div>
+
+  <!-- Export Options Modal -->
+  <div class="modal-overlay" id="exportModal">
+    <div class="modal" style="max-width: 420px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          导出记录
+        </div>
+        <button class="modal-close" onclick="closeModal('exportModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <style>
+          .export-section { margin-bottom: 1.1rem; }
+          .export-section-title { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; }
+          .export-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+          .export-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+          .export-item { cursor: pointer; position: relative; }
+          .export-item input { position: absolute; opacity: 0; width: 0; height: 0; }
+          .export-item-box { display: flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.7rem 0.5rem; background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius); transition: all 0.2s; font-size: 0.82rem; color: var(--text-primary); text-align: center; }
+          .export-item:hover .export-item-box { background: var(--bg-secondary); }
+          .export-item input:checked + .export-item-box { background: #fff0f3; border-color: var(--primary); color: var(--primary); font-weight: 600; }
+          .export-btn { width: 100%; padding: 0.75rem; background: linear-gradient(135deg, #F43F5E, #EC4899); color: #fff; border: none; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 14px rgba(244,63,94,0.3); transition: all 0.2s; margin-top: 0.5rem; }
+          .export-btn:active { transform: scale(0.98); }
+        </style>
+
+        <div class="export-section">
+          <div class="export-section-title">导出内容</div>
+          <div class="export-grid">
+            <label class="export-item">
+              <input type="radio" name="exportContent" value="all" checked>
+              <div class="export-item-box">全部记录</div>
+            </label>
+            <label class="export-item">
+              <input type="radio" name="exportContent" value="starred">
+              <div class="export-item-box">仅加星号</div>
+            </label>
+          </div>
+        </div>
+
+        <div class="export-section">
+          <div class="export-section-title">时间范围</div>
+          <div class="export-grid-3">
+            <label class="export-item">
+              <input type="radio" name="exportTimeRange" value="7">
+              <div class="export-item-box">最近7天</div>
+            </label>
+            <label class="export-item">
+              <input type="radio" name="exportTimeRange" value="30" checked>
+              <div class="export-item-box">最近30天</div>
+            </label>
+            <label class="export-item">
+              <input type="radio" name="exportTimeRange" value="all">
+              <div class="export-item-box">全部</div>
+            </label>
+          </div>
+        </div>
+
+        <div class="export-section">
+          <div class="export-section-title">导出格式</div>
+          <div class="export-grid">
+            <label class="export-item">
+              <input type="radio" name="exportFormat" value="txt" checked>
+              <div class="export-item-box">纯文本 .txt</div>
+            </label>
+            <label class="export-item">
+              <input type="radio" name="exportFormat" value="md">
+              <div class="export-item-box">Markdown</div>
+            </label>
+          </div>
+        </div>
+
+        <button class="export-btn" onclick="executeHistoryExport()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          确认导出
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+  <!-- D3.js 用于星云网络图（首屏不阻塞） -->
+  <script src="https://unpkg.com/d3@7/dist/d3.min.js" defer></script>
+
+  <!-- CloudBase 完整 SDK（含手机号登录）：本地文件优先，官方 CDN 备用 -->
+  <script>
+    (function() {
+      var urls = [
+        'cloudbase.full.js',
+        'https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js'
+      ];
+      var idx = 0;
+      function loadNext() {
+        if (idx >= urls.length) {
+          console.error('[CloudBase] SDK 加载失败，登录/云同步功能将不可用');
+          window._cloudbaseSdkFailed = true;
+          return;
+        }
+        var s = document.createElement('script');
+        s.src = urls[idx++];
+        s.onerror = function() { console.warn('[CloudBase] 加载失败，尝试备用源...'); loadNext(); };
+        s.onload = function() { console.log('[CloudBase] SDK 加载成功：' + s.src); };
+        document.head.appendChild(s);
+      }
+      loadNext();
+    })();
+  </script>
+
+  <!-- 主应用 JS -->
+  <script src="app.min.js" defer></script>
+  <script>
+    // 注册 Service Worker（PWA 离线支持）
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((reg) => console.log('Service Worker 注册成功:', reg.scope))
+        .catch((err) => console.log('Service Worker 注册失败:', err));
+    }
+  </script>
 </body>
 </html>
