@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noteme-v1';
+const CACHE_NAME = 'noteme-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -14,19 +14,18 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
     }).then(() => {
+      // 强制立即激活，不等待旧 SW 释放
       return self.skipWaiting();
     })
   );
 });
 
-// 激活时清理旧缓存
+// 激活时清理所有旧缓存，并接管所有页面
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
+        cacheNames.map((name) => caches.delete(name))
       );
     }).then(() => {
       return self.clients.claim();
@@ -34,11 +33,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 网络优先的缓存策略
+// 网络优先策略
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // 跳过非 GET 请求和 chrome-extension 请求
   if (request.method !== 'GET' || request.url.startsWith('chrome-extension://')) {
     return;
   }
@@ -46,7 +44,6 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((networkResponse) => {
-        // 成功获取网络响应，更新缓存
         if (networkResponse && networkResponse.status === 200) {
           const responseClone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -56,12 +53,8 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(() => {
-        // 网络失败，回退到缓存
         return caches.match(request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          // 缓存也没有，返回离线页面或空响应
+          if (cachedResponse) return cachedResponse;
           return new Response('Offline', {
             status: 503,
             statusText: 'Service Unavailable',
