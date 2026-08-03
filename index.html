@@ -3133,6 +3133,9 @@
               本周回顾
             </div>
           </div>
+          <div style="margin: -0.5rem 0 0.75rem 0; padding: 0.5rem 0.75rem; background: rgba(251, 113, 133, 0.08); border-radius: 8px; font-size: 0.75rem; color: #9CA3AF; line-height: 1.5;">
+            <span style="color: #FB7185;">提示：</span>过去一周至少有一天生成 AI 每日复盘，本周回顾卡片才会出现数据
+          </div>
 
           <!-- 第1行：目标契合度 + 时间分布 并排 -->
           <div class="week-review-pair" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
@@ -5278,7 +5281,7 @@
       });
 
       if (highlights.length === 0) {
-        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;">暂无高光数据</div>';
+        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;font-size:0.85rem;">暂无高光数据</div><div style="text-align:center;color:#9CA3AF;font-size:0.72rem;margin-top:0.25rem;">过去一周至少有一天生成 AI 每日复盘，这里才会出现数据</div>';
         return;
       }
 
@@ -5411,7 +5414,7 @@
       }
 
       if (count === 0) {
-        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;font-size:0.85rem;">暂无目标契合度数据</div>';
+        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;font-size:0.85rem;">暂无目标契合度数据</div><div style="text-align:center;color:#9CA3AF;font-size:0.72rem;margin-top:0.25rem;">过去一周至少有一天生成 AI 每日复盘，这里才会出现数据</div>';
         return;
       }
 
@@ -5497,7 +5500,7 @@
       const total = catEntries.reduce((sum, [, v]) => sum + v, 0);
 
       if (!hasData || total === 0) {
-        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;font-size:0.85rem;">暂无分类数据</div>';
+        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;font-size:0.85rem;">暂无时间分布数据</div><div style="text-align:center;color:#9CA3AF;font-size:0.72rem;margin-top:0.25rem;">过去一周至少有一天生成 AI 每日复盘，这里才会出现数据</div>';
         return;
       }
 
@@ -5658,7 +5661,7 @@
       }
 
       if (totalTodos === 0) {
-        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;font-size:0.85rem;">本周无待办数据</div>';
+        card.innerHTML = '<div style="text-align:center;color:#9CA3AF;padding:1rem 0;font-size:0.85rem;">本周无待办数据</div><div style="text-align:center;color:#9CA3AF;font-size:0.72rem;margin-top:0.25rem;">过去一周至少有一天生成 AI 每日复盘，这里才会出现数据</div>';
         return;
       }
 
