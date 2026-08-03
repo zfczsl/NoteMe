@@ -3065,12 +3065,14 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
             今日脑图
           </div>
-          <button id="recordMindMapBtn" onclick="generateRecordMindMap()" style="padding: 0.35rem 0.75rem; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 500;">
-            生成脑图
-          </button>
         </div>
         <div id="recordMindMapContent" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; min-height: 60px; padding: 0 1rem;">
-          <span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>
+          <div class="empty-state" style="padding: 2.5rem 1.5rem;">
+            <button class="btn btn-primary" id="recordMindMapBtn" onclick="generateRecordMindMap()" style="margin: 0 auto; display: flex;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
+              生成脑图
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -3170,12 +3172,14 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
               每周脑图
             </div>
-            <button id="generateMindMapBtn" onclick="generateWeeklyMindMap()" style="padding: 0.35rem 0.75rem; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 500;">
-              生成脑图
-            </button>
           </div>
           <div id="mindMapContent" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; min-height: 60px; padding: 0 0.5rem;">
-            <span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据本周记录生成脑图</span>
+            <div class="empty-state" style="padding: 2.5rem 1.5rem;">
+              <button class="btn btn-primary" id="generateMindMapBtn" onclick="generateWeeklyMindMap()" style="margin: 0 auto; display: flex;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
+                生成脑图
+              </button>
+            </div>
           </div>
         </div>
 
@@ -7821,6 +7825,10 @@
       renderTodoBanner(); // 更新待办横幅（切换日期后重新渲染）
     }
     
+    // 今日脑图 - 空状态与重新生成按钮 HTML 片段
+    const recordMindMapEmptyHTML = '<div class="empty-state" style="padding: 2.5rem 1.5rem;"><button class="btn btn-primary" id="recordMindMapBtn" onclick="generateRecordMindMap()" style="margin: 0 auto; display: flex;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>生成脑图</button></div>';
+    const recordMindMapRegenerateBtnHTML = '<div style="text-align: center; margin-top: 1.25rem;"><button class="btn btn-primary" id="recordMindMapBtn" onclick="generateRecordMindMap()" style="display: inline-flex;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>重新生成</button></div>';
+
     // 加载对应日期的脑图
     function loadRecordMindMap() {
       const content = document.getElementById('recordMindMapContent');
@@ -7828,8 +7836,7 @@
       if (!content) return;
       
       // 先立即清空，防止显示上一个日期的内容
-      content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
-      if (btn) btn.innerHTML = '生成脑图';
+      content.innerHTML = recordMindMapEmptyHTML;
       
       const dateKey = getDateKey(currentDate);
       
@@ -7844,25 +7851,21 @@
       if (savedMindMap) {
         try {
           const mindMapData = JSON.parse(savedMindMap);
-          content.innerHTML = renderMindMap(mindMapData);
-          if (btn) btn.innerHTML = '重新生成';
+          content.innerHTML = renderMindMap(mindMapData) + recordMindMapRegenerateBtnHTML;
         } catch (e) {
-          // 解析失败，显示占位
-          content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
-          if (btn) btn.innerHTML = '生成脑图';
+          // 解析失败，显示空状态按钮
+          content.innerHTML = recordMindMapEmptyHTML;
         }
       } else {
         // 没有保存的脑图，等待用户手动点击按钮
-        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
-        if (btn) btn.innerHTML = '生成脑图';
+        content.innerHTML = recordMindMapEmptyHTML;
       }
     }
     
     // 自动生成脑图
     function autoGenerateMindMap(content, btn) {
       if (!apiKey) {
-        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
-        if (btn) btn.innerHTML = '生成脑图';
+        content.innerHTML = recordMindMapEmptyHTML;
         return;
       }
       
@@ -7871,8 +7874,7 @@
       const todayReview = dailyReviews[dateKey];
       
       if (todayEntries.length === 0 && !todayReview?.achievement && !todayReview?.challenge) {
-        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
-        if (btn) btn.innerHTML = '生成脑图';
+        content.innerHTML = recordMindMapEmptyHTML;
         return;
       }
       
@@ -7886,22 +7888,13 @@
         const mindMapData = parseMindMapJSON(response);
         
         if (mindMapData) {
-          content.innerHTML = renderMindMap(mindMapData);
+          content.innerHTML = renderMindMap(mindMapData) + recordMindMapRegenerateBtnHTML;
           localStorage.setItem('mindmap_' + dateKey, JSON.stringify(mindMapData));
         } else {
-          content.innerHTML = formatSummaryContent(response);
-        }
-        
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '重新生成';
+          content.innerHTML = formatSummaryContent(response) + recordMindMapRegenerateBtnHTML;
         }
       }, (error) => {
-        content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据今日记录生成脑图</span>';
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '生成脑图';
-        }
+        content.innerHTML = recordMindMapEmptyHTML;
       });
     }
 
@@ -10500,14 +10493,13 @@ ${achievementsText ? `本周成就：\n${achievementsText}\n` : ''}${challengesT
       }
       
       if (weekEntries.length === 0 && weekReviews.length === 0) {
-        content.innerHTML = '<span style="color: #6B7280;">📝 本周暂无记录，请先添加一些内容</span>';
+        content.innerHTML = '<div class="empty-state" style="padding: 2.5rem 1.5rem;"><span style="color: #6B7280;">📝 本周暂无记录，请先添加一些内容</span></div>';
         return;
       }
       
       // 显示加载状态
-      btn.disabled = true;
-      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> 生成中';
-      content.innerHTML = '<span style="color: var(--text-muted);">🤖 AI 正在生成脑图...</span>';
+      if (btn) btn.disabled = true;
+      content.innerHTML = '<div class="empty-state" style="padding: 2.5rem 1.5rem;"><button class="btn btn-primary" id="generateMindMapBtn" disabled style="margin: 0 auto; display: flex; opacity: 0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg>生成中</button></div>';
       
       const prompt = buildWeeklyMindMapPrompt(weekEntries, weekReviews, monday, sunday);
       
@@ -10523,18 +10515,13 @@ ${achievementsText ? `本周成就：\n${achievementsText}\n` : ''}${challengesT
           } catch (e) {
             console.error('Save weekly mind map error:', e);
           }
-          content.innerHTML = renderMindMap(mindMapData);
+          content.innerHTML = renderMindMap(mindMapData) + weeklyMindMapRegenerateBtnHTML;
         } else {
           // 如果解析失败，显示原始文本
-          content.innerHTML = formatSummaryContent(response);
+          content.innerHTML = formatSummaryContent(response) + weeklyMindMapRegenerateBtnHTML;
         }
-        
-        btn.disabled = false;
-        btn.innerHTML = '重新生成';
       }, (error) => {
-        content.innerHTML = `<span style="color: #6B7280;">❌ 生成失败: ${error}</span>`;
-        btn.disabled = false;
-        btn.innerHTML = '重新生成';
+        content.innerHTML = `<div class="empty-state" style="padding: 2.5rem 1.5rem;"><span style="color: #6B7280;">❌ 生成失败: ${error}</span><br><button class="btn btn-primary" id="generateMindMapBtn" onclick="generateWeeklyMindMap()" style="margin: 1rem auto 0; display: flex;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>重新生成</button></div>`;
       });
     }
     
@@ -10594,6 +10581,10 @@ ${achievementsText ? `本周成就：\n${achievementsText}` : ''}${challengesTex
 7. 根据实际记录内容调整分支数量和内容`; 
     }
     
+    // 每周脑图 - 空状态与重新生成按钮 HTML 片段
+    const weeklyMindMapEmptyHTML = '<div class="empty-state" style="padding: 2.5rem 1.5rem;"><button class="btn btn-primary" id="generateMindMapBtn" onclick="generateWeeklyMindMap()" style="margin: 0 auto; display: flex;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>生成脑图</button></div>';
+    const weeklyMindMapRegenerateBtnHTML = '<div style="text-align: center; margin-top: 1.25rem;"><button class="btn btn-primary" id="generateMindMapBtn" onclick="generateWeeklyMindMap()" style="display: inline-flex;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>重新生成</button></div>';
+
     // 加载每周脑图
     function loadWeeklyMindMap() {
       const monday = getWeekStartDate(selectedWeekOffset);
@@ -10607,15 +10598,15 @@ ${achievementsText ? `本周成就：\n${achievementsText}` : ''}${challengesTex
         const saved = localStorage.getItem(storageKey);
         if (saved) {
           const mindMapData = JSON.parse(saved);
-          content.innerHTML = renderMindMap(mindMapData);
+          content.innerHTML = renderMindMap(mindMapData) + weeklyMindMapRegenerateBtnHTML;
           return true;
         }
       } catch (e) {
         console.error('Load weekly mind map error:', e);
       }
       
-      // 如果没有保存的脑图，显示默认提示
-      content.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">点击上方按钮，AI 将根据本周记录生成脑图</span>';
+      // 如果没有保存的脑图，显示空状态按钮
+      content.innerHTML = weeklyMindMapEmptyHTML;
       return false;
     }
 
@@ -10643,9 +10634,8 @@ ${achievementsText ? `本周成就：\n${achievementsText}` : ''}${challengesTex
       }
       
       // 显示加载状态
-      btn.disabled = true;
-      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> 生成中';
-      content.innerHTML = '<span style="color: var(--text-muted);">🤖 AI 正在生成脑图...</span>';
+      if (btn) btn.disabled = true;
+      content.innerHTML = '<div class="empty-state" style="padding: 2.5rem 1.5rem;"><button class="btn btn-primary" id="recordMindMapBtn" disabled style="margin: 0 auto; display: flex; opacity: 0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg>生成中</button></div>';
       
       const prompt = buildMindMapPrompt(todayEntries, todayReview);
       
@@ -10656,7 +10646,7 @@ ${achievementsText ? `本周成就：\n${achievementsText}` : ''}${challengesTex
         
         // 渲染脑图
         if (mindMapData) {
-          content.innerHTML = renderMindMap(mindMapData);
+          content.innerHTML = renderMindMap(mindMapData) + recordMindMapRegenerateBtnHTML;
           // 保存到 localStorage
           localStorage.setItem('mindmap_' + dateKey, JSON.stringify(mindMapData));
           // 保存到全局状态
@@ -10664,15 +10654,10 @@ ${achievementsText ? `本周成就：\n${achievementsText}` : ''}${challengesTex
           localStorage.setItem('daywise_mind_maps', JSON.stringify(mindMaps));
         } else {
           // 如果解析失败，显示原始文本
-          content.innerHTML = formatSummaryContent(response);
+          content.innerHTML = formatSummaryContent(response) + recordMindMapRegenerateBtnHTML;
         }
-        
-        btn.disabled = false;
-        btn.innerHTML = '重新生成';
       }, (error) => {
-        content.innerHTML = '<span style="color: #6B7280;">❌ 生成失败，请重试</span>';
-        btn.disabled = false;
-        btn.innerHTML = '重新生成';
+        content.innerHTML = '<div class="empty-state" style="padding: 2.5rem 1.5rem;"><span style="color: #6B7280;">❌ 生成失败，请重试</span><br><button class="btn btn-primary" id="recordMindMapBtn" onclick="generateRecordMindMap()" style="margin: 1rem auto 0; display: flex;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>重新生成</button></div>';
       });
     }
     
