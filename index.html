@@ -6624,10 +6624,155 @@
       return lines.length ? lines : [text];
     }
 
+    // 为 admin 账号注入 7 天 demo 记录（仅首次）
+    function seedAdminDemoData() {
+      if (currentUsername !== 'admin') return;
+      const seedKey = 'daywise_demo_seeded';
+      if (localStorage.getItem(seedKey)) return; // 已注入过
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const demoEntries = [];
+      const demoReviews = {};
+
+      // 7 天 demo 内容（从 6 天前到今天）
+      const demoData = [
+        {
+          emotion: 'good',
+          entries: [
+            { time: '09:32', content: '上午完成了产品需求文档的评审，和团队对齐了 v2.0 的核心功能优先级。', mood: 'happy' },
+            { time: '14:15', content: '下午读了《深度工作》第三章，关于减少浅工作的策略，挺有启发。', mood: '' },
+            { time: '21:08', content: '晚上慢跑了 4 公里，状态慢慢回来了。', mood: 'calm' }
+          ],
+          achievement: '完成 v2.0 需求评审，团队达成一致',
+          challenge: '需求范围太大，砍掉了一些想做的功能',
+          learnings: '优先级排序时要以用户价值为第一标准',
+          tomorrow: '开始拆分第一个迭代的开发任务'
+        },
+        {
+          emotion: 'okay',
+          entries: [
+            { time: '10:20', content: '修复了登录模块的 token 刷新 bug，排查了两小时才定位到。', mood: '' },
+            { time: '15:40', content: '和后端同学对了一下接口字段，有几个地方需要调整命名。', mood: '' },
+            { time: '19:30', content: '下班去超市采购了一周的水果和零食。', mood: 'happy' }
+          ],
+          achievement: '定位并修复登录 token 刷新问题',
+          challenge: 'bug 复现条件不稳定，调试花了不少时间',
+          learnings: '日志埋点要在关键路径上做全，方便后续排查',
+          tomorrow: '整理接口文档发给前端组'
+        },
+        {
+          emotion: 'good',
+          entries: [
+            { time: '09:05', content: '早上和设计团队对齐了新版 UI 方案，视觉方向确定了。', mood: 'excited' },
+            { time: '12:30', content: '午餐和同事聊了下半年的项目方向，碰撞出一些新想法。', mood: 'happy' },
+            { time: '16:50', content: '下午写完了本周的技术周报，梳理了进度和风险。', mood: '' }
+          ],
+          achievement: 'UI 方案定稿，周报按时提交',
+          challenge: '设计方案和开发实现之间还有 gap 需要协调',
+          learnings: '跨团队沟通要把结论落到文档里，避免口头记忆偏差',
+          tomorrow: '准备明天的版本发布检查清单'
+        },
+        {
+          emotion: 'great',
+          entries: [
+            { time: '10:00', content: 'v1.2 版本正式发布！上线过程顺利，没有回滚。', mood: 'excited' },
+            { time: '14:30', content: '学习了 React Hooks 的 useReducer 和 useContext 进阶用法，做了个 demo。', mood: '' },
+            { time: '20:15', content: '团队一起吃了庆功饭，氛围很好。', mood: 'happy' }
+          ],
+          achievement: 'v1.2 顺利发布，团队庆功',
+          challenge: '发布前夜发现一个兼容性问题，临时修复了',
+          learnings: '发布前的回归测试要覆盖边界机型',
+          tomorrow: '周末放松一下，补个觉'
+        },
+        {
+          emotion: 'good',
+          entries: [
+            { time: '08:40', content: '上午跑了 5 公里，配速比上周快了一点点。', mood: 'excited' },
+            { time: '15:20', content: '下午和朋友去看了《奥本海默》，三个小时但很震撼。', mood: 'happy' },
+            { time: '22:00', content: '晚上整理了这周拍的照片，挑了几张满意的。', mood: 'calm' }
+          ],
+          achievement: '跑步 5 公里，看完一部好电影',
+          challenge: '周末有点放纵饮食，下周注意控制',
+          learnings: '高质量的休息也是生产力',
+          tomorrow: '整理本周笔记，做下周计划'
+        },
+        {
+          emotion: 'okay',
+          entries: [
+            { time: '10:30', content: '整理了本周的学习笔记，用思维导图梳理了一遍知识结构。', mood: '' },
+            { time: '14:00', content: '打扫了房间，换了床单，清爽多了。', mood: 'happy' },
+            { time: '19:45', content: '晚上复盘了上个月的开销，餐饮占比有点高。', mood: '' }
+          ],
+          achievement: '完成本周笔记整理和房间清洁',
+          challenge: '复盘时发现时间管理还有提升空间',
+          learnings: '定期复盘开销能帮助识别不必要的支出',
+          tomorrow: '新的一周，提前到公司做计划'
+        },
+        {
+          emotion: 'good',
+          entries: [
+            { time: '09:15', content: '周会同步了项目进度，本周重点推进脑图模块的优化。', mood: '' },
+            { time: '12:10', content: '中午和同事去试了公司附近新开的餐厅，味道不错。', mood: 'happy' },
+            { time: '16:30', content: '下午把"生成脑图"按钮的样式统一成了和 AI 分析一样的风格。', mood: 'excited' }
+          ],
+          achievement: '统一脑图按钮样式并部署上线',
+          challenge: '前端状态管理有点绕，改起来要小心',
+          learnings: 'UI 一致性对用户体验很重要',
+          tomorrow: '继续优化洞察页的周报展示'
+        }
+      ];
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dateKey = getDateKey(d);
+        const data = demoData[6 - i];
+
+        data.entries.forEach((e, idx) => {
+          const created = new Date(d);
+          created.setHours(parseInt(e.time.split(':')[0]), parseInt(e.time.split(':')[1]), 0, 0);
+          demoEntries.push({
+            id: `demo_${dateKey}_${idx}`,
+            dateKey: dateKey,
+            content: e.content,
+            mood: e.mood,
+            time: e.time,
+            createdAt: created.toISOString(),
+            starred: false
+          });
+        });
+
+        demoReviews[dateKey] = {
+          emotion: data.emotion,
+          achievement: data.achievement,
+          challenge: data.challenge,
+          learnings: data.learnings,
+          tomorrow: data.tomorrow,
+          savedAt: new Date(d).toISOString()
+        };
+      }
+
+      // 合并到全局数据（保留已有数据）
+      const existingKeys = new Set(entries.map(e => e.id));
+      demoEntries.forEach(e => {
+        if (!existingKeys.has(e.id)) entries.push(e);
+      });
+      Object.keys(demoReviews).forEach(k => {
+        if (!dailyReviews[k]) dailyReviews[k] = demoReviews[k];
+      });
+
+      saveData();
+      localStorage.setItem(seedKey, '1');
+      console.log('[Demo] 已为 admin 账号注入 7 天 demo 记录');
+    }
+
     // 应用初始化：加载所有数据
     function appUnlockAndLoad() {
       // 加载所有数据
       loadData();
+      // 为 admin 账号注入 demo 数据（仅首次）
+      seedAdminDemoData();
       loadSettings();
       loadTodos();
       renderTodoBanner();
