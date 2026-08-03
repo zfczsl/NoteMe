@@ -6739,7 +6739,7 @@
             id: `demo_${dateKey}_${idx}`,
             dateKey: dateKey,
             content: e.content,
-            mood: e.mood,
+            mood: normalizeMood(e.mood) || '',
             time: e.time,
             createdAt: created.toISOString(),
             starred: false
@@ -8404,8 +8404,8 @@
           : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
         const starStyle = isStarred ? 'color: #111827;' : 'color: var(--text-muted);';
         
-        // 提取心情emoji和中文标签（优先使用entry.mood字段，兼容旧数据从content解析）
-        let moodKey = entry.mood || '';
+        // 提取心情emoji和中文标签（优先使用entry.mood字段，兼容英文/emoji，兼容旧数据从content解析）
+        let moodKey = entry.mood ? normalizeMood(entry.mood) : '';
         // 兼容旧数据：没有mood字段时从content开头解析
         if (!moodKey && /^[😄😊😌🤔😔😤😴💪]/.test(entry.content)) {
           const m = entry.content.match(/^[😄😊😌🤔😔😤😴💪]/);
@@ -9380,21 +9380,41 @@ ${entry.content}`;
     function extractMoodData(dayEntries) {
       const moodMap = {};
       dayEntries.forEach(e => {
-        // 优先使用 entry.mood 字段，兼容旧数据从 content 开头解析
-        let emoji = e.mood || '';
-        if (!emoji) {
+        // 优先使用 entry.mood 字段（兼容英文/emoji），兼容旧数据从 content 开头解析
+        let emoji = e.mood ? normalizeMood(e.mood) : '';
+        if (!emoji || emoji.length > 2) {
           const moodMatch = e.content.match(/^[😄😊😌🤔😔😤😴💪]/);
           if (moodMatch) emoji = moodMatch[0];
         }
-        if (emoji) {
+        if (emoji && emoji.length <= 2) {
           moodMap[emoji] = (moodMap[emoji] || 0) + 1;
         }
       });
       return moodMap;
     }
 
+    // 心情英文/中文统一映射为 emoji
+    function normalizeMood(mood) {
+      if (!mood) return '';
+      const key = typeof mood === 'string' ? mood.trim().toLowerCase() : String(mood);
+      const moodEmojiMap = {
+        'happy': '😊', 'excited': '😄', 'calm': '😌', 'peaceful': '😌',
+        'thinking': '🤔', 'thoughtful': '🤔',
+        'sad': '😔', 'down': '😔', 'low': '😔', 'upset': '😔',
+        'angry': '😤', 'mad': '😤', 'annoyed': '😤',
+        'tired': '😴', 'sleepy': '😴', 'exhausted': '😴',
+        'strong': '💪', 'productive': '💪', 'energetic': '💪', 'empowered': '💪',
+        'great': '😄', 'good': '😊', 'okay': '😐', 'fine': '😐',
+        'bad': '😞', 'terrible': '😞', 'awful': '😞',
+        '开心': '😊', '兴奋': '😄', '平静': '😌', '思考': '🤔',
+        '低落': '😔', '生气': '😤', '疲惫': '😴', '充实': '💪'
+      };
+      return moodEmojiMap[key] || mood;
+    }
+
     // 获取心情标签
-    function getMoodLabel(emoji) {
+    function getMoodLabel(mood) {
+      const emoji = normalizeMood(mood);
       const labels = {
         '😄': '开心', '😊': '愉悦', '😌': '平静', '🤔': '思考',
         '😔': '低落', '😤': '生气', '😴': '疲惫', '💪': '充实'
