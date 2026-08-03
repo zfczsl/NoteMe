@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noteme-v2';
+const CACHE_NAME = 'noteme-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -8,19 +8,19 @@ const STATIC_ASSETS = [
   '/icons/icon-512.png'
 ];
 
-// 安装时缓存核心资源
+// 安装时缓存静态资源
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
     }).then(() => {
-      // 强制立即激活，不等待旧 SW 释放
+      // 安装完成后立即激活 SW
       return self.skipWaiting();
     })
   );
 });
 
-// 激活时清理所有旧缓存，并接管所有页面
+// 激活时清理旧缓存
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -33,7 +33,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 网络优先策略
+// 拦截请求
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
