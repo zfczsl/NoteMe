@@ -11013,7 +11013,21 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
         svgContent += `<text x="${Math.round(c.x)}" y="${Math.round(c.y + 20 + i * 15)}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="13" font-weight="700">${line}</text>`;
       });
 
-      return `<svg width="100%" height="460" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background: white; border-radius: 12px; display: block;">${svgContent}</svg>`;
+      // 生成唯一 ID，接通拖拽/缩放交互
+      if (!renderMindMap._counter) renderMindMap._counter = 0;
+      renderMindMap._counter++;
+      const mapId = 'mindmap-' + renderMindMap._counter;
+
+      const svgTag = `<svg width="100%" height="460" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background: white; display: block;">${svgContent}</svg>`;
+
+      return `<div id="${mapId}" style="position: relative; overflow: hidden; border-radius: 12px; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none;" onmousedown="mindMapDragStart(event, '${mapId}')" ontouchstart="mindMapDragStart(event, '${mapId}')" onwheel="mindMapWheel(event, '${mapId}')" oncontextmenu="event.preventDefault();">
+        <div id="${mapId}-inner" style="transform-origin: 50% 50%; will-change: transform; transition: transform 0.05s ease-out;">${svgTag}</div>
+        <div style="position: absolute; bottom: 10px; right: 10px; display: flex; gap: 4px; background: rgba(255,255,255,0.92); border-radius: 8px; padding: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.12); z-index: 10;">
+          <button onclick="mindMapZoom('${mapId}', 0.2)" style="width: 30px; height: 30px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 18px; line-height: 1; color: #374151;" title="放大">＋</button>
+          <button onclick="mindMapZoom('${mapId}', -0.2)" style="width: 30px; height: 30px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 18px; line-height: 1; color: #374151;" title="缩小">－</button>
+          <button onclick="mindMapReset('${mapId}')" style="height: 30px; padding: 0 8px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; font-size: 11px; color: #374151;" title="重置">重置</button>
+        </div>
+      </div>`;
     }
 
     let mindMapStates = {};
