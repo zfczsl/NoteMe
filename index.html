@@ -2909,6 +2909,8 @@
       loadNext();
     })();
   </script>
+  <!-- D3.js for mind map force-directed graph -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 </head>
 <body>
 
@@ -10904,10 +10906,6 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
       const count = branches.length;
       if (count === 0) return '<span style="color: #6B7280;">⚠️ 无分支数据</span>';
 
-      // 画布: 1000x700，中心在正中间
-      const W = 1000, H = 700;
-      const cx = W / 2, cy = H / 2;
-
       const colorMap = {
         '💼': '#FB7185', '📚': '#818CF8', '🏠': '#34D399', '💪': '#FBBF24',
         '👥': '#A78BFA', '💰': '#F59E0B', '🎮': '#EC4899', '🌱': '#10B981',
@@ -10916,56 +10914,30 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
         '🏃': '#34D399', '🧘': '#A78BFA', '🍳': '#F59E0B', '🎵': '#EC4899',
         '✈️': '#3B82F6', '🎬': '#8B5CF6', '📖': '#818CF8', '🏢': '#FB7185',
       };
-      function getBranchColor(branch) {
-        const emoji = branch.emoji || '📌';
-        return colorMap[emoji] || branch.color || '#6B7280';
-      }
 
-      // 收集所有节点坐标 (手动散布)
-      const nodes = [];
-      const links = [];
+      // 转换为 D3 nodes/links 格式
+      const d3Nodes = [];
+      const d3Links = [];
+      let nid = 1;
 
-      // 中心
-      nodes.push({ id: 'center', x: cx, y: cy, r: 38, text: data.center || '本周', emoji: data.centerEmoji || '🎯', color: '#FB7185', level: 0 });
-
-      // 为不同分支数预设角度，避免正十字
-      const angles = count === 1 ? [-90]
-        : count === 2 ? [-60, 120]
-        : count === 3 ? [-70, 50, 190]
-        : count === 4 ? [-55, 35, 145, 235]
-        : count === 5 ? [-65, 25, 85, 155, 215]
-        : (() => { const a = []; const step = 360 / count; for (let i = 0; i < count; i++) a.push(-70 + step * i); return a; })();
+      const centerEmoji = data.centerEmoji || '🎯';
+      const centerColor = colorMap[centerEmoji] || '#FB7185';
+      d3Nodes.push({ id: nid, name: data.center || '本周', emoji: centerEmoji, color: centerColor, level: 0, size: 36 });
+      const centerId = nid;
+      nid++;
 
       branches.forEach((branch, idx) => {
-        const color = getBranchColor(branch);
-        const angleDeg = angles[idx % angles.length];
-        const angleRad = angleDeg * Math.PI / 180;
-        const dist = count <= 3 ? 220 : 190;
-        const bx = cx + dist * Math.cos(angleRad);
-        const by = cy + dist * Math.sin(angleRad);
-        const bId = 'b' + idx;
+        const emoji = branch.emoji || '📌';
+        const color = colorMap[emoji] || branch.color || '#6B7280';
+        const bId = nid;
+        d3Nodes.push({ id: bId, name: branch.name, emoji, color, level: 1, size: 26 });
+        d3Links.push({ source: centerId, target: bId });
+        nid++;
 
-        nodes.push({ id: bId, x: bx, y: by, r: 30, text: branch.name, emoji: branch.emoji || '📌', color, level: 1 });
-        links.push({ from: 'center', to: bId, color });
-
-        // 三级节点: 父节点外侧扇形展开
-        const items = branch.items || [];
-        const sCount = items.length;
-        items.forEach((item, j) => {
-          let childAngle;
-          if (sCount === 1) {
-            childAngle = angleRad; // 沿父节点方向继续向外
-          } else {
-            // 扇形展开 ±40°
-            const half = 40 * Math.PI / 180;
-            childAngle = angleRad - half + (2 * half * j / (sCount - 1));
-          }
-          const cd = 115;
-          const ix = bx + cd * Math.cos(childAngle);
-          const iy = by + cd * Math.sin(childAngle);
-          const iId = 'i' + idx + '_' + j;
-          nodes.push({ id: iId, x: ix, y: iy, r: 10, text: item, color, level: 2 });
-          links.push({ from: bId, to: iId, color });
+        (branch.items || []).forEach(item => {
+          d3Nodes.push({ id: nid, name: item, color, level: 2, size: 11 });
+          d3Links.push({ source: bId, target: nid });
+          nid++;
         });
       });
 
@@ -10974,149 +10946,151 @@ ${todayReview?.challenge ? `今日挑战：${todayReview.challenge}` : ''}
       renderMindMap._counter++;
       const mapId = 'mindmap-' + renderMindMap._counter;
 
-      // 存储节点位置和连线，供拖拽使用
-      if (!window._mmData) window._mmData = {};
-      const nodePos = {};
-      nodes.forEach(n => { nodePos[n.id] = { x: n.x, y: n.y }; });
-      window._mmData[mapId] = { nodes: nodePos, links: links };
+      // 延迟初始化 D3 力导向图（等容器插入 DOM 后）
+      const d3Data = { nodes: d3Nodes, links: d3Links };
+      setTimeout(() => initD3MindMap(mapId, d3Data), 30);
 
-      // ---- 绘制 ----
-      let svgContent = '';
+      return `<div id="${mapId}" style="width: 100%; height: 440px; background: #fff; border-radius: 12px; overflow: hidden; position: relative; touch-action: none;"></div>`;
+    }
 
-      // 连线（每个 line 有唯一 id，拖拽时更新端点）
-      links.forEach(l => {
-        const s = nodePos[l.from], t = nodePos[l.to];
-        if (!s || !t) return;
-        const tNode = nodes.find(n => n.id === l.to);
-        const opacity = tNode.level === 2 ? 0.2 : 0.3;
-        svgContent += `<line id="${mapId}-lnk-${l.from}-${l.to}" x1="${Math.round(s.x)}" y1="${Math.round(s.y)}" x2="${Math.round(t.x)}" y2="${Math.round(t.y)}" stroke="${l.color}" stroke-width="1.5" opacity="${opacity}" stroke-linecap="round" pointer-events="none"/>`;
-      });
+    // ========== D3 力导向气泡网络图 ==========
+    function initD3MindMap(containerId, data) {
+      const container = document.getElementById(containerId);
+      if (!container || typeof d3 === 'undefined') return;
+      container.innerHTML = '';
 
-      // 节点分组（可拖拽 <g>），先画底层再画顶层
-      const sortedNodes = [...nodes].sort((a, b) => b.level - a.level);
-      sortedNodes.forEach(n => {
-        const gid = `${mapId}-node-${n.id}`;
-        svgContent += `<g id="${gid}" style="cursor: grab;" onmousedown="mmNodeDragStart(event,'${mapId}','${n.id}')" ontouchstart="mmNodeDragStart(event,'${mapId}','${n.id}')">`;
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 440;
 
-        if (n.level === 1) {
-          svgContent += `<circle cx="${Math.round(n.x)}" cy="${Math.round(n.y)}" r="${n.r + 22}" fill="${n.color}" opacity="0.06" pointer-events="none"/>`;
-          svgContent += `<circle cx="${Math.round(n.x)}" cy="${Math.round(n.y)}" r="${n.r + 3}" fill="${n.color}" opacity="0.08" pointer-events="none"/>`;
-          svgContent += `<circle cx="${Math.round(n.x)}" cy="${Math.round(n.y)}" r="${n.r}" fill="white" stroke="${n.color}" stroke-width="2.5"/>`;
-          svgContent += `<text x="${Math.round(n.x)}" y="${Math.round(n.y - 2)}" text-anchor="middle" dominant-baseline="middle" font-size="18" pointer-events="none">${n.emoji}</text>`;
-          const lines = splitText(escapeHtml(n.text), 4);
-          lines.forEach((line, i) => {
-            svgContent += `<text x="${Math.round(n.x)}" y="${Math.round(n.y + 18 + i * 13)}" text-anchor="middle" dominant-baseline="middle" fill="#374151" font-size="11" font-weight="700" pointer-events="none">${line}</text>`;
-          });
-        } else if (n.level === 2) {
-          svgContent += `<circle cx="${Math.round(n.x)}" cy="${Math.round(n.y)}" r="${n.r}" fill="${n.color}" opacity="0.6"/>`;
-          const short = n.text.length > 7 ? n.text.substring(0, 7) + '..' : n.text;
-          svgContent += `<text x="${Math.round(n.x)}" y="${Math.round(n.y - n.r - 10)}" text-anchor="middle" font-size="10" fill="#6B7280" pointer-events="none">${escapeHtml(short)}</text>`;
+      const svg = d3.select('#' + containerId)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .style('display', 'block');
+
+      // 力导向模拟
+      const simulation = d3.forceSimulation(data.nodes)
+        .force('link', d3.forceLink(data.links).id(d => d.id).distance(d => {
+          return d.source.level === 0 ? 125 : 75;
+        }))
+        .force('charge', d3.forceManyBody().strength(-260))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(d => d.size + 10));
+
+      // 连线
+      const link = svg.append('g')
+        .selectAll('line')
+        .data(data.links)
+        .enter()
+        .append('line')
+        .attr('stroke', d => {
+          const sn = data.nodes.find(n => n.id === (d.source.id !== undefined ? d.source.id : d.source));
+          return sn ? sn.color : '#999';
+        })
+        .attr('stroke-opacity', d => {
+          const tn = data.nodes.find(n => n.id === (d.target.id !== undefined ? d.target.id : d.target));
+          return tn && tn.level === 2 ? 0.2 : 0.3;
+        })
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linecap', 'round');
+
+      // 节点组
+      const node = svg.append('g')
+        .selectAll('.node')
+        .data(data.nodes)
+        .enter()
+        .append('g')
+        .attr('class', 'node')
+        .style('cursor', 'grab')
+        .call(d3.drag()
+          .on('start', (event, d) => {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x; d.fy = d.y;
+          })
+          .on('drag', (event, d) => {
+            d.fx = event.x; d.fy = event.y;
+          })
+          .on('end', (event, d) => {
+            if (!event.active) simulation.alphaTarget(0);
+          }));
+
+      // 光晕
+      node.append('circle')
+        .attr('r', d => d.size + 12)
+        .attr('fill', d => d.color)
+        .attr('fill-opacity', 0.06)
+        .style('pointer-events', 'none');
+
+      // 主圆
+      node.append('circle')
+        .attr('r', d => d.size)
+        .attr('fill', d => {
+          if (d.level === 0) return d.color;
+          if (d.level === 1) return '#fff';
+          return d.color;
+        })
+        .attr('fill-opacity', d => d.level === 0 ? 0.9 : (d.level === 1 ? 1 : 0.6))
+        .attr('stroke', d => d.level === 1 ? d.color : 'none')
+        .attr('stroke-width', d => d.level === 1 ? 2.5 : 0)
+        .style('filter', d => `drop-shadow(0 0 ${Math.round(d.size / 3)}px ${d.color}40)`);
+
+      // emoji（中心 + 二级节点）
+      node.filter(d => d.level <= 1)
+        .append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
+        .attr('font-size', d => d.level === 0 ? 22 : 16)
+        .attr('dy', d => d.level === 0 ? -4 : -2)
+        .text(d => d.emoji || '')
+        .style('pointer-events', 'none');
+
+      // 名称文字
+      node.each(function(d) {
+        const g = d3.select(this);
+        const short = d.name.length > 6 ? d.name.substring(0, 6) + '..' : d.name;
+        if (d.level === 0) {
+          // 中心：白色文字在圆内下方
+          g.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+            .attr('font-size', 12)
+            .attr('font-weight', 700)
+            .attr('fill', '#fff')
+            .attr('dy', 18)
+            .text(short)
+            .style('pointer-events', 'none');
+        } else if (d.level === 1) {
+          // 二级：深色文字在圆内下方
+          g.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+            .attr('font-size', 10)
+            .attr('font-weight', 700)
+            .attr('fill', '#374151')
+            .attr('dy', 16)
+            .text(short)
+            .style('pointer-events', 'none');
         } else {
-          // 中心节点
-          svgContent += `<circle cx="${Math.round(n.x)}" cy="${Math.round(n.y)}" r="${n.r}" fill="#FB7185" opacity="0.9"/>`;
-          svgContent += `<text x="${Math.round(n.x)}" y="${Math.round(n.y - 6)}" text-anchor="middle" dominant-baseline="middle" font-size="26" pointer-events="none">${n.emoji}</text>`;
-          const clines = splitText(escapeHtml(n.text), 4);
-          clines.forEach((line, i) => {
-            svgContent += `<text x="${Math.round(n.x)}" y="${Math.round(n.y + 20 + i * 15)}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="13" font-weight="700" pointer-events="none">${line}</text>`;
-          });
-        }
-        svgContent += `</g>`;
-      });
-
-      return `<svg id="${mapId}-svg" width="100%" height="460" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background: white; border-radius: 12px; display: block; user-select: none; -webkit-user-select: none; touch-action: none;">${svgContent}</svg>`;
-    }
-
-    // ========== 脑图节点拖拽 ==========
-
-    // 屏幕坐标 → SVG viewBox 坐标
-    function mmScreenToSVG(svg, clientX, clientY) {
-      const pt = svg.createSVGPoint();
-      pt.x = clientX;
-      pt.y = clientY;
-      const ctm = svg.getScreenCTM();
-      if (!ctm) return { x: 0, y: 0 };
-      return pt.matrixTransform(ctm.inverse());
-    }
-
-    let activeNodeDrag = null;
-
-    function mmNodeDragStart(event, mapId, nodeId) {
-      event.stopPropagation();
-      event.preventDefault();
-
-      const data = window._mmData[mapId];
-      if (!data) return;
-      const svg = document.getElementById(mapId + '-svg');
-      if (!svg) return;
-
-      const g = document.getElementById(mapId + '-node-' + nodeId);
-      if (g) g.style.cursor = 'grabbing';
-
-      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
-      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-      const startSVG = mmScreenToSVG(svg, clientX, clientY);
-
-      activeNodeDrag = {
-        mapId: mapId,
-        nodeId: nodeId,
-        svg: svg,
-        startSVGX: startSVG.x,
-        startSVGY: startSVG.y,
-        nodeStartX: data.nodes[nodeId].x,
-        nodeStartY: data.nodes[nodeId].y
-      };
-
-      document.addEventListener('mousemove', mmNodeDragMove);
-      document.addEventListener('mouseup', mmNodeDragEnd);
-      document.addEventListener('touchmove', mmNodeDragMove, { passive: false });
-      document.addEventListener('touchend', mmNodeDragEnd);
-    }
-
-    function mmNodeDragMove(event) {
-      if (!activeNodeDrag) return;
-      event.preventDefault();
-
-      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
-      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-      const cur = mmScreenToSVG(activeNodeDrag.svg, clientX, clientY);
-      const dx = cur.x - activeNodeDrag.startSVGX;
-      const dy = cur.y - activeNodeDrag.startSVGY;
-
-      const data = window._mmData[activeNodeDrag.mapId];
-      const node = data.nodes[activeNodeDrag.nodeId];
-      node.x = activeNodeDrag.nodeStartX + dx;
-      node.y = activeNodeDrag.nodeStartY + dy;
-
-      // 移动整个 <g> 组
-      const g = document.getElementById(activeNodeDrag.mapId + '-node-' + activeNodeDrag.nodeId);
-      if (g) g.setAttribute('transform', `translate(${dx},${dy})`);
-
-      // 更新关联连线端点
-      data.links.forEach(l => {
-        if (l.from === activeNodeDrag.nodeId || l.to === activeNodeDrag.nodeId) {
-          const lineEl = document.getElementById(`${activeNodeDrag.mapId}-lnk-${l.from}-${l.to}`);
-          if (lineEl) {
-            const fn = data.nodes[l.from];
-            const tn = data.nodes[l.to];
-            lineEl.setAttribute('x1', Math.round(fn.x));
-            lineEl.setAttribute('y1', Math.round(fn.y));
-            lineEl.setAttribute('x2', Math.round(tn.x));
-            lineEl.setAttribute('y2', Math.round(tn.y));
-          }
+          // 三级：文字在圆上方
+          g.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', 9)
+            .attr('fill', '#6B7280')
+            .attr('dy', -(d.size + 8))
+            .text(short)
+            .style('pointer-events', 'none');
         }
       });
-    }
 
-    function mmNodeDragEnd() {
-      if (!activeNodeDrag) return;
-      const g = document.getElementById(activeNodeDrag.mapId + '-node-' + activeNodeDrag.nodeId);
-      if (g) g.style.cursor = 'grab';
-      activeNodeDrag = null;
-
-      document.removeEventListener('mousemove', mmNodeDragMove);
-      document.removeEventListener('mouseup', mmNodeDragEnd);
-      document.removeEventListener('touchmove', mmNodeDragMove);
-      document.removeEventListener('touchend', mmNodeDragEnd);
+      // tick 更新位置
+      simulation.on('tick', () => {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+      });
     }
     // ========== 脑图交互结束 ==========
 
