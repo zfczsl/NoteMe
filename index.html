@@ -2879,6 +2879,32 @@
     .pwa-guide-btn:hover {
       background: var(--gradient-cta-hover);
     }
+
+    /* ═══ 浮动提示 Toast ═══ */
+    .smart-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: rgba(17, 24, 39, 0.95);
+      color: #fff;
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      z-index: 99999;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+      max-width: 90vw;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .smart-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
   </style>
   
   <!-- CloudBase 完整 SDK（含手机号登录）：本地文件优先，官方 CDN 备用 -->
@@ -3021,10 +3047,16 @@
         ></textarea>
         <div class="entry-footer">
           <span id="dailyCharCounter" style="font-size: 0.75rem; color: var(--text-muted);"></span>
-          <button class="btn btn-primary" onclick="saveEntry()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            记录
-          </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" onclick="smartParseTodos()" id="smartTodoBtn" title="AI 自动从文字中提取待办" style="font-size: 0.82rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              智能待办
+            </button>
+            <button class="btn btn-primary" onclick="saveEntry()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              记录
+            </button>
+          </div>
         </div>
       </div>
 
@@ -4207,6 +4239,147 @@
         renderTodoList();
         syncTodosToCloud(); // 同步到云端
       }
+    }
+
+    // ========== 浮动提示 Toast ==========
+    let _toastTimer = null;
+    function showToast(msg, duration) {
+      duration = duration || 3000;
+      let toast = document.getElementById('smartToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'smartToast';
+        toast.className = 'smart-toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('show');
+      if (_toastTimer) clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(function() {
+        toast.classList.remove('show');
+      }, duration);
+    }
+
+    // ========== 获取本周五日期字符串 ==========
+    function getThisFridayStr() {
+      var d = new Date();
+      var dayOfWeek = d.getDay(); // 0=周日, 5=周五
+      var daysToFriday = (5 - dayOfWeek + 7) % 7;
+      d.setDate(d.getDate() + daysToFriday);
+      return getDateStr(d);
+    }
+
+    // ========== 智能待办解析 ==========
+    function smartParseTodos() {
+      var input = document.getElementById('entryInput');
+      var text = input.value.trim();
+      var btn = document.getElementById('smartTodoBtn');
+
+      if (!text) {
+        showToast('请先输入内容，比如"今天要做需求评审，明天完成发版"');
+        return;
+      }
+
+      if (!apiKey) {
+        showToast('请先在设置中配置 AI API Key');
+        return;
+      }
+
+      // 保存原始按钮内容
+      var originalBtnHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> 解析中...';
+
+      var today = getTodayStr();
+      var tomorrow = getTomorrowStr();
+      var friday = getThisFridayStr();
+      var weekDays = ['周日','周一','周二','周三','周四','周五','周六'];
+      var todayDate = new Date();
+      var todayWeekday = weekDays[todayDate.getDay()];
+
+      // 后天
+      var dayAfter = new Date();
+      dayAfter.setDate(dayAfter.getDate() + 2);
+
+      var prompt = '你是待办事项解析助手。请分析用户说的一段话，提取所有待办事项，返回纯JSON格式（不要包含```json标记）。\n\n' +
+        '用户说的话：' + text + '\n' +
+        '今天日期：' + today + '（' + todayWeekday + '）\n' +
+        '明天日期：' + tomorrow + '\n' +
+        '后天日期：' + getDateStr(dayAfter) + '\n' +
+        '本周五日期：' + friday + '\n\n' +
+        '解析规则：\n' +
+        '- "今天" → date 为 ' + today + '\n' +
+        '- "明天" → date 为 ' + tomorrow + '\n' +
+        '- "后天" → date 为 ' + getDateStr(dayAfter) + '\n' +
+        '- "这周/本周" → date 为 ' + friday + '\n' +
+        '- "下周一" 等 → 计算具体日期\n' +
+        '- "下班前" → time 为 "18:00"\n' +
+        '- "上午" → time 为 "09:00"\n' +
+        '- "下午X点" → time 为对应时间\n' +
+        '- 没有明确时间 → time 为空字符串\n\n' +
+        '返回格式（纯JSON，不要```json标记）：\n' +
+        '{"todos":[{"content":"待办内容（简洁）","date":"YYYY-MM-DD","time":"HH:mm或空","priority":"high/medium/low"}]}\n\n' +
+        '注意：\n' +
+        '- 如果不包含待办意图，返回 {"todos":[]}\n' +
+        '- content 要简洁明了，去掉"我要做""需要完成"等修饰词\n' +
+        '- 一段话中有多个待办全部提取出来';
+
+      callAIApi(prompt, function(response) {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHTML;
+
+        // 解析 JSON
+        var parsed;
+        try {
+          var cleaned = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          parsed = JSON.parse(cleaned);
+        } catch (e) {
+          // 尝试提取 JSON
+          var jsonMatch = response.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            try {
+              parsed = JSON.parse(jsonMatch[0]);
+            } catch (e2) {
+              showToast('解析失败，请重试或换个说法');
+              return;
+            }
+          } else {
+            showToast('解析失败，请重试或换个说法');
+            return;
+          }
+        }
+
+        if (!parsed.todos || parsed.todos.length === 0) {
+          showToast('未检测到待办事项，试试说"今天要做XX，明天完成YY"');
+          return;
+        }
+
+        // 创建待办
+        var created = 0;
+        var dateCount = {};
+        parsed.todos.forEach(function(todo) {
+          if (todo.content && todo.date) {
+            addTodo(todo.content, todo.date, null, todo.time || '');
+            created++;
+            var label = formatTodoDate(todo.date);
+            dateCount[label] = (dateCount[label] || 0) + 1;
+          }
+        });
+
+        if (created > 0) {
+          var summary = Object.keys(dateCount).map(function(k) {
+            return k + ' ' + dateCount[k] + '条';
+          }).join('、');
+          showToast('✅ 已创建 ' + created + ' 条待办：' + summary, 4000);
+        } else {
+          showToast('未检测到有效的待办事项');
+        }
+
+      }, function(error) {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHTML;
+        showToast('❌ 解析失败: ' + error);
+      }, '智能待办');
     }
     
     // 获取当前页面日期对应的待办数量（只取当前页面日期本身，不分今日明日）
