@@ -3018,10 +3018,22 @@
       display: flex; align-items: center; gap: 0.35rem;
     }
     .todo-goals-sub {
-      margin-left: auto;
       font-size: 0.7rem; color: var(--text-muted);
       background: var(--bg-secondary); padding: 0.15rem 0.55rem; border-radius: 999px;
     }
+    .todo-goals-header { cursor: default; }
+    .todo-goals-toggle {
+      margin-left: auto;
+      width: 26px; height: 26px; flex-shrink: 0;
+      border: none; background: var(--bg-secondary); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-secondary);
+      transition: background 0.2s;
+    }
+    .todo-goals-toggle:hover { background: var(--border-light); }
+    .todo-goals-toggle svg { width: 16px; height: 16px; transition: transform 0.25s ease; }
+    .todo-goals-toggle.collapsed svg { transform: rotate(-90deg); }
+    .todo-goals-body { margin-top: 0.1rem; }
     .todo-goal-row {
       display: flex; align-items: center; gap: 0.55rem;
       padding: 0.6rem 0;
@@ -3343,6 +3355,9 @@
         </div>
       </div>
 
+      <!-- 目标卡片 -->
+      <div class="todo-goals" id="todoGoalsCard"></div>
+
       <!-- 快捷添加 -->
       <div class="todo-quickadd">
         <input type="text" id="todoQuickInput" placeholder="添加一条待办，回车即可保存…" onkeydown="if(event.key==='Enter'){quickAddTodo();}">
@@ -3354,9 +3369,6 @@
 
       <!-- 概览卡片 -->
       <div class="todo-summary" id="todoSummaryCard"></div>
-
-      <!-- 目标卡片 -->
-      <div class="todo-goals" id="todoGoalsCard"></div>
 
       <!-- 分组列表 -->
       <div id="todoPageList"></div>
@@ -4927,8 +4939,9 @@
         todoGoals = JSON.parse(localStorage.getItem('daywise_todo_goals') || 'null');
       } catch(e) { todoGoals = null; }
       if (!todoGoals || typeof todoGoals !== 'object') {
-        todoGoals = { daily: {text:'',completed:false,period:''}, weekly: {text:'',completed:false,period:''}, yearly: {text:'',completed:false,period:''} };
+        todoGoals = { collapsed: false, daily: {text:'',completed:false,period:''}, weekly: {text:'',completed:false,period:''}, yearly: {text:'',completed:false,period:''} };
       }
+      if (typeof todoGoals.collapsed !== 'boolean') todoGoals.collapsed = false;
       const today = getTodayStr();
       const week = getWeekStartStr();
       const year = getYearStr();
@@ -4979,14 +4992,22 @@
 
       const completedCount = scopes.filter(s => todoGoals[s.key].completed).length;
       const setCount = scopes.filter(s => todoGoals[s.key].text.trim()).length;
+      const hasAny = setCount > 0;
+      // 没有写目标时强制展开；写了目标后是否折叠以用户手动设置为准
+      const collapsed = todoGoals.collapsed && hasAny;
 
-      let html = `
-        <div class="todo-goals-header">
-          <div class="todo-goals-title">🎯 我的目标</div>
-          <div class="todo-goals-sub">${completedCount}/${setCount} 达成</div>
-        </div>
-      `;
+      let html = `<div class="todo-goals-header">`;
+      html += `<div class="todo-goals-title">🎯 我的目标</div>`;
+      if (hasAny) {
+        html += `<div class="todo-goals-sub">${completedCount}/${setCount} 达成</div>`;
+        html += `<button class="todo-goals-toggle ${collapsed ? 'collapsed' : ''}" onclick="toggleTodoGoalsCollapse()" aria-label="折叠/展开目标">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>`;
+      }
+      html += `</div>`;
 
+      // 目标内容区（折叠时隐藏）
+      html += `<div class="todo-goals-body" style="display:${collapsed ? 'none' : 'block'};">`;
       scopes.forEach(s => {
         const g = todoGoals[s.key];
         const checkCls = g.completed ? 'todo-goal-check active' : 'todo-goal-check';
@@ -5003,8 +5024,16 @@
           </div>
         `;
       });
+      html += `</div>`;
 
       card.innerHTML = html;
+    }
+
+    function toggleTodoGoalsCollapse() {
+      if (!todoGoals) loadTodoGoals();
+      todoGoals.collapsed = !todoGoals.collapsed;
+      saveTodoGoals();
+      renderTodoGoals();
     }
 
     // ═══════════════════════════════════════════
