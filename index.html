@@ -3068,6 +3068,231 @@
     }
 
     /* ═══════════════════════════════════════════
+       待办页 · 月历
+       ═════════════════════════════════════════ */
+    .todo-calendar-card {
+      margin: 0 1rem 1.1rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+    .todo-calendar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .todo-calendar-month {
+      font-size: 0.95rem; font-weight: 700; color: var(--text-primary);
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .todo-calendar-nav {
+      display: flex; gap: 0.35rem;
+    }
+    .todo-calendar-nav button {
+      width: 28px; height: 28px;
+      border: none; background: var(--bg-secondary); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-secondary);
+      transition: background 0.2s;
+    }
+    .todo-calendar-nav button:hover { background: var(--border-light); }
+    .todo-calendar-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      text-align: center; font-size: 0.7rem; color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .todo-calendar-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .todo-calendar-day {
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding-top: 0.35rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .todo-calendar-day:hover { background: var(--bg-secondary); }
+    .todo-calendar-day.other-month { color: var(--text-muted); opacity: 0.65; }
+    .todo-calendar-day.today .todo-calendar-num {
+      background: var(--cta); color: #fff;
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .todo-calendar-num {
+      font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+      line-height: 1;
+    }
+    .todo-calendar-dots {
+      display: flex; gap: 2px; flex-wrap: wrap; justify-content: center;
+      margin-top: 0.25rem; max-width: 90%;
+    }
+    .todo-calendar-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       待办页 · 四象限矩阵
+       ═════════════════════════════════════════ */
+    .todo-matrix-card {
+      margin: 0 1rem 1.1rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+    .todo-matrix-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .todo-matrix-title {
+      font-size: 0.95rem; font-weight: 700; color: var(--text-primary);
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .todo-matrix-toggle {
+      width: 26px; height: 26px; flex-shrink: 0;
+      border: none; background: var(--bg-secondary); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-secondary);
+      transition: background 0.2s;
+    }
+    .todo-matrix-toggle:hover { background: var(--border-light); }
+    .todo-matrix-toggle svg { width: 16px; height: 16px; transition: transform 0.25s ease; }
+    .todo-matrix-toggle.collapsed svg { transform: rotate(-90deg); }
+    .todo-matrix-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+    .todo-matrix-quadrant {
+      border-radius: var(--radius);
+      padding: 0.7rem 0.7rem 0.5rem;
+      min-height: 90px;
+      border: 1px solid var(--border-light);
+      background: rgba(255,255,255,0.35);
+    }
+    .todo-matrix-q1 { border-left: 4px solid #EF4444; }
+    .todo-matrix-q2 { border-left: 4px solid #F59E0B; }
+    .todo-matrix-q3 { border-left: 4px solid #3B82F6; }
+    .todo-matrix-q4 { border-left: 4px solid #10B981; }
+    .todo-matrix-label {
+      font-size: 0.75rem; font-weight: 700;
+      margin-bottom: 0.45rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .todo-matrix-q1 .todo-matrix-label { color: #EF4444; }
+    .todo-matrix-q2 .todo-matrix-label { color: #F59E0B; }
+    .todo-matrix-q3 .todo-matrix-label { color: #3B82F6; }
+    .todo-matrix-q4 .todo-matrix-label { color: #10B981; }
+    .todo-matrix-count {
+      font-size: 0.65rem; font-weight: 600;
+      background: rgba(0,0,0,0.05); padding: 0.1rem 0.4rem; border-radius: 999px;
+    }
+    .todo-matrix-items {
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .todo-matrix-item {
+      font-size: 0.78rem; color: var(--text-primary);
+      padding: 0.35rem 0.45rem;
+      background: rgba(255,255,255,0.55);
+      border-radius: 6px;
+      display: flex; align-items: center; gap: 0.35rem;
+      line-height: 1.3;
+    }
+    .todo-matrix-item::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+    }
+    .todo-matrix-q1 .todo-matrix-item::before { background: #EF4444; }
+    .todo-matrix-q2 .todo-matrix-item::before { background: #F59E0B; }
+    .todo-matrix-q3 .todo-matrix-item::before { background: #3B82F6; }
+    .todo-matrix-q4 .todo-matrix-item::before { background: #10B981; }
+
+    /* ═══════════════════════════════════════════
+       待办页 · 四象限选择条
+       ═════════════════════════════════════════ */
+    .todo-quickadd {
+      flex-direction: column;
+    }
+    .todo-quickadd-main {
+      display: flex; gap: 0.5rem;
+      padding: 0 1rem 0.5rem;
+    }
+    .todo-quadrant-options {
+      display: flex; gap: 0.45rem; flex-wrap: wrap;
+      padding: 0 1rem 0.75rem;
+    }
+    .todo-quadrant-chip {
+      display: flex; align-items: center; gap: 0.3rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.72rem; font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--bg-secondary); color: var(--text-secondary);
+    }
+    .todo-quadrant-chip:hover { transform: translateY(-1px); }
+    .todo-quadrant-chip .q-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+    }
+    .todo-quadrant-chip[data-q="1"] { border-color: rgba(239,68,68,0.35); }
+    .todo-quadrant-chip[data-q="1"] .q-dot { background: #EF4444; }
+    .todo-quadrant-chip[data-q="1"].active { background: rgba(239,68,68,0.12); color: #DC2626; }
+    .todo-quadrant-chip[data-q="2"] { border-color: rgba(245,158,11,0.35); }
+    .todo-quadrant-chip[data-q="2"] .q-dot { background: #F59E0B; }
+    .todo-quadrant-chip[data-q="2"].active { background: rgba(245,158,11,0.14); color: #D97706; }
+    .todo-quadrant-chip[data-q="3"] { border-color: rgba(59,130,246,0.35); }
+    .todo-quadrant-chip[data-q="3"] .q-dot { background: #3B82F6; }
+    .todo-quadrant-chip[data-q="3"].active { background: rgba(59,130,246,0.12); color: #2563EB; }
+    .todo-quadrant-chip[data-q="4"] { border-color: rgba(16,185,129,0.35); }
+    .todo-quadrant-chip[data-q="4"] .q-dot { background: #10B981; }
+    .todo-quadrant-chip[data-q="4"].active { background: rgba(16,185,129,0.12); color: #059669; }
+
+    /* 改造后的待办清单项 */
+    .todo-item {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.65rem 0.55rem;
+      border-radius: 10px;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .todo-item:hover { background: var(--bg-secondary); }
+    .todo-item-checked { opacity: 0.7; }
+    .todo-item-checked .todo-text { text-decoration: line-through; color: var(--text-muted); }
+    .todo-q-marker {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+      cursor: pointer;
+      background: #D1D5DB;
+      transition: transform 0.15s;
+    }
+    .todo-q-marker:hover { transform: scale(1.2); }
+    .todo-q-marker.q1 { background: #EF4444; }
+    .todo-q-marker.q2 { background: #F59E0B; }
+    .todo-q-marker.q3 { background: #3B82F6; }
+    .todo-q-marker.q4 { background: #10B981; }
+    .todo-text {
+      flex: 1;
+      font-size: 0.9rem; color: var(--text-primary); line-height: 1.4;
+      transition: all 0.2s;
+    }
+    .todo-q-badge {
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.15rem 0.45rem; border-radius: 999px;
+      cursor: pointer; flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    .todo-q-badge:hover { transform: scale(1.05); }
+    .todo-q-badge.q1 { background: rgba(239,68,68,0.12); color: #DC2626; }
+    .todo-q-badge.q2 { background: rgba(245,158,11,0.14); color: #D97706; }
+    .todo-q-badge.q3 { background: rgba(59,130,246,0.12); color: #2563EB; }
+    .todo-q-badge.q4 { background: rgba(16,185,129,0.12); color: #059669; }
+    .todo-q-badge.none { background: var(--bg-secondary); color: var(--text-muted); }
+
+    /* ═══════════════════════════════════════════
        设置 · 菜单式结构
        ═════════════════════════════════════════ */
     .settings-menu {
@@ -3358,13 +3583,22 @@
       <!-- 目标卡片 -->
       <div class="todo-goals" id="todoGoalsCard"></div>
 
+      <!-- 月历视图 -->
+      <div class="todo-calendar-card" id="todoCalendarCard"></div>
+
+      <!-- 四象限矩阵 -->
+      <div class="todo-matrix-card" id="todoMatrixCard"></div>
+
       <!-- 快捷添加 -->
       <div class="todo-quickadd">
-        <input type="text" id="todoQuickInput" placeholder="添加一条待办，回车即可保存…" onkeydown="if(event.key==='Enter'){quickAddTodo();}">
-        <button class="btn btn-primary" onclick="quickAddTodo()" style="flex-shrink: 0;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          添加
-        </button>
+        <div class="todo-quickadd-main">
+          <input type="text" id="todoQuickInput" placeholder="添加一条待办，回车即可保存…" onkeydown="if(event.key==='Enter'){quickAddTodo();}">
+          <button class="btn btn-primary" onclick="quickAddTodo()" style="flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            添加
+          </button>
+        </div>
+        <div class="todo-quadrant-options" id="todoQuickQuadrant"></div>
       </div>
 
       <!-- 概览卡片 -->
@@ -3766,6 +4000,9 @@
         <div id="customDateContainer" style="margin-top: 0.75rem; display: none;">
           <input type="date" id="todoCustomDate" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.9rem;">
         </div>
+
+        <div style="font-size: 0.9rem; font-weight: 500; margin: 1rem 0 0.75rem; color: var(--text-primary);">重要紧急程度（可选）</div>
+        <div class="todo-quadrant-options" id="todoModalQuadrant"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeTodoModal()">取消</button>
@@ -4518,7 +4755,42 @@
       const date = new Date(dateStr);
       return `${date.getMonth() + 1}月${date.getDate()}日 ${weekDays[date.getDay()]}`;
     }
-    
+
+    // 四象限配置
+    const QUADRANTS = {
+      1: { key: 1, label: '重要紧急', short: '重急', color: '#EF4444', cls: 'q1' },
+      2: { key: 2, label: '重要不紧急', short: '重缓', color: '#F59E0B', cls: 'q2' },
+      3: { key: 3, label: '不重要紧急', short: '轻急', color: '#3B82F6', cls: 'q3' },
+      4: { key: 4, label: '不重要不紧急', short: '轻缓', color: '#10B981', cls: 'q4' }
+    };
+
+    function normalizeQuadrant(q) {
+      if (!q) return null;
+      const n = parseInt(q, 10);
+      if (n >= 1 && n <= 4) return n;
+      return null;
+    }
+
+    function quadrantLabel(q) {
+      return QUADRANTS[q]?.label || '';
+    }
+
+    function quadrantCls(q) {
+      return QUADRANTS[q]?.cls || 'none';
+    }
+
+    // 渲染四象限选择 chips（用于快捷添加和弹窗）
+    function renderQuadrantChips(containerId, selectedQ, onClickName) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      let html = `<div class="todo-quadrant-chip none ${!selectedQ ? 'active' : ''}" data-q="" onclick="${onClickName}(this)"><span class="q-dot" style="background:#D1D5DB"></span>不分类</div>`;
+      [1, 2, 3, 4].forEach(k => {
+        const q = QUADRANTS[k];
+        html += `<div class="todo-quadrant-chip ${q.cls} ${selectedQ == k ? 'active' : ''}" data-q="${k}" onclick="${onClickName}(this)"><span class="q-dot"></span>${q.label}</div>`;
+      });
+      container.innerHTML = html;
+    }
+
     // 从 localStorage 加载待办
     function loadTodos() {
       try {
@@ -4542,14 +4814,15 @@
     function syncTodosToCloud() {}
     
     // 添加待办
-    function addTodo(text, dateStr, sourceEntryId = null, timeHint = '') {
+    function addTodo(text, dateStr, sourceEntryId = null, timeHint = '', quadrant = null) {
       const todo = {
         id: Date.now().toString(),
         text: text,
-        date: dateStr,
+        date: dateStr || getTodayStr(),
         completed: false,
         sourceEntry: sourceEntryId,
         timeHint: timeHint,
+        quadrant: normalizeQuadrant(quadrant),
         createdAt: new Date().toISOString(),
         createdDate: getTodayStr() // 记录创建日期（用于显示来源）
       };
@@ -4661,11 +4934,13 @@
         '- "下午X点" → time 为对应时间\n' +
         '- 没有明确时间 → time 为空字符串\n\n' +
         '返回格式（纯JSON，不要```json标记）：\n' +
-        '{"todos":[{"content":"待办内容（简洁）","date":"YYYY-MM-DD","time":"HH:mm或空","priority":"high/medium/low"}]}\n\n' +
+        '{"todos":[{"content":"待办内容（简洁）","date":"YYYY-MM-DD","time":"HH:mm或空","quadrant":1-4或null}]}\n\n' +
+        'quadrant 含义：1=重要且紧急, 2=重要不紧急, 3=不重要紧急, 4=不重要不紧急。根据事项性质判断，无法判断则给 null。\n\n' +
         '注意：\n' +
         '- 如果不包含待办意图，返回 {"todos":[]}\n' +
         '- content 要简洁明了，去掉"我要做""需要完成"等修饰词\n' +
-        '- 一段话中有多个待办全部提取出来';
+        '- 一段话中有多个待办全部提取出来\n' +
+        '- 没有明确日期时，date 默认用今天日期 ' + today;
 
       callAIApi(prompt, function(response) {
         btn.disabled = false;
@@ -4701,10 +4976,11 @@
         var created = 0;
         var dateCount = {};
         parsed.todos.forEach(function(todo) {
-          if (todo.content && todo.date) {
-            addTodo(todo.content, todo.date, null, todo.time || '');
+          if (todo.content) {
+            var todoDate = todo.date || today;
+            addTodo(todo.content, todoDate, null, todo.time || '', todo.quadrant);
             created++;
-            var label = formatTodoDate(todo.date);
+            var label = formatTodoDate(todoDate);
             dateCount[label] = (dateCount[label] || 0) + 1;
           }
         });
@@ -4849,6 +5125,18 @@
       const summaryEl = document.getElementById('todoSummaryCard');
       if (!listEl) return;
 
+      // 渲染目标卡片
+      renderTodoGoals();
+
+      // 渲染月历
+      renderTodoCalendar();
+
+      // 渲染四象限矩阵
+      renderTodoMatrix();
+
+      // 渲染快捷添加的象限选择
+      renderQuadrantChips('todoQuickQuadrant', selectedQuickQuadrant, 'selectQuickQuadrant');
+
       // 概览统计
       const total = todos.length;
       const done = todos.filter(t => t.completed).length;
@@ -4859,9 +5147,6 @@
         <div class="todo-summary-label">已完成 ${done} 项 · 整体进度 ${pct}%</div>
         <div class="todo-progress"><div style="width:${pct}%;"></div></div>
       `;
-
-      // 渲染目标卡片
-      renderTodoGoals();
 
       // 未完成按分组
       const activeTodos = todos.filter(t => !t.completed);
@@ -4904,7 +5189,159 @@
       listEl.innerHTML = html;
     }
 
-    // 快捷添加待办（默认今天）
+    // ═══════════════════════════════════════════
+    // 待办页 · 月历
+    // ═══════════════════════════════════════════
+
+    function changeTodoMonth(delta) {
+      todoCalendarMonth.setMonth(todoCalendarMonth.getMonth() + delta);
+      renderTodoCalendar();
+    }
+
+    function renderTodoCalendar() {
+      const card = document.getElementById('todoCalendarCard');
+      if (!card) return;
+
+      const year = todoCalendarMonth.getFullYear();
+      const month = todoCalendarMonth.getMonth();
+      const today = getTodayStr();
+
+      const firstDay = new Date(year, month, 1);
+      const startWeekday = firstDay.getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+      const weekdays = ['日','一','二','三','四','五','六'];
+
+      // 按日期统计未完成任务（包含所有未完成，不限制月份）
+      const countByDate = {};
+      todos.filter(t => !t.completed).forEach(t => {
+        countByDate[t.date] = (countByDate[t.date] || 0) + 1;
+      });
+
+      let gridHtml = '';
+      // 上月补齐
+      for (let i = startWeekday - 1; i >= 0; i--) {
+        const d = daysInPrevMonth - i;
+        gridHtml += `<div class="todo-calendar-day other-month"><div class="todo-calendar-num">${d}</div></div>`;
+      }
+      // 当月
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isToday = dateStr === today;
+        const count = countByDate[dateStr] || 0;
+        const dots = count > 0 ? Array(Math.min(count, 4)).fill('<div class="todo-calendar-dot" style="background:var(--cta)"></div>').join('') : '';
+        gridHtml += `
+          <div class="todo-calendar-day ${isToday ? 'today' : ''}" onclick="quickAddTodoForDate('${dateStr}')">
+            <div class="todo-calendar-num">${d}</div>
+            <div class="todo-calendar-dots">${dots}</div>
+          </div>
+        `;
+      }
+      // 下月补齐到 42 格
+      const totalCells = startWeekday + daysInMonth;
+      const nextPadding = totalCells <= 35 ? 35 - totalCells : 42 - totalCells;
+      for (let d = 1; d <= nextPadding; d++) {
+        gridHtml += `<div class="todo-calendar-day other-month"><div class="todo-calendar-num">${d}</div></div>`;
+      }
+
+      card.innerHTML = `
+        <div class="todo-calendar-header">
+          <div class="todo-calendar-month">${year}年${month + 1}月</div>
+          <div class="todo-calendar-nav">
+            <button onclick="event.stopPropagation(); changeTodoMonth(-1)" aria-label="上月">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button onclick="event.stopPropagation(); changeTodoMonth(1)" aria-label="下月">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="todo-calendar-weekdays">${weekdays.map(w => `<div>${w}</div>`).join('')}</div>
+        <div class="todo-calendar-grid">${gridHtml}</div>
+      `;
+    }
+
+    function quickAddTodoForDate(dateStr) {
+      const input = document.getElementById('todoQuickInput');
+      if (input) {
+        input.focus();
+        input.placeholder = `添加 ${dateStr} 的待办…`;
+        input.dataset.prefillDate = dateStr;
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    // 待办页 · 四象限矩阵
+    // ═══════════════════════════════════════════
+
+    function toggleTodoMatrixCollapse() {
+      matrixCollapsed = !matrixCollapsed;
+      renderTodoMatrix();
+    }
+
+    function renderTodoMatrix() {
+      const card = document.getElementById('todoMatrixCard');
+      if (!card) return;
+
+      const activeTodos = todos.filter(t => !t.completed);
+      const qTodos = { 1: [], 2: [], 3: [], 4: [] };
+      activeTodos.forEach(t => {
+        const q = normalizeQuadrant(t.quadrant);
+        if (q) qTodos[q].push(t);
+      });
+
+      const order = [1, 2, 3, 4];
+      const titles = { 1: '重要且紧急', 2: '重要不紧急', 3: '不重要紧急', 4: '不重要不紧急' };
+      const total = activeTodos.length;
+      const classified = order.reduce((sum, k) => sum + qTodos[k].length, 0);
+
+      let html = `
+        <div class="todo-matrix-header">
+          <div class="todo-matrix-title">🧭 重要紧急四象限</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-size:0.7rem;color:var(--text-muted);">${classified}/${total} 已分类</span>
+            <button class="todo-matrix-toggle ${matrixCollapsed ? 'collapsed' : ''}" onclick="toggleTodoMatrixCollapse()" aria-label="折叠/展开">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+
+      if (!matrixCollapsed) {
+        html += `<div class="todo-matrix-grid">`;
+        order.forEach(k => {
+          const items = qTodos[k];
+          const q = QUADRANTS[k];
+          html += `
+            <div class="todo-matrix-quadrant todo-matrix-q${k}">
+              <div class="todo-matrix-label">
+                <span>${titles[k]}</span>
+                <span class="todo-matrix-count">${items.length}</span>
+              </div>
+              <div class="todo-matrix-items">
+                ${items.length === 0 ? `<div class="todo-matrix-item" style="opacity:0.6;">暂无任务</div>` : items.map(t => `
+                  <div class="todo-matrix-item" title="${escapeHtml(t.text)}" onclick="focusTodo('${t.id}')">
+                    ${t.text.length > 18 ? escapeHtml(t.text.substring(0, 18)) + '…' : escapeHtml(t.text)}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      card.innerHTML = html;
+    }
+
+    function focusTodo(id) {
+      const el = document.getElementById('todo-item-' + id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // 快捷添加待办（默认今天；若通过月历点击预选了日期，则使用该日期）
     function quickAddTodo() {
       const input = document.getElementById('todoQuickInput');
       if (!input) return;
@@ -4913,10 +5350,19 @@
         input.focus();
         return;
       }
-      addTodo(text, getTodayStr());
+      const dateStr = input.dataset.prefillDate || getTodayStr();
+      addTodo(text, dateStr, null, '', selectedQuickQuadrant);
       input.value = '';
+      delete input.dataset.prefillDate;
+      input.placeholder = '添加一条待办，回车即可保存…';
       input.focus();
       renderTodoPage();
+    }
+
+    function selectQuickQuadrant(el) {
+      const q = el.getAttribute('data-q') || '';
+      selectedQuickQuadrant = q ? parseInt(q, 10) : null;
+      renderQuadrantChips('todoQuickQuadrant', selectedQuickQuadrant, 'selectQuickQuadrant');
     }
 
     // ═══════════════════════════════════════════
@@ -5107,16 +5553,19 @@
     // 渲染单个待办项
     function renderTodoItem(todo) {
       const checkedClass = todo.completed ? 'todo-item-checked' : '';
-      
+      const qCls = quadrantCls(todo.quadrant);
+      const qLabel = quadrantLabel(todo.quadrant);
+
       // 判断是否需要显示来源日期标注（目标日期和创建日期不同，如"明天"的待办）
       let sourceNote = '';
       if (todo.createdDate && todo.createdDate !== todo.date) {
         const d = new Date(todo.createdDate);
         sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（设置自${d.getMonth() + 1}月${d.getDate()}日）</span>`;
       }
-      
+
       return `
-        <div class="todo-item ${checkedClass}">
+        <div class="todo-item ${checkedClass}" id="todo-item-${todo.id}">
+          <div class="todo-q-marker ${qCls}" onclick="event.stopPropagation(); cycleTodoQuadrant('${todo.id}')" title="${qLabel || '点击设置分类'}"></div>
           <label class="todo-checkbox" onclick="event.stopPropagation(); toggleTodo('${todo.id}')">
             <input type="checkbox" ${todo.completed ? 'checked' : ''}>
             <span class="checkmark"></span>
@@ -5124,15 +5573,42 @@
           <span class="todo-text">
             ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${todo.text}${sourceNote}
           </span>
+          <div class="todo-q-badge ${qCls}" onclick="event.stopPropagation(); cycleTodoQuadrant('${todo.id}')" title="点击切换分类">${qLabel || '未分类'}</div>
           <button class="todo-delete" onclick="event.stopPropagation(); deleteTodo('${todo.id}')">✕</button>
         </div>
       `;
+    }
+
+    // 循环切换待办象限（未分类→1→2→3→4→未分类）
+    function cycleTodoQuadrant(id) {
+      const todo = todos.find(t => t.id === id);
+      if (!todo) return;
+      const current = normalizeQuadrant(todo.quadrant);
+      if (!current) {
+        todo.quadrant = 1;
+      } else if (current === 4) {
+        todo.quadrant = null;
+      } else {
+        todo.quadrant = current + 1;
+      }
+      saveTodos();
+      renderTodoBanner();
+      renderTodoList();
+      renderTodoPage();
+      syncTodosToCloud();
     }
     
     // 打开设置待办弹窗
     let pendingTodoEntryId = null;
     let pendingTodoText = '';
-    
+    let selectedModalQuadrant = null;
+
+    function selectModalQuadrant(el) {
+      const q = el.getAttribute('data-q') || '';
+      selectedModalQuadrant = q ? parseInt(q, 10) : null;
+      renderQuadrantChips('todoModalQuadrant', selectedModalQuadrant, 'selectModalQuadrant');
+    }
+
     function openTodoModal(entryId, entryText) {
       pendingTodoEntryId = entryId;
       pendingTodoText = entryText;
@@ -5152,9 +5628,13 @@
       radios.forEach(r => r.checked = false);
       const todayRadio = document.querySelector('input[name="todoDate"][value="today"]');
       if (todayRadio) todayRadio.checked = true;
-      
+
       const customDateContainer = document.getElementById('customDateContainer');
       if (customDateContainer) customDateContainer.style.display = 'none';
+
+      // 重置象限选择
+      selectedModalQuadrant = null;
+      renderQuadrantChips('todoModalQuadrant', selectedModalQuadrant, 'selectModalQuadrant');
     }
     
     // 关闭待办弹窗
@@ -5219,7 +5699,7 @@
         if (timeHint.startsWith(':')) timeHint = timeHint.slice(1);
       }
       
-      addTodo(pendingTodoText, dateStr, pendingTodoEntryId, timeHint);
+      addTodo(pendingTodoText, dateStr, pendingTodoEntryId, timeHint, selectedModalQuadrant);
       closeTodoModal();
       
       // 显示成功提示
@@ -5264,6 +5744,9 @@
     let mindMaps = {};      // 脑图数据（按日期存储）
     let todos = [];        // 待办事项列表
     let todoGoals = null;  // 今日/本周/本年目标 { daily:{}, weekly:{}, yearly:{} }
+    let todoCalendarMonth = new Date(); // 待办页月历当前显示月份
+    let selectedQuickQuadrant = null;   // 快捷添加当前选中的象限
+    let matrixCollapsed = false;        // 四象限矩阵是否折叠
     let aiTab = 'daily';
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
