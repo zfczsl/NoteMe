@@ -2999,6 +2999,63 @@
     .todo-group-title.is-overdue { color: #EF4444; }
 
     /* ═══════════════════════════════════════════
+       待办页 · 目标卡片
+       ═════════════════════════════════════════ */
+    .todo-goals {
+      margin: 0 1rem 1.1rem;
+      padding: 1rem 1.1rem 0.9rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+    .todo-goals-header {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 0.55rem;
+    }
+    .todo-goals-title {
+      font-size: 0.9rem; font-weight: 700; color: var(--text-primary);
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .todo-goals-sub {
+      margin-left: auto;
+      font-size: 0.7rem; color: var(--text-muted);
+      background: var(--bg-secondary); padding: 0.15rem 0.55rem; border-radius: 999px;
+    }
+    .todo-goal-row {
+      display: flex; align-items: center; gap: 0.55rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .todo-goal-row:last-child { border-bottom: none; }
+    .todo-goal-check {
+      width: 22px; height: 22px; flex-shrink: 0;
+      border: 2px solid var(--border); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.18s ease;
+      color: transparent;
+    }
+    .todo-goal-check.active {
+      background: var(--cta); border-color: var(--cta); color: #fff;
+    }
+    .todo-goal-check svg { width: 13px; height: 13px; }
+    .todo-goal-icon { font-size: 1.05rem; flex-shrink: 0; width: 1.4rem; text-align: center; }
+    .todo-goal-input {
+      flex: 1; min-width: 0;
+      border: none; background: transparent; outline: none;
+      color: var(--text-primary); font-size: 0.88rem;
+      padding: 0.35rem 0;
+      text-overflow: ellipsis;
+    }
+    .todo-goal-input::placeholder { color: var(--text-muted); }
+    .todo-goal-input.completed { text-decoration: line-through; color: var(--text-muted); }
+    .todo-goal-scope {
+      flex-shrink: 0;
+      font-size: 0.68rem; color: var(--text-muted);
+      background: var(--bg-secondary); padding: 0.15rem 0.5rem; border-radius: 999px;
+    }
+
+    /* ═══════════════════════════════════════════
        设置 · 菜单式结构
        ═════════════════════════════════════════ */
     .settings-menu {
@@ -3297,6 +3354,9 @@
 
       <!-- 概览卡片 -->
       <div class="todo-summary" id="todoSummaryCard"></div>
+
+      <!-- 目标卡片 -->
+      <div class="todo-goals" id="todoGoalsCard"></div>
 
       <!-- 分组列表 -->
       <div id="todoPageList"></div>
@@ -3752,10 +3812,6 @@
       <span>设置</span>
     </button>
   </nav>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>设置</span>
-    </button>
-  </nav>
 
   <!-- Settings Modal -->
   <div class="modal-overlay" id="settingsModal">
@@ -4115,7 +4171,7 @@
       'daywise_entries', 'daywise_daily_reviews', 'daywise_weekly_reviews',
       'daywise_ai_summaries', 'daywise_ai_insights', 'daywise_weekly_insights',
       'daywise_mind_maps', 'daywise_todos', 'daywise_user_role', 'daywise_user_goals',
-      'daywise_weekly_mindmap_'
+      'daywise_todo_goals', 'daywise_weekly_mindmap_'
     ];
 
     function getUserKey(key) {
@@ -4792,6 +4848,9 @@
         <div class="todo-progress"><div style="width:${pct}%;"></div></div>
       `;
 
+      // 渲染目标卡片
+      renderTodoGoals();
+
       // 未完成按分组
       const activeTodos = todos.filter(t => !t.completed);
       const buckets = {};
@@ -4846,6 +4905,106 @@
       input.value = '';
       input.focus();
       renderTodoPage();
+    }
+
+    // ═══════════════════════════════════════════
+    // 待办页 · 今日/本周/本年目标
+    // ═══════════════════════════════════════════
+
+    function getWeekStartStr() {
+      const d = new Date();
+      const day = d.getDay();
+      d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+      return getDateStr(d);
+    }
+
+    function getYearStr() {
+      return new Date().getFullYear().toString();
+    }
+
+    function loadTodoGoals() {
+      try {
+        todoGoals = JSON.parse(localStorage.getItem('daywise_todo_goals') || 'null');
+      } catch(e) { todoGoals = null; }
+      if (!todoGoals || typeof todoGoals !== 'object') {
+        todoGoals = { daily: {text:'',completed:false,period:''}, weekly: {text:'',completed:false,period:''}, yearly: {text:'',completed:false,period:''} };
+      }
+      const today = getTodayStr();
+      const week = getWeekStartStr();
+      const year = getYearStr();
+      const periodMap = { daily: today, weekly: week, yearly: year };
+      ['daily','weekly','yearly'].forEach(k => {
+        if (!todoGoals[k] || typeof todoGoals[k] !== 'object') {
+          todoGoals[k] = { text: '', completed: false, period: '' };
+        }
+        const g = todoGoals[k];
+        if (g.period !== periodMap[k]) {
+          g.completed = false;
+          g.period = periodMap[k];
+        }
+      });
+      saveTodoGoals();
+    }
+
+    function saveTodoGoals() {
+      localStorage.setItem('daywise_todo_goals', JSON.stringify(todoGoals));
+    }
+
+    function updateTodoGoal(scope, value) {
+      if (!todoGoals) loadTodoGoals();
+      todoGoals[scope].text = value.trim();
+      if (!todoGoals[scope].text) todoGoals[scope].completed = false;
+      saveTodoGoals();
+      renderTodoGoals();
+    }
+
+    function toggleTodoGoal(scope) {
+      if (!todoGoals) loadTodoGoals();
+      if (!todoGoals[scope].text.trim()) return;
+      todoGoals[scope].completed = !todoGoals[scope].completed;
+      saveTodoGoals();
+      renderTodoGoals();
+    }
+
+    function renderTodoGoals() {
+      const card = document.getElementById('todoGoalsCard');
+      if (!card) return;
+      if (!todoGoals) loadTodoGoals();
+
+      const scopes = [
+        { key: 'daily', icon: '🌅', label: '今日目标', scope: '今日' },
+        { key: 'weekly', icon: '📅', label: '本周目标', scope: '本周' },
+        { key: 'yearly', icon: '🎯', label: '本年目标', scope: '本年' }
+      ];
+
+      const completedCount = scopes.filter(s => todoGoals[s.key].completed).length;
+      const setCount = scopes.filter(s => todoGoals[s.key].text.trim()).length;
+
+      let html = `
+        <div class="todo-goals-header">
+          <div class="todo-goals-title">🎯 我的目标</div>
+          <div class="todo-goals-sub">${completedCount}/${setCount} 达成</div>
+        </div>
+      `;
+
+      scopes.forEach(s => {
+        const g = todoGoals[s.key];
+        const checkCls = g.completed ? 'todo-goal-check active' : 'todo-goal-check';
+        const inputCls = g.completed ? 'todo-goal-input completed' : 'todo-goal-input';
+        html += `
+          <div class="todo-goal-row">
+            <div class="${checkCls}" onclick="toggleTodoGoal('${s.key}')">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="todo-goal-icon">${s.icon}</div>
+            <input type="text" class="${inputCls}" value="${escapeHtml(g.text)}" placeholder="点击设置${s.label}…"
+              onchange="updateTodoGoal('${s.key}', this.value)" onkeydown="if(event.key==='Enter'){this.blur();}">
+            <div class="todo-goal-scope">${s.scope}</div>
+          </div>
+        `;
+      });
+
+      card.innerHTML = html;
     }
 
     // ═══════════════════════════════════════════
@@ -5075,6 +5234,7 @@
     let weeklyInsights = {}; // 周洞察数据
     let mindMaps = {};      // 脑图数据（按日期存储）
     let todos = [];        // 待办事项列表
+    let todoGoals = null;  // 今日/本周/本年目标 { daily:{}, weekly:{}, yearly:{} }
     let aiTab = 'daily';
     let apiKey = '';
     let apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
