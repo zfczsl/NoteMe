@@ -1876,7 +1876,96 @@
       background: #F9FAFB;
       color: #6B7280;
     }
-    
+    /* 待办图标按钮 */
+    .todo-icon-btn {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .todo-icon-btn:hover {
+      background: var(--bg-tertiary);
+    }
+    /* 待办文字可编辑态 */
+    .todo-text {
+      cursor: text;
+    }
+    .todo-text.editing {
+      background: #fff;
+      border: 1px solid var(--primary);
+      border-radius: 6px;
+      padding: 0.2rem 0.4rem;
+      outline: none;
+      cursor: text;
+    }
+    /* 来源日期标注 */
+    .todo-source-note {
+      color: #9ca3af;
+      font-size: 0.72rem;
+      margin-left: 2px;
+    }
+    /* 分组条数 */
+    .todo-group-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0.15rem 0 0.45rem 0.3rem;
+    }
+    /* 图标选择器浮层 */
+    .icon-picker {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border-radius: 16px;
+      padding: 1rem;
+      z-index: 9999;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+      display: none;
+      width: min(320px, 90vw);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .icon-picker.active { display: block; }
+    .icon-picker-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--text-primary);
+    }
+    .icon-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.25rem;
+    }
+    .icon-picker-grid button {
+      font-size: 1.3rem;
+      aspect-ratio: 1;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .icon-picker-grid button:hover { background: var(--bg-tertiary); }
+    .icon-picker-close {
+      margin-top: 0.75rem;
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
     /* 待办弹窗日期选项 */
     .todo-date-options {
       display: grid;
@@ -5087,9 +5176,12 @@
     // ═══════════════════════════════════════════
 
     // 计算目标日期与今天的偏移分组
+    // 分组依据：待办"创建日期" createdDate（昨天建的未完成就归"昨天"，不在今天下面）
     function todoBucketInfo(dateStr) {
       const today = getTodayStr();
-      if (dateStr < today) return { key: 0, label: '逾期', overdue: true };
+      const yesterday = addDaysStr(today, -1);
+      if (dateStr < yesterday) return { key: 0, label: '逾期', overdue: true };
+      if (dateStr === yesterday) return { key: -1, label: '昨天' };
       if (dateStr === today) return { key: 1, label: '今天' };
       const tomorrow = addDaysStr(today, 1);
       if (dateStr === tomorrow) return { key: 2, label: '明天' };
@@ -5141,23 +5233,24 @@
         <div class="todo-progress"><div style="width:${pct}%;"></div></div>
       `;
 
-      // 未完成按分组
+      // 未完成按"创建日期"分组（昨天创建的未完成归"昨天"，不混在"今天"下面）
       const activeTodos = todos.filter(t => !t.completed);
       const buckets = {};
       activeTodos.forEach(t => {
-        const info = todoBucketInfo(t.date);
+        const info = todoBucketInfo(t.createdDate || t.date);
         if (!buckets[info.key]) buckets[info.key] = { label: info.label, overdue: !!info.overdue, items: [] };
         buckets[info.key].items.push(t);
       });
 
-      const order = [0, 1, 2, 3, 4];
+      const order = [0, -1, 1, 2, 3, 4];
       let html = '';
       order.forEach(k => {
         if (!buckets[k]) return;
         const b = buckets[k];
         const cls = b.overdue ? 'todo-group-title is-overdue' : 'todo-group-title';
         html += `<div class="todo-group">
-          <div class="${cls}"><span class="dot"></span>${b.label}<span class="cnt">${b.items.length}</span></div>
+          <div class="${cls}"><span class="dot"></span>${b.label}</div>
+          <div class="todo-group-count">共 ${b.items.length} 条</div>
           ${b.items.map(t => renderTodoItem(t)).join('')}
         </div>`;
       });
@@ -5551,23 +5644,26 @@
       const checkedClass = todo.completed ? 'todo-item-checked' : '';
       const qCls = quadrantCls(todo.quadrant);
       const qLabel = quadrantLabel(todo.quadrant);
+      const icon = todo.icon || '📝';
 
-      // 判断是否需要显示来源日期标注（目标日期和创建日期不同，如"明天"的待办）
+      // 来源日期标注：若不是"今天"创建的（即前几天设的），显示（设置至X月X日）
       let sourceNote = '';
-      if (todo.createdDate && todo.createdDate !== todo.date) {
-        const d = new Date(todo.createdDate);
-        sourceNote = `<span style="color: #9ca3af; font-size: 0.75rem;">（设置自${d.getMonth() + 1}月${d.getDate()}日）</span>`;
+      const today = getTodayStr();
+      if (todo.createdDate && todo.createdDate !== today) {
+        const d = new Date(todo.createdDate + 'T00:00:00');
+        sourceNote = `<span class="todo-source-note">（设置至${d.getMonth() + 1}月${d.getDate()}日）</span>`;
       }
 
       return `
         <div class="todo-item ${checkedClass}" id="todo-item-${todo.id}">
+          <div class="todo-icon-btn" onclick="event.stopPropagation(); openIconPicker('${todo.id}')" title="点击选择图标">${icon}</div>
           <div class="todo-q-marker ${qCls}" onclick="event.stopPropagation(); cycleTodoQuadrant('${todo.id}')" title="${qLabel || '点击设置分类'}"></div>
           <label class="todo-checkbox" onclick="event.stopPropagation(); toggleTodo('${todo.id}')">
             <input type="checkbox" ${todo.completed ? 'checked' : ''}>
             <span class="checkmark"></span>
           </label>
-          <span class="todo-text">
-            ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${todo.text}${sourceNote}
+          <span class="todo-text" onclick="event.stopPropagation(); editTodoText('${todo.id}', this)" title="点击修改文字">
+            ${todo.timeHint ? `<span class="todo-time">${todo.timeHint}</span> ` : ''}${escapeHtml(todo.text)}${sourceNote}
           </span>
           <div class="todo-q-badge ${qCls}" onclick="event.stopPropagation(); cycleTodoQuadrant('${todo.id}')" title="点击切换分类">${qLabel || '未分类'}</div>
           <button class="todo-delete" onclick="event.stopPropagation(); deleteTodo('${todo.id}')">✕</button>
@@ -5594,6 +5690,90 @@
       syncTodosToCloud();
     }
     
+    // 内联编辑待办文字（点击文字即可修改）
+    function editTodoText(id, el) {
+      const todo = todos.find(t => t.id === id);
+      if (!todo) return;
+      if (el.isContentEditable) { el.focus(); return; }
+      const original = todo.text;
+      el.contentEditable = 'true';
+      el.classList.add('editing');
+      el.focus();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const finish = (save) => {
+        el.contentEditable = 'false';
+        el.classList.remove('editing');
+        el.onblur = null;
+        el.onkeydown = null;
+        const newText = el.textContent.trim();
+        if (save && newText && newText !== original) {
+          todo.text = newText;
+          saveTodos();
+        }
+        renderTodoBanner();
+        renderTodoList();
+        renderTodoPage();
+        syncTodosToCloud();
+      };
+      el.onblur = () => finish(true);
+      el.onkeydown = (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+        else if (e.key === 'Escape') { e.preventDefault(); el.textContent = original; finish(false); }
+      };
+    }
+
+    // 待办图标选择
+    const TODO_ICONS = ['📝','📌','✅','💡','🔥','⭐','📚','💪','🏃','🍎','💰','📞','✉️','🎯','🧠','❤️','🛒','✈️','🏥','⏰','🎨','🎵','🌟','🐱'];
+    let _iconPickerBound = false;
+    function openIconPicker(id) {
+      const todo = todos.find(t => t.id === id);
+      if (!todo) return;
+      let picker = document.getElementById('todoIconPicker');
+      if (!picker) {
+        picker = document.createElement('div');
+        picker.id = 'todoIconPicker';
+        picker.className = 'icon-picker';
+        document.body.appendChild(picker);
+        if (!_iconPickerBound) {
+          _iconPickerBound = true;
+          document.addEventListener('click', (e) => {
+            const p = document.getElementById('todoIconPicker');
+            if (p && p.classList.contains('active') && !p.contains(e.target)) {
+              closeIconPicker();
+            }
+          });
+        }
+      }
+      picker.innerHTML =
+        '<div class="icon-picker-title">选择图标</div>' +
+        '<div class="icon-picker-grid">' +
+          TODO_ICONS.map(em => `<button type="button" onclick="selectTodoIcon('${id}','${em}')">${em}</button>`).join('') +
+        '</div>' +
+        '<button type="button" class="icon-picker-close" onclick="closeIconPicker()">取消</button>';
+      picker.classList.add('active');
+    }
+    function selectTodoIcon(id, em) {
+      const todo = todos.find(t => t.id === id);
+      if (todo) {
+        todo.icon = em;
+        saveTodos();
+        renderTodoBanner();
+        renderTodoList();
+        renderTodoPage();
+        syncTodosToCloud();
+      }
+      closeIconPicker();
+    }
+    function closeIconPicker() {
+      const p = document.getElementById('todoIconPicker');
+      if (p) p.classList.remove('active');
+    }
+
     // 打开设置待办弹窗
     let pendingTodoEntryId = null;
     let pendingTodoText = '';
