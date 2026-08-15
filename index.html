@@ -3560,18 +3560,6 @@
         </div>
       </div>
 
-      <!-- 快捷添加 -->
-      <div class="todo-quickadd">
-        <div class="todo-quickadd-main">
-          <input type="text" id="todoQuickInput" placeholder="添加一条待办，回车即可保存…" onkeydown="if(event.key==='Enter'){quickAddTodo();}">
-          <button class="btn btn-primary" onclick="quickAddTodo()" style="flex-shrink: 0;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            添加
-          </button>
-        </div>
-        <div class="todo-quadrant-options" id="todoQuickQuadrant"></div>
-      </div>
-
       <!-- 今日记录 -->
       <div class="entries-section" id="entriesSection">
         <div class="section-header">
@@ -5148,9 +5136,6 @@
 
       // 渲染四象限矩阵
       renderTodoMatrix();
-
-      // 渲染快捷添加的象限选择
-      renderQuadrantChips('todoQuickQuadrant', selectedQuickQuadrant, 'selectQuickQuadrant');
 
       // 概览统计
       const total = todos.length;
