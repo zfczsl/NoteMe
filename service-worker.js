@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noteme-v17';
+const CACHE_NAME = 'noteme-v18';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
