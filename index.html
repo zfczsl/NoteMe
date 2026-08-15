@@ -3033,43 +3033,6 @@
     .todo-quickadd input:focus {
       border-color: var(--cta);
     }
-    .todo-summary {
-      margin: 0.25rem 1rem 1rem;
-      padding: 1rem 1.1rem;
-      background: linear-gradient(135deg, var(--cta-pale) 0%, var(--cta-soft) 100%);
-      border-radius: var(--radius-lg);
-      position: relative;
-      overflow: hidden;
-    }
-    .todo-summary-num {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--cta);
-      line-height: 1;
-    }
-    .todo-summary-num small {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .todo-summary-label {
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-      margin-top: 0.35rem;
-    }
-    .todo-progress {
-      height: 8px;
-      background: rgba(255,255,255,0.55);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-top: 0.85rem;
-    }
-    .todo-progress > div {
-      height: 100%;
-      background: var(--gradient-cta);
-      border-radius: 4px;
-      transition: width 0.4s ease;
-    }
     .todo-group {
       margin: 0 1rem 1.1rem;
     }
@@ -3632,9 +3595,6 @@
 
       <!-- 四象限矩阵 -->
       <div class="todo-matrix-card" id="todoMatrixCard"></div>
-
-      <!-- 概览卡片 -->
-      <div class="todo-summary" id="todoSummaryCard"></div>
 
       <!-- 分组列表 -->
       <div id="todoPageList"></div>
@@ -5210,7 +5170,6 @@
     // 渲染待办整页
     function renderTodoPage() {
       const listEl = document.getElementById('todoPageList');
-      const summaryEl = document.getElementById('todoSummaryCard');
       if (!listEl) return;
 
       // 渲染目标卡片
@@ -5221,17 +5180,6 @@
 
       // 渲染四象限矩阵
       renderTodoMatrix();
-
-      // 概览统计
-      const total = todos.length;
-      const done = todos.filter(t => t.completed).length;
-      const active = total - done;
-      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-      summaryEl.innerHTML = `
-        <div class="todo-summary-num">${active}<small> / ${total} 项待办</small></div>
-        <div class="todo-summary-label">已完成 ${done} 项 · 整体进度 ${pct}%</div>
-        <div class="todo-progress"><div style="width:${pct}%;"></div></div>
-      `;
 
       // 未完成按"创建日期"分组（昨天创建的未完成归"昨天"，不混在"今天"下面）
       const activeTodos = todos.filter(t => !t.completed);
