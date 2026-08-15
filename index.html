@@ -3538,7 +3538,45 @@
         </div>
       </div>
 
-      <!-- Today's Entries -->
+      <!-- 目标卡片 -->
+      <div class="todo-goals" id="todoGoalsCard"></div>
+
+      <!-- 四象限矩阵 -->
+      <div class="todo-matrix-card" id="todoMatrixCard"></div>
+
+      <!-- 概览卡片 -->
+      <div class="todo-summary" id="todoSummaryCard"></div>
+
+      <!-- 分组列表 -->
+      <div id="todoPageList"></div>
+    </div>
+
+    <!-- Page: 待办 -->
+    <div id="page-todo" class="page">
+      <div class="todo-page-head">
+        <div class="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          待办
+        </div>
+        <div class="todo-head-goals">我的目标</div>
+      </div>
+
+      <!-- 快捷添加 -->
+      <div class="todo-quickadd">
+        <div class="todo-quickadd-main">
+          <input type="text" id="todoQuickInput" placeholder="添加一条待办，回车即可保存…" onkeydown="if(event.key==='Enter'){quickAddTodo();}">
+          <button class="btn btn-primary" onclick="quickAddTodo()" style="flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            添加
+          </button>
+        </div>
+        <div class="todo-quadrant-options" id="todoQuickQuadrant"></div>
+      </div>
+
+      <!-- 待办日历 -->
+      <div class="todo-calendar-card" id="todoCalendarCard"></div>
+
+      <!-- 今日记录 -->
       <div class="entries-section" id="entriesSection">
         <div class="section-header">
           <div class="section-title">
@@ -3587,44 +3625,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Page: 待办 -->
-    <div id="page-todo" class="page">
-      <div class="todo-page-head">
-        <div class="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          待办
-        </div>
-        <div class="todo-head-goals">我的目标</div>
-      </div>
-
-      <!-- 目标卡片 -->
-      <div class="todo-goals" id="todoGoalsCard"></div>
-
-      <!-- 四象限矩阵 -->
-      <div class="todo-matrix-card" id="todoMatrixCard"></div>
-
-      <!-- 快捷添加 -->
-      <div class="todo-quickadd">
-        <div class="todo-quickadd-main">
-          <input type="text" id="todoQuickInput" placeholder="添加一条待办，回车即可保存…" onkeydown="if(event.key==='Enter'){quickAddTodo();}">
-          <button class="btn btn-primary" onclick="quickAddTodo()" style="flex-shrink: 0;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            添加
-          </button>
-        </div>
-        <div class="todo-quadrant-options" id="todoQuickQuadrant"></div>
-      </div>
-
-      <!-- 概览卡片 -->
-      <div class="todo-summary" id="todoSummaryCard"></div>
-
-      <!-- 分组列表 -->
-      <div id="todoPageList"></div>
-
-      <!-- 待办日历 -->
-      <div class="todo-calendar-card" id="todoCalendarCard"></div>
     </div>
 
     <!-- Page: 洞察 -->
@@ -8082,6 +8082,7 @@
       updateDailyCharCounter();
       loadAiDisplay();
       loadRecordMindMap();
+      renderTodoPage(); // 待办四块（目标/矩阵/概览/清单）现已并入记录页，需在此初始化渲染
       
       // 待办弹窗日期选择事件
       document.querySelectorAll('input[name="todoDate"]').forEach(radio => {
@@ -9367,13 +9368,17 @@
         });
       }
       
-      // 如果切换到待办页面，渲染待办列表
+      // 待办页（已并入：今日记录 / AI 每日复盘 / 今日脑图）
       if (pageName === 'todo') {
         renderTodoPage();
+        loadEntries();
+        loadAiDisplay();
+        loadRecordMindMap();
       }
-      // 如果切换到记录页面，加载脑图
+      // 记录页（下方已并入：目标 / 四象限矩阵 / 概览 / 待办清单）
       if (pageName === 'record') {
         loadRecordMindMap();
+        renderTodoPage();
       }
       // 如果切换到洞察页面，加载每周脑图并刷新统计数据
       if (pageName === 'insight') {
