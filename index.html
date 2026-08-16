@@ -1705,75 +1705,6 @@
       margin: 1.5rem 0;
     }
 
-    /* 待办横幅样式 */
-    .todo-banner {
-      background: var(--gradient-card);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1rem 1.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.5);
-      transition: all var(--duration-normal) var(--ease-out);
-    }
-    .todo-banner-all-done {
-      background: rgba(210,240,220,0.5) !important;
-      border-color: rgba(130,190,160,0.4) !important;
-    }
-    .todo-banner:hover {
-      background: rgba(255,255,255,0.55);
-      transform: translateY(-1px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
-    }
-    .todo-banner-left {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .todo-icon {
-      font-size: 1.25rem;
-    }
-    .todo-banner-text {
-      font-size: 0.9rem;
-      color: var(--primary-dark);
-    }
-    .todo-banner-text strong {
-      color: var(--primary-dark);
-      font-weight: 700;
-    }
-    .todo-banner-arrow {
-      font-size: 0.75rem;
-      color: var(--primary-dark);
-      transition: transform 0.2s;
-    }
-    
-    /* 待办列表样式 */
-    .todo-list {
-      background: rgba(255,255,255,0.42);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: var(--radius);
-      padding: 0.75rem;
-      margin-top: 0.5rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.04);
-    }
-    .todo-date-group {
-      margin-bottom: 0.5rem;
-    }
-    .todo-date-group:last-child {
-      margin-bottom: 0;
-    }
-    .todo-date-label {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-      padding-left: 0.25rem;
-    }
     .todo-item {
       display: flex;
       align-items: center;
@@ -3551,9 +3482,6 @@
         </button>
       </div>
 
-      <!-- 待办横幅 -->
-      <div id="todoBannerContainer" style="margin-bottom: 1rem;"></div>
-
       <!-- Entry Section -->
       <div class="entry-section">
         <!-- 心情选择器 -->
@@ -4873,7 +4801,6 @@
       };
       todos.push(todo);
       saveTodos();
-      renderTodoBanner();
       // 立即同步到云端（不依赖 beforeunload）
       syncTodosToCloud();
       return todo;
@@ -4883,8 +4810,6 @@
     function deleteTodo(id) {
       todos = todos.filter(t => t.id !== id);
       saveTodos();
-      renderTodoBanner();
-      renderTodoList();
       renderTodoPage();
       syncTodosToCloud(); // 同步到云端
     }
@@ -4895,9 +4820,7 @@
       if (todo) {
         todo.completed = !todo.completed;
         saveTodos();
-        renderTodoBanner();
-        renderTodoList();
-        renderTodoPage();
+            renderTodoPage();
         syncTodosToCloud(); // 同步到云端
       }
     }
@@ -5046,19 +4969,6 @@
       }, '智能待办');
     }
     
-    // 获取当前页面日期对应的待办数量（只取当前页面日期本身，不分今日明日）
-    // 获取当前页面日期的待办总数（含已完成和未完成）
-    function getCurrentPageTodoCount() {
-      const dateStr = getCurrentPageDateStr();
-      return todos.filter(t => t.date === dateStr).length;
-    }
-    
-    // 获取当前页面日期的未完成待办数
-    function getUncompletedTodoCount() {
-      const dateStr = getCurrentPageDateStr();
-      return todos.filter(t => t.date === dateStr && !t.completed).length;
-    }
-    
     // 获取当前页面日期的字符串（如 "2026-04-14"）
     function getCurrentPageDateStr() {
       const y = currentDate.getFullYear();
@@ -5066,71 +4976,7 @@
       const d = String(currentDate.getDate()).padStart(2, '0');
       return `${y}-${m}-${d}`;
     }
-    
-    // 获取当前页面日期的显示标签（始终显示"今日"，因为当前页日期即视为今日）
-    function getTodoDateLabel(dateStr) {
-      return '今日';
-    }
 
-    // 渲染待办横幅（只显示当前页面日期的待办，一行）
-    function renderTodoBanner() {
-      const container = document.getElementById('todoBannerContainer');
-      if (!container) return;
-      
-      const totalCount = getCurrentPageTodoCount();
-      const uncompletedCount = getUncompletedTodoCount();
-      const dateStr = getCurrentPageDateStr();
-      const label = getTodoDateLabel(dateStr);
-      
-      console.log('[横幅调试] 页面日期:', dateStr, '待办总数:', totalCount, '未完成:', uncompletedCount);
-      
-      if (totalCount === 0) {
-        container.innerHTML = '';
-        return;
-      }
-      
-      // 根据完成状态决定横幅样式和文字
-      let statusText, statusClass;
-      if (uncompletedCount === 0) {
-        // 全部完成了
-        statusText = `✅ 全部完成`;
-        statusClass = 'todo-banner-all-done';
-      } else {
-        statusText = `${label}待办 <strong>${totalCount}</strong>项`;
-        statusClass = '';
-      }
-      
-      container.innerHTML = `
-        <div class="todo-banner ${statusClass}" onclick="toggleTodoList()" style="cursor: pointer;">
-          <div class="todo-banner-left">
-            <span class="todo-icon">📋</span>
-            <span class="todo-banner-text">
-              ${statusText}
-            </span>
-            ${uncompletedCount > 0 ? `<span style="font-size:0.7rem;color:#9ca3af;margin-left:4px;">(${dateStr})</span>` : ''}
-            ${uncompletedCount > 0 && uncompletedCount < totalCount ? `<span style="font-size:0.7rem;color:#6B7280;margin-left:4px;">(剩${uncompletedCount}项)</span>` : ''}
-          </div>
-          <span class="todo-banner-arrow" id="todoBannerArrow">▼</span>
-        </div>
-        <div class="todo-list" id="todoListContainer" style="display: none;"></div>
-      `;
-      
-      renderTodoList();
-    }
-    
-    // 切换待办列表显示
-    function toggleTodoList() {
-      const listContainer = document.getElementById('todoListContainer');
-      const arrow = document.getElementById('todoBannerArrow');
-      if (listContainer.style.display === 'none') {
-        listContainer.style.display = 'block';
-        arrow.textContent = '▲';
-      } else {
-        listContainer.style.display = 'none';
-        arrow.textContent = '▼';
-      }
-    }
-    
     // ═══════════════════════════════════════════
     // 待办整页（page-todo）渲染
     // ═══════════════════════════════════════════
@@ -5567,26 +5413,6 @@
       showToast('✅ API 配置已保存');
     }
 
-    // 渲染待办列表（只显示当前页面日期的待办，无多余标签）
-    function renderTodoList() {
-      const container = document.getElementById('todoListContainer');
-      if (!container) return;
-      
-      const dateStr = getCurrentPageDateStr();
-      const pageTodos = todos.filter(t => t.date === dateStr).sort((a, b) => a.completed - b.completed);
-      
-      console.log('[列表调试] 过滤条件 date ===', dateStr);
-      console.log('[列表调试] 全部待办:', todos.map(t => ({text: t.text.substring(0,15), date: t.date})));
-      console.log('[列表调试] 匹配待办数:', pageTodos.length);
-      
-      if (pageTodos.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-      
-      container.innerHTML = pageTodos.map(t => renderTodoItem(t)).join('');
-    }
-    
     // 渲染单个待办项
     function renderTodoItem(todo) {
       const checkedClass = todo.completed ? 'todo-item-checked' : '';
@@ -5632,8 +5458,6 @@
         todo.quadrant = current + 1;
       }
       saveTodos();
-      renderTodoBanner();
-      renderTodoList();
       renderTodoPage();
       syncTodosToCloud();
     }
@@ -5663,9 +5487,7 @@
           todo.text = newText;
           saveTodos();
         }
-        renderTodoBanner();
-        renderTodoList();
-        renderTodoPage();
+            renderTodoPage();
         syncTodosToCloud();
       };
       el.onblur = () => finish(true);
@@ -5710,9 +5532,7 @@
       if (todo) {
         todo.icon = em;
         saveTodos();
-        renderTodoBanner();
-        renderTodoList();
-        renderTodoPage();
+            renderTodoPage();
         syncTodosToCloud();
       }
       closeIconPicker();
@@ -8178,7 +7998,6 @@
       seedAdminDemoData();
       loadSettings();
       loadTodos();
-      renderTodoBanner();
       updateDateDisplay();
       loadEntries();
       updateDailyCharCounter();
@@ -9371,7 +9190,6 @@
       loadEntries();
       loadAiDisplay();
       loadRecordMindMap(); // 加载对应日期的脑图
-      renderTodoBanner(); // 更新待办横幅（切换日期后重新渲染）
     }
     
     // 今日脑图 - 空状态与重新生成按钮 HTML 片段
